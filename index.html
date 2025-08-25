@@ -6,12 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <style>
     :root {
-      --ok: #e8f5e9;
-      --warn: #fff8e1;
-      --bad: #ffebee;
-      --border: #ddd;
-      --muted: #666;
-      --ink: #222;
+      --ok: #e8f5e9; --warn: #fff8e1; --bad: #ffebee; --border: #ddd; --muted: #666; --ink: #222;
     }
     body {
       font-family:
@@ -25,47 +20,23 @@
     }
     h1 { margin: 0 0 1rem 0; }
     .row {
-      display: flex;
-      gap: 0.5rem;
-      align-items: center;
-      margin-bottom: 1rem;
-      flex-wrap: wrap;
+      display: flex; gap: 0.5rem; align-items: center; margin-bottom: 1rem; flex-wrap: wrap;
     }
-    input[type="number"] {
-      padding: 0.4rem 0.6rem;
-      width: 10rem;
-    }
-    button {
-      padding: 0.45rem 0.8rem;
-      cursor: pointer;
-    }
+    input[type="number"] { padding: 0.4rem 0.6rem; width: 10rem; }
+    input[type="text"] { padding: 0.4rem 0.6rem; width: 5rem; text-align: center; }
+    button { padding: 0.45rem 0.8rem; cursor: pointer; }
     #goal { margin: 1rem 0; font-weight: 600; }
-    table {
-      border-collapse: collapse;
-      width: 100%;
-      background: #fff;
-    }
-    th, td {
-      border: 1px solid var(--border);
-      padding: 8px;
-      text-align: right;
-      vertical-align: top;
-    }
-    th {
-      background: #f5f5f5;
-      position: sticky;
-      top: 0;
-      z-index: 1;
-    }
+    table { border-collapse: collapse; width: 100%; background: #fff; }
+    th, td { border: 1px solid var(--border); padding: 8px; text-align: right; vertical-align: top; }
+    th { background: #f5f5f5; position: sticky; top: 0; z-index: 1; }
     td:first-child, th:first-child { text-align: left; }
-    tr.ok { background: var(--ok); }
-    tr.warn { background: var(--warn); }
-    tr.bad { background: var(--bad); }
+    tr.ok { background: var(--ok); } tr.warn { background: var(--warn); } tr.bad { background: var(--bad); }
     .muted { color: var(--muted); font-size: 0.92rem; }
     .emoji { margin-right: 0.35rem; }
     @media (max-width: 720px) {
       td, th { font-size: 0.9rem; padding: 6px; }
       input[type="number"] { width: 8rem; }
+      input[type="text"] { width: 4rem; }
     }
   </style>
 </head>
@@ -73,25 +44,27 @@
   <h1>Poker Bankroll Ladder</h1>
 
   <div class="row">
-    <label for="bankroll">Bankroll</label>
+    <label for="currency">Currency</label>
+    <input id="currency" type="text" value="$" maxlength="4" aria-label="Currency symbol" />
+    <label for="bankroll" id="bankrollLabel">Bankroll ($)</label>
     <input id="bankroll" type="number" value="900" min="0" step="50" />
     <button id="run" type="button">
       <span class="emoji" aria-hidden="true">🚀</span>Compute
     </button>
-    <span class="muted">
-      Shot = 12 BI, Move-down = 10 BI, Shot size = 2 BI
-    </span>
+    <span class="muted">Shot = 12 BI, Move-down = 10 BI, Shot size = 2 BI</span>
   </div>
 
   <div id="goal"></div>
   <table id="tbl" aria-describedby="tableHelp"></table>
   <p id="tableHelp" class="muted">
-    Status shows readiness at each stake; emojis are decorative and not read
-    by screen readers.
+    Status shows readiness at each stake; emojis are decorative and not read by screen readers.
   </p>
 
   <script>
-    // Core settings
+    // Currency symbol (editable by user)
+    let CURRENCY = "$";
+
+    // Core ladder settings
     const LIMITS = [2,5,10,25,50,100,200,500,1000,2000,5000];
     const SHOT_START_BI = 12;
     const MOVE_DOWN_BI  = 10;
@@ -104,10 +77,172 @@
       bad:  { char: "⛔", label: "below move-down" }
     };
 
+    function setCurrencySymbol(sym) {
+      const clean = (sym || "").trim();
+      CURRENCY = clean.length ? clean : "$";
+      document.getElementById("bankrollLabel").textContent = `Bankroll (${CURRENCY})`;
+    }
+
     function computeRows(bankroll) {
       return LIMITS.map(nl => {
         const buyin = nl; // 100bb full buy-in equals NL
         const shotStart = SHOT_START_BI * buyin;
         const moveDown  = MOVE_DOWN_BI  * buyin;
         const shotSize  = SHOT_SIZE_BI  * buyin;
-        const currentBI = bankroll /
+        const currentBI = bankroll / buyin;
+
+        const status = currentBI >= SHOT_START_BI
+          ? "Shot-OK"
+          : currentBI >= MOVE_DOWN_BI
+            ? "Between 10–12 BI"
+            : "Below move-down";
+
+        const shortfall = Math.max(0, shotStart - bankroll);
+        return {
+          limit: `NL${nl}`,
+          buyin,
+          shotStart,
+          moveDown,
+          shotSize,
+          currentBI: currentBI.toFixed(2),
+          status,
+          shortfall,
+          shortfallBI: (shortfall ? (shortfall / buyin) : 0).toFixed(2)
+        };
+      });
+    }
+
+    function nextTarget(bankroll) {
+      for (const nl of LIMITS) {
+        const need = SHOT_START_BI * nl - bankroll;
+        if (need > 0) return { limit: `NL${nl}`, need };
+      }
+      return null;
+    }
+
+    function rowClass(status) {
+      if (status === "Shot-OK") return "ok";
+      if (status.startsWith("Between")) return "warn";
+      return "bad";
+    }
+
+    function statusEmoji(status) {
+      const key = status === "Shot-OK"
+        ? "ok"
+        : status.startsWith("Between")
+          ? "warn"
+          : "bad";
+      const e = EMOJI[key];
+      const span = document.createElement("span");
+      span.className = "emoji";
+      span.setAttribute("aria-hidden", "true");
+      span.textContent = e.char;
+      return span;
+    }
+
+    function money(x) {
+      return `${CURRENCY}${Number(x).toFixed(0)}`;
+    }
+
+    function render(bankroll) {
+      const rows = computeRows(bankroll);
+      const tgt = nextTarget(bankroll);
+
+      // Goal line with emoji + currency
+      const goalDiv = document.getElementById("goal");
+      goalDiv.textContent = "";
+      const goalEmoji = document.createElement("span");
+      goalEmoji.className = "emoji";
+      goalEmoji.setAttribute("aria-hidden", "true");
+      goalEmoji.textContent = tgt ? "🎯" : "🏁";
+      const goalText = document.createElement("span");
+      goalText.textContent = tgt
+        ? `Next target: ${tgt.limit}. Need ${money(tgt.need)} more.`
+        : "Already at ≥12 BI for NL5000.";
+      goalDiv.append(goalEmoji, goalText);
+
+      // Build table with dynamic currency in headers
+      const tbl = document.getElementById("tbl");
+      tbl.innerHTML = "";
+
+      const headers = [
+        "Limit",
+        `Buy-in (${CURRENCY})`,
+        "Shot start (BI)",
+        `Shot start (${CURRENCY})`,
+        "Move down (BI)",
+        `Move down (${CURRENCY})`,
+        "Shot size (BI)",
+        `Shot size (${CURRENCY})`,
+        "Current BI",
+        "Status",
+        `Shortfall (${CURRENCY})`,
+        "Shortfall (BI)"
+      ];
+
+      const thead = document.createElement("thead");
+      const trh = document.createElement("tr");
+      headers.forEach(h => {
+        const th = document.createElement("th");
+        th.setAttribute("scope", "col");
+        th.textContent = h;
+        trh.appendChild(th);
+      });
+      thead.appendChild(trh);
+      tbl.appendChild(thead);
+
+      const tbody = document.createElement("tbody");
+      rows.forEach(r => {
+        const tr = document.createElement("tr");
+        tr.className = rowClass(r.status);
+
+        const cells = [
+          r.limit,
+          money(r.buyin),
+          SHOT_START_BI,
+          money(r.shotStart),
+          MOVE_DOWN_BI,
+          money(r.moveDown),
+          SHOT_SIZE_BI,
+          money(r.shotSize),
+          r.currentBI,
+          r.status,
+          money(r.shortfall),
+          r.shortfallBI
+        ];
+
+        cells.forEach((v, idx) => {
+          const td = document.createElement("td");
+          if (idx === 9) {
+            // Status cell with emoji + text
+            const em = statusEmoji(r.status);
+            td.appendChild(em);
+            td.appendChild(document.createTextNode(v));
+          } else {
+            td.textContent = v;
+          }
+          tr.appendChild(td);
+        });
+
+        tbody.appendChild(tr);
+      });
+
+      tbl.appendChild(tbody);
+    }
+
+    // Event handlers
+    document.getElementById("currency").addEventListener("input", (e) => {
+      setCurrencySymbol(e.target.value);
+    });
+
+    document.getElementById("run").addEventListener("click", () => {
+      const bankroll = parseFloat(document.getElementById("bankroll").value || "0");
+      render(bankroll);
+    });
+
+    // Initial setup
+    setCurrencySymbol(document.getElementById("currency").value);
+    render(900);
+  </script>
+</body>
+</html>
