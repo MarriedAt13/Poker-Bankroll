@@ -6,7 +6,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <style>
     :root {
-      --ok: #e8f5e9; --warn: #fff8e1; --bad: #ffebee; --border: #ddd; --muted: #666; --ink: #222;
+      --ok: #e8f5e9; --warn: #fff8e1; --bad: #ffebee;
+      --border: #ddd; --muted: #666; --ink: #222;
     }
     body {
       font-family:
@@ -14,16 +15,13 @@
         "Noto Color Emoji", "Apple Color Emoji", "Segoe UI Emoji",
         "EmojiOne Color", "Android Emoji",
         sans-serif;
-      margin: 2rem;
-      color: var(--ink);
-      background: #fff;
+      margin: 2rem; color: var(--ink); background: #fff;
     }
     h1 { margin: 0 0 1rem 0; }
-    .row {
-      display: flex; gap: 0.5rem; align-items: center; margin-bottom: 1rem; flex-wrap: wrap;
-    }
-    input[type="number"] { padding: 0.4rem 0.6rem; width: 10rem; }
-    input[type="text"] { padding: 0.4rem 0.6rem; width: 5rem; text-align: center; }
+    .row { display: flex; gap: 0.5rem; align-items: center; margin-bottom: 1rem; flex-wrap: wrap; }
+    select, input[type="number"] { padding: 0.4rem 0.6rem; }
+    input[type="number"] { width: 10rem; }
+    select { min-width: 10rem; }
     button { padding: 0.45rem 0.8rem; cursor: pointer; }
     #goal { margin: 1rem 0; font-weight: 600; }
     table { border-collapse: collapse; width: 100%; background: #fff; }
@@ -36,7 +34,7 @@
     @media (max-width: 720px) {
       td, th { font-size: 0.9rem; padding: 6px; }
       input[type="number"] { width: 8rem; }
-      input[type="text"] { width: 4rem; }
+      select { min-width: 8rem; }
     }
   </style>
 </head>
@@ -45,22 +43,32 @@
 
   <div class="row">
     <label for="currency">Currency</label>
-    <input id="currency" type="text" value="$" maxlength="4" aria-label="Currency symbol" />
+    <select id="currency" aria-label="Currency symbol">
+      <option value="$" selected>USD ($)</option>
+      <option value="C$">CAD (C$)</option>
+      <option value="A$">AUD (A$)</option>
+      <option value="£">Pound (£)</option>
+      <option value="€">Euro (€)</option>
+    </select>
+
     <label for="bankroll" id="bankrollLabel">Bankroll ($)</label>
     <input id="bankroll" type="number" value="900" min="0" step="50" />
+
     <button id="run" type="button">
       <span class="emoji" aria-hidden="true">🚀</span>Compute
     </button>
+
     <span class="muted">Shot = 12 BI, Move-down = 10 BI, Shot size = 2 BI</span>
   </div>
 
   <div id="goal"></div>
   <table id="tbl" aria-describedby="tableHelp"></table>
   <p id="tableHelp" class="muted">
+    Status shows readiness at each stake; emojis are decorative and not read by screen readers.
   </p>
 
   <script>
-    // Currency symbol (editable by user)
+    // Currency symbol/prefix (from dropdown)
     let CURRENCY = "$";
 
     // Core ladder settings
@@ -230,8 +238,10 @@
     }
 
     // Event handlers
-    document.getElementById("currency").addEventListener("input", (e) => {
+    document.getElementById("currency").addEventListener("change", (e) => {
       setCurrencySymbol(e.target.value);
+      const bankroll = parseFloat(document.getElementById("bankroll").value || "0");
+      render(bankroll);
     });
 
     document.getElementById("run").addEventListener("click", () => {
