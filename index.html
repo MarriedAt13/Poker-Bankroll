@@ -1,0 +1,122 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Poker Bankroll Ladder</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    :root {
+      --ok: #e8f5e9; --warn: #fff8e1; --bad: #ffebee; --border: #ddd; --muted: #666;
+    }
+    body { font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif; margin: 2rem; }
+    h1 { margin: 0 0 1rem 0; }
+    .row { display: flex; gap: 0.5rem; align-items: center; margin-bottom: 1rem; }
+    input[type="number"] { padding: 0.4rem 0.6rem; width: 10rem; }
+    button { padding: 0.45rem 0.8rem; cursor: pointer; }
+    #goal { margin: 1rem 0; font-weight: 600; }
+    table { border-collapse: collapse; width: 100%; }
+    th, td { border: 1px solid var(--border); padding: 8px; text-align: right; }
+    th { background: #f5f5f5; position: sticky; top: 0; }
+    td:first-child, th:first-child { text-align: left; }
+    tr.ok { background: var(--ok); } tr.warn { background: var(--warn); } tr.bad { background: var(--bad); }
+    .muted { color: var(--muted); font-size: 0.92rem; }
+    @media (max-width: 720px) {
+      td, th { font-size: 0.9rem; padding: 6px; } input[type="number"] { width: 8rem; }
+    }
+  </style>
+</head>
+<body>
+  <h1>Poker Bankroll Ladder</h1>
+  <div class="row">
+    <label for="bankroll">Bankroll (CAD)</label>
+    <input id="bankroll" type="number" value="900" min="0" step="50" />
+    <button id="run">Compute</button>
+    <span class="muted">Shot = 12 BI, Move-down = 10 BI, Shot size = 2 BI</span>
+  </div>
+
+  <div id="goal"></div>
+  <table id="tbl"></table>
+
+  <script>
+    const LIMITS = [2,5,10,25,50,100,200,500,1000,2000,5000];
+    const SHOT_START_BI = 12, MOVE_DOWN_BI = 10, SHOT_SIZE_BI = 2;
+
+    function computeRows(bankroll) {
+      return LIMITS.map(nl => {
+        const buyin = nl;
+        const shotStart = SHOT_START_BI * buyin;
+        const moveDown  = MOVE_DOWN_BI  * buyin;
+        const shotSize  = SHOT_SIZE_BI  * buyin;
+        const currentBI = bankroll / buyin;
+        const status = currentBI >= SHOT_START_BI
+          ? "Shot-OK"
+          : currentBI >= MOVE_DOWN_BI ? "Between 10–12 BI" : "Below move-down";
+        const shortfall = Math.max(0, shotStart - bankroll);
+        return {
+          limit: `NL${nl}`,
+          buyin, shotStart, moveDown, shotSize,
+          currentBI: currentBI.toFixed(2),
+          status, shortfall,
+          shortfallBI: (shortfall ? (shortfall / buyin) : 0).toFixed(2)
+        };
+      });
+    }
+
+    function nextTarget(bankroll) {
+      for (const nl of LIMITS) {
+        const need = SHOT_START_BI * nl - bankroll;
+        if (need > 0) return { limit: `NL${nl}`, need };
+      }
+      return null;
+    }
+
+    function rowClass(status) {
+      if (status === "Shot-OK") return "ok";
+      if (status.startsWith("Between")) return "warn";
+      return "bad";
+    }
+
+    function render(bankroll) {
+      const rows = computeRows(bankroll);
+      const tgt = nextTarget(bankroll);
+      const goalDiv = document.getElementById("goal");
+      goalDiv.textContent = tgt
+        ? `Next target: ${tgt.limit}. Need CAD$${tgt.need.toFixed(0)} more.`
+        : "Already at ≥12 BI for NL5000.";
+      const tbl = document.getElementById("tbl");
+      tbl.innerHTML = "";
+      const headers = [
+        "Limit","BuyIn","ShotStart_BI","ShotStart_$",
+        "MoveDown_BI","MoveDown_$","ShotSize_BI","ShotSize_$",
+        "Current_BI","Status","Shortfall_$","Shortfall_BI"
+      ];
+      const thead = document.createElement("thead");
+      const trh = document.createElement("tr");
+      headers.forEach(h => { const th = document.createElement("th"); th.textContent = h; trh.appendChild(th); });
+      thead.appendChild(trh);
+      tbl.appendChild(thead);
+
+      const tbody = document.createElement("tbody");
+      rows.forEach(r => {
+        const tr = document.createElement("tr");
+        tr.className = rowClass(r.status);
+        const cells = [
+          r.limit, `CAD$${r.buyin}`, SHOT_START_BI, `CAD$${r.shotStart}`,
+          MOVE_DOWN_BI, `CAD$${r.moveDown}`, SHOT_SIZE_BI, `CAD$${r.shotSize}`,
+          r.currentBI, r.status, `CAD$${r.shortfall.toFixed(0)}`, r.shortfallBI
+        ];
+        cells.forEach(v => { const td = document.createElement("td"); td.textContent = v; tr.appendChild(td); });
+        tbody.appendChild(tr);
+      });
+      tbl.appendChild(tbody);
+    }
+
+    document.getElementById("run").addEventListener("click", () => {
+      const bankroll = parseFloat(document.getElementById("bankroll").value || "0");
+      render(bankroll);
+    });
+
+    render(900);
+  </script>
+</body>
+</html>
