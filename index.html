@@ -73,7 +73,7 @@
   <h1>Poker Bankroll Ladder</h1>
 
   <div class="row">
-    <label for="bankroll">Bankroll (CAD)</label>
+    <label for="bankroll">Bankroll ($)</label>
     <input id="bankroll" type="number" value="900" min="0" step="50" />
     <button id="run" type="button">
       <span class="emoji" aria-hidden="true">🚀</span>Compute
@@ -91,6 +91,9 @@
   </p>
 
   <script>
+    // Currency symbol centralized here
+    const CURRENCY = "$";
+
     // Core settings
     const LIMITS = [2,5,10,25,50,100,200,500,1000,2000,5000];
     const SHOT_START_BI = 12;
@@ -161,6 +164,10 @@
       return span;
     }
 
+    function money(x) {
+      return `${CURRENCY}${Number(x).toFixed(0)}`;
+    }
+
     function render(bankroll) {
       const rows = computeRows(bankroll);
       const tgt = nextTarget(bankroll);
@@ -174,7 +181,7 @@
       goalEmoji.textContent = tgt ? "🎯" : "🏁";
       const goalText = document.createElement("span");
       goalText.textContent = tgt
-        ? `Next target: ${tgt.limit}. Need CAD$${tgt.need.toFixed(0)} more.`
+        ? `Next target: ${tgt.limit}. Need ${money(tgt.need)} more.`
         : "Already at ≥12 BI for NL5000.";
       goalDiv.append(goalEmoji, goalText);
 
@@ -184,16 +191,16 @@
 
       const headers = [
         "Limit",
-        "Buy-in (CAD)",
+        "Buy-in ($)",
         "Shot start (BI)",
-        "Shot start (CAD)",
+        "Shot start ($)",
         "Move down (BI)",
-        "Move down (CAD)",
+        "Move down ($)",
         "Shot size (BI)",
-        "Shot size (CAD)",
+        "Shot size ($)",
         "Current BI",
         "Status",
-        "Shortfall (CAD)",
+        "Shortfall ($)",
         "Shortfall (BI)"
       ];
 
@@ -215,45 +222,24 @@
 
         const cells = [
           r.limit,
-          `CAD$${r.buyin}`,
+          money(r.buyin),
           SHOT_START_BI,
-          `CAD$${r.shotStart}`,
+          money(r.shotStart),
           MOVE_DOWN_BI,
-          `CAD$${r.moveDown}`,
+          money(r.moveDown),
           SHOT_SIZE_BI,
-          `CAD$${r.shotSize}`,
+          money(r.shotSize),
           r.currentBI,
           r.status,
-          `CAD$${r.shortfall.toFixed(0)}`,
+          money(r.shortfall),
           r.shortfallBI
         ];
 
         cells.forEach((v, idx) => {
           const td = document.createElement("td");
           if (idx === 9) {
-            // Status cell with emoji + text
-            const em = statusEmoji(r.status);
-            td.appendChild(em);
-            td.appendChild(document.createTextNode(v));
-          } else {
-            td.textContent = v;
-          }
-          tr.appendChild(td);
-        });
+            // Status cell with emoji
 
-        tbody.appendChild(tr);
-      });
-
-      tbl.appendChild(tbody);
-    }
-
-    document.getElementById("run").addEventListener("click", () => {
-      const bankroll =
-        parseFloat(document.getElementById("bankroll").value || "0");
-      render(bankroll);
-    });
-
-    // Initial render
     render(900);
   </script>
 </body>
