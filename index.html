@@ -7,80 +7,39 @@
   <style>
     :root {
       --ok: #e8f5e9; --warn: #fff8e1; --bad: #ffebee; --border: #ddd; --muted: #666;
-      --ink: #222;
     }
-    body { font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif; margin: 0; color: var(--ink); }
-    header.hero { position: relative; overflow: clip; }
-    header .hero-img { width: 100%; height: auto; display: block; }
-    header .brand {
-      position: absolute; left: 1rem; bottom: 1rem; display: flex; gap: 0.5rem;
-      align-items: center; background: rgba(255,255,255,0.85); padding: 0.5rem 0.75rem; border-radius: 8px;
-    }
-    header .brand img { width: 28px; height: 28px; }
-    header .brand span { font-weight: 700; }
-    main { padding: 2rem; }
+    body { font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif; margin: 2rem; }
     h1 { margin: 0 0 1rem 0; }
-    .row { display: flex; gap: 0.5rem; align-items: center; margin-bottom: 1rem; flex-wrap: wrap; }
+    .row { display: flex; gap: 0.5rem; align-items: center; margin-bottom: 1rem; }
     input[type="number"] { padding: 0.4rem 0.6rem; width: 10rem; }
     button { padding: 0.45rem 0.8rem; cursor: pointer; }
     #goal { margin: 1rem 0; font-weight: 600; }
     table { border-collapse: collapse; width: 100%; }
-    th, td { border: 1px solid var(--border); padding: 8px; text-align: right; vertical-align: top; }
-    th { background: #f5f5f5; position: sticky; top: 0; z-index: 1; }
+    th, td { border: 1px solid var(--border); padding: 8px; text-align: right; }
+    th { background: #f5f5f5; position: sticky; top: 0; }
     td:first-child, th:first-child { text-align: left; }
     tr.ok { background: var(--ok); } tr.warn { background: var(--warn); } tr.bad { background: var(--bad); }
     .muted { color: var(--muted); font-size: 0.92rem; }
-    .emoji { margin-right: 0.35rem; }
     @media (max-width: 720px) {
-      td, th { font-size: 0.9rem; padding: 6px; }
-      input[type="number"] { width: 8rem; }
+      td, th { font-size: 0.9rem; padding: 6px; } input[type="number"] { width: 8rem; }
     }
   </style>
 </head>
 <body>
-  <!-- Hero image: replace src files after adding to /assets -->
-  <header class="hero" aria-label="Poker chips and cards banner">
-    <img class="hero-img"
-         src="assets/hero-800.jpg"
-         srcset="assets/hero-800.jpg 800w, assets/hero-1600.jpg 1600w"
-         sizes="100vw"
-         width="1600" height="400"
-         alt="Playing cards and poker chips on green felt"
-         decoding="async" />
-    <div class="brand">
-      <img src="assets/logo.png" alt="" width="28" height="28" loading="lazy" decoding="async" />
-      <span>Poker Bankroll Ladder</span>
-    </div>
-  </header>
+  <h1>Poker Bankroll Ladder</h1>
+  <div class="row">
+    <label for="bankroll">Bankroll (CAD)</label>
+    <input id="bankroll" type="number" value="900" min="0" step="50" />
+    <button id="run">Compute</button>
+    <span class="muted">Shot = 12 BI, Move-down = 10 BI, Shot size = 2 BI</span>
+  </div>
 
-  <main>
-    <h1>Poker Bankroll Ladder</h1>
-    <div class="row">
-      <label for="bankroll">Bankroll (CAD)</label>
-      <input id="bankroll" type="number" value="900" min="0" step="50" />
-      <button id="run" type="button">
-        <span class="emoji" aria-hidden="true">🚀</span>Compute
-      </button>
-      <span class="muted">Shot = 12 BI, Move-down = 10 BI, Shot size = 2 BI</span>
-    </div>
-
-    <div id="goal"></div>
-    <table id="tbl" aria-describedby="tableHelp"></table>
-    <p id="tableHelp" class="muted">
-      Status shows readiness at each stake; emojis are decorative and not read by screen readers.
-    </p>
-  </main>
+  <div id="goal"></div>
+  <table id="tbl"></table>
 
   <script>
     const LIMITS = [2,5,10,25,50,100,200,500,1000,2000,5000];
     const SHOT_START_BI = 12, MOVE_DOWN_BI = 10, SHOT_SIZE_BI = 2;
-
-    // Emoji map with aria-label text if you want screen readers to announce the emoji.
-    const EMOJI = {
-      ok:   { char: "✅", label: "shot ready" },
-      warn: { char: "⚠️", label: "close to shot" },
-      bad:  { char: "⛔", label: "below move-down" }
-    };
 
     function computeRows(bankroll) {
       return LIMITS.map(nl => {
@@ -120,35 +79,18 @@
       return "bad";
     }
 
-    function statusEmoji(status) {
-      const key = status === "Shot-OK" ? "ok" : status.startsWith("Between") ? "warn" : "bad";
-      const e = EMOJI[key];
-      // Decorative emoji: aria-hidden so it isn't read twice (text remains).
-      const span = document.createElement("span");
-      span.className = "emoji";
-      span.setAttribute("aria-hidden", "true");
-      span.textContent = e.char;
-      return span;
-    }
-
     function render(bankroll) {
       const rows = computeRows(bankroll);
       const tgt = nextTarget(bankroll);
       const goalDiv = document.getElementById("goal");
-      goalDiv.textContent = "";
-      const goalEmoji = document.createElement("span");
-      goalEmoji.className = "emoji";
-      goalEmoji.setAttribute("aria-hidden", "true");
-      goalEmoji.textContent = tgt ? "🎯" : "🏁";
-      const goalText = document.createElement("span");
-      goalText.textContent = tgt
+      goalDiv.textContent = tgt
         ? `Next target: ${tgt.limit}. Need CAD$${tgt.need.toFixed(0)} more.`
         : "Already at ≥12 BI for NL5000.";
-      goalDiv.append(goalEmoji, goalText);
 
       const tbl = document.getElementById("tbl");
       tbl.innerHTML = "";
 
+      // Friendlier column headers
       const headers = [
         "Limit",
         "Buy-in (CAD)",
@@ -193,15 +135,9 @@
           `CAD$${r.shortfall.toFixed(0)}`,
           r.shortfallBI
         ];
-        cells.forEach((v, idx) => {
+        cells.forEach(v => {
           const td = document.createElement("td");
-          if (idx === 9) {
-            const em = statusEmoji(r.status);
-            td.appendChild(em);
-            td.appendChild(document.createTextNode(v));
-          } else {
-            td.textContent = v;
-          }
+          td.textContent = v;
           tr.appendChild(td);
         });
         tbody.appendChild(tr);
@@ -214,7 +150,7 @@
       render(bankroll);
     });
 
-    // Initial render
+    // Initial render with default bankroll
     render(900);
   </script>
 </body>
