@@ -22,10 +22,10 @@
     .stack { display: grid; gap: 0.5rem; }
     label { font-weight: 600; }
     select, input[type="number"], input[type="text"] {
-      padding: 0.4rem 0.6rem; border: 1px solid var(--border);
-      border-radius: 6px;
+      padding: 0.4rem 0.6rem; border: 1px solid var(--border); border-radius: 6px;
     }
     input[type="number"] { width: 10rem; }
+    input[readonly] { background: #fafafa; color: #444; }
     select { min-width: 10rem; }
     button {
       padding: 0.5rem 0.9rem; border: 1px solid #ccc; border-radius: 6px;
@@ -86,16 +86,15 @@
       </div>
 
       <div class="stack">
-        <label for="moveDown">Move down (buy-ins)</label>
-        <input id="moveDown" type="number" value="10" min="1" step="1" />
-        <span class="muted">Example: 10 means move down if the bankroll falls to 10 buy-ins
-          for that upper limit.</span>
-      </div>
-
-      <div class="stack">
         <label for="shotSize">Shot size (buy-ins)</label>
         <input id="shotSize" type="number" value="2" min="1" step="1" />
         <span class="muted">Example: 2 means risk 2 buy-ins per shot attempt.</span>
+      </div>
+
+      <div class="stack">
+        <label for="moveDownDisplay">Move down (buy-ins)</label>
+        <input id="moveDownDisplay" type="number" value="10" readonly />
+        <span class="muted">Derived: Move down = Shot start − Shot size.</span>
       </div>
     </div>
 
@@ -107,6 +106,7 @@
         <span class="emoji" aria-hidden="true">➡️</span>Continue
       </button>
       <span class="muted">
+        Tip: Shot size must be less than Shot start (so the derived move-down is positive).
       </span>
     </div>
   </section>
@@ -119,6 +119,7 @@
     <div id="goal"></div>
     <table id="tbl" aria-describedby="tableHelp"></table>
     <p id="tableHelp" class="muted">
+      Status shows readiness at each stake; emojis are decorative and not read by screen readers.
     </p>
 
     <div class="row">
@@ -135,8 +136,8 @@
     // State (updated from Step 1)
     let CURRENCY = "$";
     let SHOT_START_BI = 12;
-    let MOVE_DOWN_BI = 10;
     let SHOT_SIZE_BI = 2;
+    let MOVE_DOWN_BI = SHOT_START_BI - SHOT_SIZE_BI; // derived
 
     // Stakes ladder
     const LIMITS = [2, 5, 10, 25, 50, 100, 200, 500, 1000, 2000, 5000];
@@ -159,25 +160,30 @@
       $("bankrollLabel").textContent = `Bankroll (${CURRENCY})`;
     }
 
+    function updateDerivedMoveDownDisplay() {
+      const shotStart = parseInt($("shotStart").value || "0", 10);
+      const shotSize  = parseInt($("shotSize").value  || "0", 10);
+      const derived = shotStart - shotSize;
+      $("moveDownDisplay").value = Number.isFinite(derived) ? Math.max(0, derived) : 0;
+    }
+
     function money(x) {
       return `${CURRENCY}${Number(x).toFixed(0)}`;
     }
 
     function validateInputs() {
       const errors = [];
-      const bankroll = parseFloat($("bankroll").value || "0");
+      const bankroll  = parseFloat($("bankroll").value || "0");
       const shotStart = parseInt($("shotStart").value || "0", 10);
-      const moveDown  = parseInt($("moveDown").value || "0", 10);
-      const shotSize  = parseInt($("shotSize").value || "0", 10);
+      const shotSize  = parseInt($("shotSize").value  || "0", 10);
 
       if (!(bankroll >= 0)) errors.push("Bankroll must be a number ≥ 0.");
       if (!(shotStart >= 1)) errors.push("Shot start must be at least 1 BI.");
-      if (!(moveDown >= 1)) errors.push("Move down must be at least 1 BI.");
       if (!(shotSize >= 1)) errors.push("Shot size must be at least 1 BI.");
-      if (shotStart <= moveDown) {
-        errors.push("Move down must be less than Shot start.");
+      if (shotSize >= shotStart) {
+        errors.push("Shot size must be less than Shot start.");
       }
-      return { ok: errors.length === 0, errors };
+      return { ok: errors.length === 0, errors, bankroll, shotStart, shotSize };
     }
 
     function computeRows(bankroll) {
@@ -188,10 +194,11 @@
         const shotSizeAmt  = SHOT_SIZE_BI  * buyin;
         const currentBI = bankroll / buyin;
 
+        const betweenLabel = `Between ${MOVE_DOWN_BI}\u2013${SHOT_START_BI} BI`;
         const status = currentBI >= SHOT_START_BI
           ? "Shot-OK"
           : currentBI >= MOVE_DOWN_BI
-            ? "Between move up and down" // label remains generic; logic uses chosen numbers
+            ? betweenLabel
             : "Below move-down";
 
         const shortfall = Math.max(0, shotStartAmt - bankroll);
@@ -244,7 +251,7 @@
       // Summary of settings
       $("summary").textContent =
         `Currency: ${CURRENCY} | Shot start: ${SHOT_START_BI} BI | ` +
-        `Move down: ${MOVE_DOWN_BI} BI | Shot size: ${SHOT_SIZE_BI} BI`;
+        `Shot size: ${SHOT_SIZE_BI} BI | Move down: ${MOVE_DOWN_BI} BI (derived)`;
 
       // Goal line
       const goalDiv = $("goal");
@@ -256,7 +263,7 @@
       const goalText = document.createElement("span");
       goalText.textContent = tgt
         ? `Next target: ${tgt.limit}. Need ${money(tgt.need)} more.`
-        : "Already at ≥ chosen shot-start BI for the top listed stake.";
+        : `Already at ≥ ${SHOT_START_BI} BI for the top listed stake.`;
       goalDiv.append(goalEmoji, goalText);
 
       // Table
@@ -327,11 +334,14 @@
       tbl.appendChild(tbody);
     }
 
-    // Navigation handlers
+    // Live derived display while editing step 1
+    $("shotStart").addEventListener("input", updateDerivedMoveDownDisplay);
+    $("shotSize").addEventListener("input", updateDerivedMoveDownDisplay);
     $("currency").addEventListener("change", (e) => {
       setCurrencySymbol(e.target.value);
     });
 
+    // Navigation handlers
     $("continue").addEventListener("click", () => {
       const v = validateInputs();
       const box = $("errorBox");
@@ -344,9 +354,9 @@
 
       // Apply settings
       setCurrencySymbol($("currency").value);
-      SHOT_START_BI = parseInt($("shotStart").value, 10);
-      MOVE_DOWN_BI  = parseInt($("moveDown").value, 10);
-      SHOT_SIZE_BI  = parseInt($("shotSize").value, 10);
+      SHOT_START_BI = v.shotStart;
+      SHOT_SIZE_BI  = v.shotSize;
+      MOVE_DOWN_BI  = SHOT_START_BI - SHOT_SIZE_BI; // derived and guaranteed > 0 by validation
 
       // Go to step 2
       hide($("step1"));
@@ -367,6 +377,7 @@
 
     // Initialize
     setCurrencySymbol($("currency").value);
+    updateDerivedMoveDownDisplay();
   </script>
 </body>
 </html>
