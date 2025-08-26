@@ -7,7 +7,7 @@
   <style>
     :root {
       --ok: #e8f5e9; --warn: #fff8e1; --bad: #ffebee;
-      --border: #ddd; --muted: #666; --ink: #222;
+      --border: #ddd; --muted: #666; --ink: #222; --err: #b00020;
     }
     body {
       font-family:
@@ -17,99 +17,192 @@
         sans-serif;
       margin: 2rem; color: var(--ink); background: #fff;
     }
-    h1 { margin: 0 0 1rem 0; }
-    .row { display: flex; gap: 0.5rem; align-items: center; margin-bottom: 1rem; flex-wrap: wrap; }
-    select, input[type="number"] { padding: 0.4rem 0.6rem; }
+    h1, h2 { margin: 0 0 1rem 0; }
+    .row { display: flex; gap: 0.75rem; align-items: center; flex-wrap: wrap; }
+    .stack { display: grid; gap: 0.5rem; }
+    label { font-weight: 600; }
+    select, input[type="number"], input[type="text"] {
+      padding: 0.4rem 0.6rem; border: 1px solid var(--border);
+      border-radius: 6px;
+    }
     input[type="number"] { width: 10rem; }
     select { min-width: 10rem; }
-    button { padding: 0.45rem 0.8rem; cursor: pointer; }
-    #goal { margin: 1rem 0; font-weight: 600; }
+    button {
+      padding: 0.5rem 0.9rem; border: 1px solid #ccc; border-radius: 6px;
+      background: #f7f7f7; cursor: pointer;
+    }
+    button.primary { background: #0f62fe; color: #fff; border-color: #0f62fe; }
+    button.ghost { background: transparent; }
+    .muted { color: var(--muted); font-size: 0.92rem; }
+    .emoji { margin-right: 0.35rem; }
+    .error { color: var(--err); font-weight: 600; }
+    .panel { border: 1px solid var(--border); border-radius: 10px; padding: 1rem; }
+    .space { height: 1rem; }
     table { border-collapse: collapse; width: 100%; background: #fff; }
     th, td { border: 1px solid var(--border); padding: 8px; text-align: right; vertical-align: top; }
     th { background: #f5f5f5; position: sticky; top: 0; z-index: 1; }
     td:first-child, th:first-child { text-align: left; }
     tr.ok { background: var(--ok); } tr.warn { background: var(--warn); } tr.bad { background: var(--bad); }
-    .muted { color: var(--muted); font-size: 0.92rem; }
-    .emoji { margin-right: 0.35rem; }
-    @media (max-width: 720px) {
-      td, th { font-size: 0.9rem; padding: 6px; }
+    #goal { margin: 1rem 0; font-weight: 600; }
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+    .hidden { display: none; }
+    @media (max-width: 900px) {
+      .grid-2 { grid-template-columns: 1fr; }
       input[type="number"] { width: 8rem; }
       select { min-width: 8rem; }
+      td, th { font-size: 0.9rem; padding: 6px; }
     }
   </style>
 </head>
 <body>
   <h1>Poker Bankroll Ladder</h1>
 
-  <div class="row">
-    <label for="currency">Currency</label>
-    <select id="currency" aria-label="Currency symbol">
-      <option value="$" selected>USD ($)</option>
-      <option value="C$">CAD (C$)</option>
-      <option value="A$">AUD (A$)</option>
-      <option value="£">Pound (£)</option>
-      <option value="€">Euro (€)</option>
-    </select>
+  <!-- Step 1: Settings -->
+  <section id="step1" class="panel">
+    <h2>Choose settings</h2>
+    <div class="space"></div>
 
-    <label for="bankroll" id="bankrollLabel">Bankroll ($)</label>
-    <input id="bankroll" type="number" value="900" min="0" step="50" />
+    <div class="grid-2">
+      <div class="stack">
+        <label for="currency">Currency</label>
+        <select id="currency" aria-label="Currency symbol">
+          <option value="$" selected>USD ($)</option>
+          <option value="C$">CAD (C$)</option>
+          <option value="A$">AUD (A$)</option>
+          <option value="£">Pound (£)</option>
+          <option value="€">Euro (€)</option>
+        </select>
+      </div>
 
-    <button id="run" type="button">
-      <span class="emoji" aria-hidden="true">🚀</span>Compute
-    </button>
+      <div class="stack">
+        <label for="bankroll" id="bankrollLabel">Bankroll ($)</label>
+        <input id="bankroll" type="number" value="900" min="0" step="50" />
+      </div>
 
-    <span class="muted">Shot = 12 BI, Move-down = 10 BI, Shot size = 2 BI</span>
-  </div>
+      <div class="stack">
+        <label for="shotStart">Shot start (buy-ins)</label>
+        <input id="shotStart" type="number" value="12" min="1" step="1" />
+        <span class="muted">Example: 12 means start shots at 12 buy-ins for the target limit.</span>
+      </div>
 
-  <div id="goal"></div>
-  <table id="tbl" aria-describedby="tableHelp"></table>
-  <p id="tableHelp" class="muted">
-  </p>
+      <div class="stack">
+        <label for="moveDown">Move down (buy-ins)</label>
+        <input id="moveDown" type="number" value="10" min="1" step="1" />
+        <span class="muted">Example: 10 means move down if the bankroll falls to 10 buy-ins
+          for that upper limit.</span>
+      </div>
+
+      <div class="stack">
+        <label for="shotSize">Shot size (buy-ins)</label>
+        <input id="shotSize" type="number" value="2" min="1" step="1" />
+        <span class="muted">Example: 2 means risk 2 buy-ins per shot attempt.</span>
+      </div>
+    </div>
+
+    <div id="errorBox" class="error hidden"></div>
+    <div class="space"></div>
+
+    <div class="row">
+      <button id="continue" class="primary" type="button">
+        <span class="emoji" aria-hidden="true">➡️</span>Continue
+      </button>
+      <span class="muted">
+        Tip: Move-down should be less than Shot start to keep risk in check.
+      </span>
+    </div>
+  </section>
+
+  <!-- Step 2: Results -->
+  <section id="step2" class="panel hidden">
+    <h2>Results</h2>
+    <div id="summary" class="muted"></div>
+
+    <div id="goal"></div>
+    <table id="tbl" aria-describedby="tableHelp"></table>
+    <p id="tableHelp" class="muted">
+      Status shows readiness at each stake; emojis are decorative and not read by screen readers.
+    </p>
+
+    <div class="row">
+      <button id="back" class="ghost" type="button">
+        <span class="emoji" aria-hidden="true">⬅️</span>Back
+      </button>
+      <button id="recompute" class="primary" type="button">
+        <span class="emoji" aria-hidden="true">🔁</span>Recompute
+      </button>
+    </div>
+  </section>
 
   <script>
-    // Currency symbol/prefix (from dropdown)
+    // State (updated from Step 1)
     let CURRENCY = "$";
+    let SHOT_START_BI = 12;
+    let MOVE_DOWN_BI = 10;
+    let SHOT_SIZE_BI = 2;
 
-    // Core ladder settings
-    const LIMITS = [2,5,10,25,50,100,200,500,1000,2000,5000];
-    const SHOT_START_BI = 12;
-    const MOVE_DOWN_BI  = 10;
-    const SHOT_SIZE_BI  = 2;
+    // Stakes ladder
+    const LIMITS = [2, 5, 10, 25, 50, 100, 200, 500, 1000, 2000, 5000];
 
-    // Emoji mapping (decorative by default; text conveys meaning)
+    // Emoji (decorative; text conveys the meaning)
     const EMOJI = {
       ok:   { char: "✅", label: "shot ready" },
       warn: { char: "⚠️", label: "close to shot" },
       bad:  { char: "⛔", label: "below move-down" }
     };
 
+    // UI helpers
+    const $ = (id) => document.getElementById(id);
+    const hide = (el) => el.classList.add("hidden");
+    const show = (el) => el.classList.remove("hidden");
+
     function setCurrencySymbol(sym) {
       const clean = (sym || "").trim();
       CURRENCY = clean.length ? clean : "$";
-      document.getElementById("bankrollLabel").textContent = `Bankroll (${CURRENCY})`;
+      $("bankrollLabel").textContent = `Bankroll (${CURRENCY})`;
+    }
+
+    function money(x) {
+      return `${CURRENCY}${Number(x).toFixed(0)}`;
+    }
+
+    function validateInputs() {
+      const errors = [];
+      const bankroll = parseFloat($("bankroll").value || "0");
+      const shotStart = parseInt($("shotStart").value || "0", 10);
+      const moveDown  = parseInt($("moveDown").value || "0", 10);
+      const shotSize  = parseInt($("shotSize").value || "0", 10);
+
+      if (!(bankroll >= 0)) errors.push("Bankroll must be a number ≥ 0.");
+      if (!(shotStart >= 1)) errors.push("Shot start must be at least 1 BI.");
+      if (!(moveDown >= 1)) errors.push("Move down must be at least 1 BI.");
+      if (!(shotSize >= 1)) errors.push("Shot size must be at least 1 BI.");
+      if (shotStart <= moveDown) {
+        errors.push("Move down must be less than Shot start.");
+      }
+      return { ok: errors.length === 0, errors };
     }
 
     function computeRows(bankroll) {
-      return LIMITS.map(nl => {
+      return LIMITS.map((nl) => {
         const buyin = nl; // 100bb full buy-in equals NL
-        const shotStart = SHOT_START_BI * buyin;
-        const moveDown  = MOVE_DOWN_BI  * buyin;
-        const shotSize  = SHOT_SIZE_BI  * buyin;
+        const shotStartAmt = SHOT_START_BI * buyin;
+        const moveDownAmt  = MOVE_DOWN_BI  * buyin;
+        const shotSizeAmt  = SHOT_SIZE_BI  * buyin;
         const currentBI = bankroll / buyin;
 
         const status = currentBI >= SHOT_START_BI
           ? "Shot-OK"
           : currentBI >= MOVE_DOWN_BI
-            ? "Between 10–12 BI"
+            ? "Between 10–12 BI" // label remains generic; logic uses chosen numbers
             : "Below move-down";
 
-        const shortfall = Math.max(0, shotStart - bankroll);
+        const shortfall = Math.max(0, shotStartAmt - bankroll);
         return {
           limit: `NL${nl}`,
           buyin,
-          shotStart,
-          moveDown,
-          shotSize,
+          shotStartAmt,
+          moveDownAmt,
+          shotSizeAmt,
           currentBI: currentBI.toFixed(2),
           status,
           shortfall,
@@ -146,16 +239,17 @@
       return span;
     }
 
-    function money(x) {
-      return `${CURRENCY}${Number(x).toFixed(0)}`;
-    }
-
-    function render(bankroll) {
+    function renderTable(bankroll) {
       const rows = computeRows(bankroll);
       const tgt = nextTarget(bankroll);
 
-      // Goal line with emoji + currency
-      const goalDiv = document.getElementById("goal");
+      // Summary of settings
+      $("summary").textContent =
+        `Currency: ${CURRENCY} | Shot start: ${SHOT_START_BI} BI | ` +
+        `Move down: ${MOVE_DOWN_BI} BI | Shot size: ${SHOT_SIZE_BI} BI`;
+
+      // Goal line
+      const goalDiv = $("goal");
       goalDiv.textContent = "";
       const goalEmoji = document.createElement("span");
       goalEmoji.className = "emoji";
@@ -164,21 +258,21 @@
       const goalText = document.createElement("span");
       goalText.textContent = tgt
         ? `Next target: ${tgt.limit}. Need ${money(tgt.need)} more.`
-        : "Already at ≥12 BI for NL5000.";
+        : "Already at ≥ chosen shot-start BI for the top listed stake.";
       goalDiv.append(goalEmoji, goalText);
 
-      // Build table with dynamic currency in headers
-      const tbl = document.getElementById("tbl");
+      // Table
+      const tbl = $("tbl");
       tbl.innerHTML = "";
 
       const headers = [
         "Limit",
         `Buy-in (${CURRENCY})`,
-        "Shot start (BI)",
+        `Shot start (BI)`,
         `Shot start (${CURRENCY})`,
-        "Move down (BI)",
+        `Move down (BI)`,
         `Move down (${CURRENCY})`,
-        "Shot size (BI)",
+        `Shot size (BI)`,
         `Shot size (${CURRENCY})`,
         "Current BI",
         "Status",
@@ -188,7 +282,7 @@
 
       const thead = document.createElement("thead");
       const trh = document.createElement("tr");
-      headers.forEach(h => {
+      headers.forEach((h) => {
         const th = document.createElement("th");
         th.setAttribute("scope", "col");
         th.textContent = h;
@@ -198,7 +292,7 @@
       tbl.appendChild(thead);
 
       const tbody = document.createElement("tbody");
-      rows.forEach(r => {
+      rows.forEach((r) => {
         const tr = document.createElement("tr");
         tr.className = rowClass(r.status);
 
@@ -206,11 +300,11 @@
           r.limit,
           money(r.buyin),
           SHOT_START_BI,
-          money(r.shotStart),
+          money(r.shotStartAmt),
           MOVE_DOWN_BI,
-          money(r.moveDown),
+          money(r.moveDownAmt),
           SHOT_SIZE_BI,
-          money(r.shotSize),
+          money(r.shotSizeAmt),
           r.currentBI,
           r.status,
           money(r.shortfall),
@@ -220,7 +314,6 @@
         cells.forEach((v, idx) => {
           const td = document.createElement("td");
           if (idx === 9) {
-            // Status cell with emoji + text
             const em = statusEmoji(r.status);
             td.appendChild(em);
             td.appendChild(document.createTextNode(v));
@@ -236,21 +329,46 @@
       tbl.appendChild(tbody);
     }
 
-    // Event handlers
-    document.getElementById("currency").addEventListener("change", (e) => {
+    // Navigation handlers
+    $("currency").addEventListener("change", (e) => {
       setCurrencySymbol(e.target.value);
-      const bankroll = parseFloat(document.getElementById("bankroll").value || "0");
-      render(bankroll);
     });
 
-    document.getElementById("run").addEventListener("click", () => {
-      const bankroll = parseFloat(document.getElementById("bankroll").value || "0");
-      render(bankroll);
+    $("continue").addEventListener("click", () => {
+      const v = validateInputs();
+      const box = $("errorBox");
+      if (!v.ok) {
+        box.innerHTML = v.errors.map((e) => `• ${e}`).join("<br>");
+        show(box);
+        return;
+      }
+      hide(box);
+
+      // Apply settings
+      setCurrencySymbol($("currency").value);
+      SHOT_START_BI = parseInt($("shotStart").value, 10);
+      MOVE_DOWN_BI  = parseInt($("moveDown").value, 10);
+      SHOT_SIZE_BI  = parseInt($("shotSize").value, 10);
+
+      // Go to step 2
+      hide($("step1"));
+      show($("step2"));
+      const bankroll = parseFloat($("bankroll").value || "0");
+      renderTable(bankroll);
     });
 
-    // Initial setup
-    setCurrencySymbol(document.getElementById("currency").value);
-    render(900);
+    $("back").addEventListener("click", () => {
+      show($("step1"));
+      hide($("step2"));
+    });
+
+    $("recompute").addEventListener("click", () => {
+      const bankroll = parseFloat($("bankroll").value || "0");
+      renderTable(bankroll);
+    });
+
+    // Initialize
+    setCurrencySymbol($("currency").value);
   </script>
 </body>
 </html>
