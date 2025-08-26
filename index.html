@@ -94,7 +94,7 @@
       <div class="stack">
         <label for="moveDownDisplay">Move down (buy-ins)</label>
         <input id="moveDownDisplay" type="number" value="10" readonly />
-        <span class="muted"></span>
+        <span class="muted">Derived: Move down = Shot start − Shot size.</span>
       </div>
     </div>
 
@@ -106,7 +106,7 @@
         <span class="emoji" aria-hidden="true">➡️</span>Continue
       </button>
       <span class="muted">
-        
+        Tip: Shot size must be less than Shot start (so the derived move-down is positive).
       </span>
     </div>
   </section>
@@ -119,7 +119,7 @@
     <div id="goal"></div>
     <table id="tbl" aria-describedby="tableHelp"></table>
     <p id="tableHelp" class="muted">
-     
+      Status shows readiness at each stake; emojis are decorative and not read by screen readers.
     </p>
 
     <div class="row">
@@ -201,7 +201,6 @@
             ? betweenLabel
             : "Below move-down";
 
-        const shortfall = Math.max(0, shotStartAmt - bankroll);
         return {
           limit: `NL${nl}`,
           buyin,
@@ -209,9 +208,7 @@
           moveDownAmt,
           shotSizeAmt,
           currentBI: currentBI.toFixed(2),
-          status,
-          shortfall,
-          shortfallBI: (shortfall ? (shortfall / buyin) : 0).toFixed(2)
+          status
         };
       });
     }
@@ -266,7 +263,7 @@
         : `Already at ≥ ${SHOT_START_BI} BI for the top listed stake.`;
       goalDiv.append(goalEmoji, goalText);
 
-      // Table
+      // Table (shortfall columns removed)
       const tbl = $("tbl");
       tbl.innerHTML = "";
 
@@ -280,9 +277,7 @@
         `Shot size (BI)`,
         `Shot size (${CURRENCY})`,
         "Current BI",
-        "Status",
-        `Shortfall (${CURRENCY})`,
-        "Shortfall (BI)"
+        "Status"
       ];
 
       const thead = document.createElement("thead");
@@ -311,13 +306,12 @@
           SHOT_SIZE_BI,
           money(r.shotSizeAmt),
           r.currentBI,
-          r.status,
-          money(r.shortfall),
-          r.shortfallBI
+          r.status
         ];
 
         cells.forEach((v, idx) => {
           const td = document.createElement("td");
+          // Status column index is 9 after removing shortfall columns
           if (idx === 9) {
             const em = statusEmoji(r.status);
             td.appendChild(em);
@@ -356,7 +350,7 @@
       setCurrencySymbol($("currency").value);
       SHOT_START_BI = v.shotStart;
       SHOT_SIZE_BI  = v.shotSize;
-      MOVE_DOWN_BI  = SHOT_START_BI - SHOT_SIZE_BI; // derived and guaranteed > 0 by validation
+      MOVE_DOWN_BI  = SHOT_START_BI - SHOT_SIZE_BI; // derived
 
       // Go to step 2
       hide($("step1"));
