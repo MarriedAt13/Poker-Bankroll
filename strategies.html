@@ -9,60 +9,22 @@
       --border: #e5e7eb; --ink:#111827; --muted:#6b7280;
       --panel:#fff; --bg:#f8fafc; --link:#0369a1;
       --ok:#16a34a; --warn:#d97706; --bad:#b91c1c;
-      --suit: #be185d;
-      --hero-light: #f0f9ff; --hero-mid: #e0e7ff; --hero-dark: #0369a1;
     }
     body { font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif; margin:0; color:var(--ink); background:var(--bg); }
-    .container { max-width: 900px; margin: 0 auto; padding: 1.25rem 1.25rem 2rem; }
-
-    .site-header {
-      margin-bottom: 1.1rem;
-    }
-    .header-hero {
-      display: flex;
-      align-items: center;
-      gap: .65rem;
-      background: linear-gradient(90deg,var(--hero-light) 60%,var(--hero-mid) 100%);
-      border-radius: 16px;
-      padding: 1.2rem 1.3rem 1rem 1.1rem;
-      box-shadow: 0 4px 14px rgba(44,120,220,0.05);
-      margin-bottom: .75rem;
-    }
-    .header-hero h1 {
-      margin: 0;
-      font-size: 1.78rem;
-      font-weight: 900;
-      letter-spacing: .01em;
-      background: linear-gradient(90deg, #0369a1 70%, #be185d 100%);
-      background-clip: text;
-      -webkit-background-clip: text;
-      color: transparent;
-      -webkit-text-fill-color: transparent;
-      line-height: 1.15;
-    }
-    .header-hero .suits {
-      font-size: 1.43rem;
-      letter-spacing: .08em;
-      line-height: 1;
-      user-select: none;
-    }
-    .header-hero .hilite {
-      background: linear-gradient(90deg, #be185d 0%, #0369a1 100%);
-      background-clip: text;
-      -webkit-background-clip: text;
-      color: transparent;
-      -webkit-text-fill-color: transparent;
-      font-weight: 900;
-    }
-    p.muted { color: var(--muted); margin-bottom: .5rem; }
+    .container { max-width: 900px; margin: 0 auto; padding: 1.25rem; }
+    header { padding: 1.25rem 0 0.5rem; }
+    h1 { margin: 0 0 .25rem 0; font-size: 1.6rem; }
+    p.muted { color: var(--muted); }
     a { color: var(--link); text-decoration: none; }
     a:hover { text-decoration: underline; }
+
     .card { background: var(--panel); border: 1px solid var(--border); border-radius: 14px; padding: 1rem; box-shadow: 0 6px 18px rgba(2,6,23,.04); }
     .stack { display: grid; gap: .65rem; }
     h2 { margin: 0 0 .5rem 0; font-size: 1.25rem; }
-    h3 { margin: .5rem 0 .35rem 0; font-size: 1.09rem; letter-spacing: .01em; }
+    h3 { margin: .5rem 0 .35rem 0; font-size: 1.05rem; }
     ul { margin: .25rem 0 .5rem 1.25rem; }
     li { margin: .15rem 0; }
+
     .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
     @media (max-width: 900px) { .grid { grid-template-columns: 1fr; } }
 
@@ -70,16 +32,14 @@
     .pill.ok { background:#e8f5e9; color:var(--ok); }
     .pill.warn { background:#fff8e1; color:var(--warn); }
     .pill.bad { background:#ffebee; color:var(--bad); }
-    .back { display:inline-block; margin-top:1.2rem; }
+
+    .back { display:inline-block; margin-top:1rem; }
   </style>
 </head>
 <body>
   <div class="container">
-    <header class="site-header">
-      <div class="header-hero">
-        <span class="suits" aria-hidden="true">♠️♥️♣️♦️</span>
-        <h1>Poker <span class="hilite">Bankroll Ladder</span></h1>
-      </div>
+    <header>
+      <h1>Bankroll strategies</h1>
       <p class="muted">
         Compare popular cash-game bankroll approaches and pick a plan that matches your risk tolerance, skill edge, and goals. Each preset can be used directly in the ladder settings.
       </p>
