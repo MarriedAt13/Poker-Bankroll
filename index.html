@@ -74,7 +74,6 @@
       select { min-width: 9rem; }
       th, td { font-size: .95rem; }
     }
-    /* Link button for strategies */
     .link-btn { display: inline-flex; align-items: center; gap: .4rem; padding: .5rem .8rem; border-radius: 10px; border: 1px solid var(--border); background: #fff; text-decoration: none; font-weight: 600; color: var(--ink); }
     .link-btn:hover { background: #f8fafc; }
   </style>
@@ -93,7 +92,7 @@
   </header>
 
   <main class="container">
-    <!-- Intro + compact strategies teaser -->
+    <!-- Intro -->
     <section id="why" class="panel">
       <div class="grid-2">
         <div>
@@ -103,7 +102,7 @@
         </div>
         <div>
           <h2>Strategies</h2>
-          <p class="muted">Prefer a detailed comparison of conservative vs aggressive plans, like 12‑BI 2‑shot vs 20‑BI 3‑shot? See recommended profiles, pros/cons, and when to move up/down.</p>
+          <p class="muted">Prefer a detailed comparison of conservative vs aggressive plans? See recommended profiles.</p>
           <a class="link-btn" href="strategies.html"><span aria-hidden="true">📚</span> View strategies</a>
         </div>
       </div>
@@ -118,13 +117,7 @@
       <div class="grid-2">
         <div class="stack">
           <label for="currency">Currency</label>
-          <select id="currency" aria-label="Currency symbol">
-            <option value="$" selected>USD ($)</option>
-            <option value="C$">CAD (C$)</option>
-            <option value="A$">AUD (A$)</option>
-            <option value="£">Pound (£)</option>
-            <option value="€">Euro (€)</option>
-          </select>
+          <select id="currency"><option value="$" selected>USD ($)</option><option value="C$">CAD (C$)</option><option value="A$">AUD (A$)</option><option value="£">Pound (£)</option><option value="€">Euro (€)</option></select>
         </div>
         <div class="stack">
           <label for="bankroll" id="bankrollLabel">Bankroll ($)</label>
@@ -133,23 +126,20 @@
         <div class="stack">
           <label for="shotStart">Shot start (buy-ins)</label>
           <input id="shotStart" type="number" value="12" min="1" step="1" />
-          <span class="muted">Start shots at this many buy‑ins for the target limit.</span>
         </div>
         <div class="stack">
           <label for="shotSize">Shot size (buy-ins)</label>
           <input id="shotSize" type="number" value="2" min="1" step="1" />
-          <span class="muted">Risk this many buy‑ins per shot attempt.</span>
         </div>
         <div class="stack">
           <label for="moveDownDisplay">Move down (buy-ins)</label>
           <input id="moveDownDisplay" type="number" value="10" readonly />
-          <span class="muted">Derived: Move down = Shot start − Shot size.</span>
         </div>
       </div>
-      <div id="errorBox" class="error hidden" style="color:#b00020;font-weight:600;"></div>
+      <div id="errorBox" style="color:#b00020;font-weight:600;"></div>
       <div class="space"></div>
       <div class="row">
-        <button id="continue" class="btn primary" type="button"><span class="emoji" aria-hidden="true">➡️</span>Continue</button>
+        <button id="continue" class="btn primary" type="button"><span class="emoji">➡️</span>Continue</button>
         <span class="muted">Shot size must be less than Shot start.</span>
       </div>
     </section>
@@ -161,17 +151,14 @@
       <h2>Results</h2>
       <div id="summary" class="muted"></div>
       <div id="goal">
-        <span class="goal-emoji" aria-hidden="true">🎯</span>
+        <span class="goal-emoji">🎯</span>
         <span class="goal-text" id="goalText"></span>
       </div>
-      <table id="tbl" aria-describedby="tableHelp"></table>
+      <table id="tbl"></table>
       <p id="tableHelp" class="muted">Status colors mark readiness per stake; the shortfall shows how much more is needed to reach the shot‑start bankroll.</p>
-      <div class="row">
-        <button id="back" class="btn ghost" type="button"><span class="emoji" aria-hidden="true">⬅️</span>Back</button>
-        <button id="recompute" class="btn primary" type="button"><span class="emoji" aria-hidden="true">🔁</span>Recompute</button>
-      </div>
     </section>
   </main>
+
   <script>
     let CURRENCY = "$";
     let SHOT_START_BI = 12;
@@ -181,125 +168,88 @@
     const $ = (id) => document.getElementById(id);
     const hide = (el) => el.classList.add("hidden");
     const show = (el) => el.classList.remove("hidden");
+
     function setCurrencySymbol(sym) {
-      const clean = (sym || "").trim();
-      CURRENCY = clean.length ? clean : "$";
+      CURRENCY = (sym || "$").trim();
       $("bankrollLabel").textContent = `Bankroll (${CURRENCY})`;
     }
     function updateDerivedMoveDownDisplay() {
-      const shotStart = parseInt($("shotStart").value || "0", 10);
-      const shotSize  = parseInt($("shotSize").value  || "0", 10);
-      const derived = shotStart - shotSize;
-      $("moveDownDisplay").value = Number.isFinite(derived) ? Math.max(0, derived) : 0;
+      const shotStart = parseInt($("shotStart").value || "0",10);
+      const shotSize = parseInt($("shotSize").value || "0",10);
+      $("moveDownDisplay").value = Math.max(0, shotStart - shotSize);
     }
     function money(x){ return `${CURRENCY}${Number(x).toFixed(0)}`; }
     function validateInputs() {
       const errors = [];
       const bankroll  = parseFloat($("bankroll").value || "0");
-      const shotStart = parseInt($("shotStart").value || "0", 10);
-      const shotSize  = parseInt($("shotSize").value  || "0", 10);
-      if (!(bankroll >= 0)) errors.push("Bankroll must be a number ≥ 0.");
-      if (!(shotStart >= 1)) errors.push("Shot start must be at least 1 BI.");
-      if (!(shotSize >= 1)) errors.push("Shot size must be at least 1 BI.");
+      const shotStart = parseInt($("shotStart").value || "0",10);
+      const shotSize  = parseInt($("shotSize").value || "0",10);
       if (shotSize >= shotStart) errors.push("Shot size must be less than Shot start.");
-      return { ok: errors.length === 0, errors, bankroll, shotStart, shotSize };
+      return { ok: errors.length===0, errors, bankroll, shotStart, shotSize };
     }
     function computeRows(bankroll) {
       return LIMITS.map((nl) => {
         const buyin = nl;
-        const shotStartAmt = SHOT_START_BI * buyin;
-        const moveDownAmt  = MOVE_DOWN_BI  * buyin;
-        const shotSizeAmt  = SHOT_SIZE_BI  * buyin;
-        const currentBI = bankroll / buyin;
-        const betweenLabel = `Between ${MOVE_DOWN_BI}\u2013${SHOT_START_BI} BI`;
-        const status = currentBI >= SHOT_START_BI ? "Shot-OK"
-                    : currentBI >= MOVE_DOWN_BI ? betweenLabel
-                    : "Below move-down";
-        const shortfall = Math.max(0, shotStartAmt - bankroll);
+        const shotStartAmt = SHOT_START_BI*buyin;
+        const moveDownAmt  = MOVE_DOWN_BI*buyin;
+        const shotSizeAmt  = SHOT_SIZE_BI*buyin;
+        const currentBI= bankroll/buyin;
+        const betweenLabel = `Between ${MOVE_DOWN_BI}–${SHOT_START_BI} BI`;
+        const status = currentBI>=SHOT_START_BI ? "Shot-OK" : currentBI>=MOVE_DOWN_BI ? betweenLabel : "Below move-down";
+        const shortfall = Math.max(0,shotStartAmt-bankroll);
         return { limit:`NL${nl}`, buyin, shotStartAmt, moveDownAmt, shotSizeAmt, currentBI: currentBI.toFixed(2), status, shortfall };
       });
     }
-    function nextTarget(bankroll) {
-      for (const nl of LIMITS) {
-        const need = SHOT_START_BI * nl - bankroll;
-        if (need > 0) return { limit: `NL${nl}`, need };
+    function nextTarget(bankroll){
+      for(const nl of LIMITS){
+        const need = SHOT_START_BI*nl - bankroll;
+        if(need>0) return {limit:`NL${nl}`,need};
       }
       return null;
     }
-    function statusClass(s){ if (s==="Shot-OK") return "ok"; if (s.startsWith("Between")) return "warn"; return "bad"; }
-    function makeStatusPill(statusText) {
-      const cls = statusClass(statusText);
-      const wrap = document.createElement("span");
-      wrap.className = `pill ${cls}`;
-      const em = document.createElement("span");
-      em.className = "emoji";
-      em.setAttribute("aria-hidden","true");
-      em.textContent = cls==="ok" ? "✅" : cls==="warn" ? "⚠️" : "⛔";
-      wrap.appendChild(em);
-      wrap.appendChild(document.createTextNode(statusText));
+    function statusClass(s){ if(s==="Shot-OK") return "ok"; if(s.startsWith("Between")) return "warn"; return "bad"; }
+    function makeStatusPill(statusText){
+      const cls=statusClass(statusText);
+      const wrap=document.createElement("span"); wrap.className=`pill ${cls}`;
+      const em=document.createElement("span"); em.className="emoji"; em.textContent=cls==="ok"?"✅":cls==="warn"?"⚠️":"⛔";
+      wrap.appendChild(em); wrap.appendChild(document.createTextNode(statusText));
       return wrap;
     }
-    function renderGoal(bankroll) {
-      const tgt = nextTarget(bankroll);
-      const goalText = $("goalText");
-      const emojiEl = document.querySelector("#goal .goal-emoji");
-      if (tgt) {
-        goalText.innerHTML = `Next target: <b>${tgt.limit}</b>. Need <b>${money(tgt.need)}</b> more.`;
-        emojiEl.textContent = "🎯";
-      } else {
-        goalText.textContent = `Already at or above the chosen shot-start BI for the top listed stake.`;
-        emojiEl.textContent = "🏁";
-      }
+    function renderGoal(bankroll){
+      const tgt=nextTarget(bankroll);
+      if(tgt){ $("goalText").innerHTML=`Next target: <b>${tgt.limit}</b>. Need <b>${money(tgt.need)}</b> more.`; }
+      else { $("goalText").textContent="Already at or above the chosen shot-start BI for top stake."; }
     }
-    function renderTable(bankroll) {
-      const rows = computeRows(bankroll);
+    function renderTable(bankroll){
+      const rows=computeRows(bankroll);
       renderGoal(bankroll);
-      $("summary").textContent = `Currency: ${CURRENCY} | Shot start: ${SHOT_START_BI} BI | Shot size: ${SHOT_SIZE_BI} BI | Move down: ${MOVE_DOWN_BI} BI (derived)`;
-      const tbl = $("tbl");
-      tbl.innerHTML = "";
-      const headers = [
-        "Limit", `Buy-in (${CURRENCY})`, "Shot start (BI)", `Shot start (${CURRENCY})`,
-        "Move down (BI)", `Move down (${CURRENCY})`, "Shot size (BI)", `Shot size (${CURRENCY})`,
-        "Current BI", "Status", `Shortfall (${CURRENCY})`
-      ];
-      const thead = document.createElement("thead");
-      const trh = document.createElement("tr");
-      headers.forEach(h => { const th = document.createElement("th"); th.setAttribute("scope","col"); th.textContent = h; trh.appendChild(th); });
-      thead.appendChild(trh);
-      tbl.appendChild(thead);
-      const tbody = document.createElement("tbody");
-      rows.forEach(r => {
-        const tr = document.createElement("tr");
-        tr.className = statusClass(r.status);
-        const cells = [
-          r.limit, money(r.buyin), SHOT_START_BI, money(r.shotStartAmt),
-          MOVE_DOWN_BI, money(r.moveDownAmt), SHOT_SIZE_BI, money(r.shotSizeAmt),
-          r.currentBI, r.status, money(r.shortfall)
-        ];
-        cells.forEach((v, idx) => {
-          const td = document.createElement("td");
-          if (idx === 9) td.appendChild(makeStatusPill(r.status));
-          else td.textContent = v;
-          tr.appendChild(td);
-        });
+      $("summary").textContent=`Currency: ${CURRENCY} | Shot start: ${SHOT_START_BI} BI | Shot size: ${SHOT_SIZE_BI} BI | Move down: ${MOVE_DOWN_BI} BI`;
+      const tbl=$("tbl"); tbl.innerHTML="";
+      const headers=["Limit",`Buy-in (${CURRENCY})`,"Shot start (BI)",`Shot start (${CURRENCY})`,"Move down (BI)",`Move down (${CURRENCY})`,"Shot size (BI)",`Shot size (${CURRENCY})`,"Current BI","Status",`Shortfall (${CURRENCY})`];
+      const thead=document.createElement("thead"); const trh=document.createElement("tr");
+      headers.forEach(h=>{const th=document.createElement("th"); th.textContent=h; trh.appendChild(th);});
+      thead.appendChild(trh); tbl.appendChild(thead);
+      const tbody=document.createElement("tbody");
+      rows.forEach(r=>{
+        const tr=document.createElement("tr"); tr.className=statusClass(r.status);
+        const cells=[r.limit,money(r.buyin),SHOT_START_BI,money(r.shotStartAmt),MOVE_DOWN_BI,money(r.moveDownAmt),SHOT_SIZE_BI,money(r.shotSizeAmt),r.currentBI,r.status,money(r.shortfall)];
+        cells.forEach((v,idx)=>{const td=document.createElement("td"); if(idx===9) td.appendChild(makeStatusPill(r.status)); else td.textContent=v; tr.appendChild(td);});
         tbody.appendChild(tr);
       });
       tbl.appendChild(tbody);
     }
     $("shotStart").addEventListener("input", updateDerivedMoveDownDisplay);
     $("shotSize").addEventListener("input", updateDerivedMoveDownDisplay);
-    $("currency").addEventListener("change", (e) => setCurrencySymbol(e.target.value));
-    $("continue").addEventListener("click", () => {
-      const v = validateInputs(); const box = $("errorBox");
-      if (!v.ok) { box.innerHTML = v.errors.map(e => `• ${e}`).join("<br>"); box.classList.remove("hidden"); return; }
-      box.innerHTML = ""; box.classList.add("hidden");
+    $("currency").addEventListener("change",(e)=>setCurrencySymbol(e.target.value));
+    $("continue").addEventListener("click",()=>{
+      const v=validateInputs(), box=$("errorBox");
+      if(!v.ok){ box.innerHTML=v.errors.join("<br>"); return; }
+      box.innerHTML="";
       setCurrencySymbol($("currency").value);
-      SHOT_START_BI = v.shotStart; SHOT_SIZE_BI = v.shotSize; MOVE_DOWN_BI = SHOT_START_BI - SHOT_SIZE_BI;
+      SHOT_START_BI=v.shotStart; SHOT_SIZE_BI=v.shotSize; MOVE_DOWN_BI=SHOT_START_BI-SHOT_SIZE_BI;
       hide($("step1")); show($("step2"));
-      renderTable(parseFloat($("bankroll").value || "0"));
+      renderTable(parseFloat($("bankroll").value||"0"));
     });
-    $("back").addEventListener("click", () => { show($("step1")); hide($("step2")); });
-    $("recompute").addEventListener("click", () => { renderTable(parseFloat($("bankroll").value || "0")); });
     setCurrencySymbol($("currency").value);
     updateDerivedMoveDownDisplay();
   </script>
