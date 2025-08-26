@@ -6,6 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <style>
     :root {
+      /* Status colors */
       --ok: #16a34a;
       --ok-bg: #e8f5e9;
       --warn: #d97706;
@@ -13,15 +14,18 @@
       --bad: #b91c1c;
       --bad-bg: #ffebee;
 
+      /* UI palette */
       --border: #e5e7eb;
       --muted: #6b7280;
       --ink: #111827;
 
-      --hero1: #0f172a;   /* slate-900 */
-      --hero2: #1f2937;   /* gray-800 */
-      --brand: #0ea5e9;   /* sky-500 */
-      --brand-cta: #22c55e; /* green-500 */
+      /* Hero gradient */
+      --hero1: #0f172a;
+      --hero2: #1f2937;
+      --brand: #0ea5e9;
+      --brand-cta: #22c55e;
 
+      /* Surfaces */
       --panel: #ffffff;
       --panel-alt: #fcfcfc;
       --table-head: #f3f4f6;
@@ -108,16 +112,28 @@
     th, td { border: 1px solid var(--border); padding: 10px; text-align: right; vertical-align: top; }
     th { background: var(--table-head); position: sticky; top: 0; z-index: 1; }
     td:first-child, th:first-child { text-align: left; }
+
+    /* Faint zebra striping as fallback (will be overridden by status classes below) */
     tbody tr:nth-child(odd) { background: var(--zebra); }
+
+    /* Strong status colors: target TDs to override zebra background */
+    tbody tr.ok    > td { background: var(--ok-bg)   !important; }
+    tbody tr.warn  > td { background: var(--warn-bg) !important; }
+    tbody tr.bad   > td { background: var(--bad-bg)  !important; }
+
+    /* Left accent to reinforce status */
+    tbody tr.ok   > td:first-child { border-left: 4px solid var(--ok); }
+    tbody tr.warn > td:first-child { border-left: 4px solid var(--warn); }
+    tbody tr.bad  > td:first-child { border-left: 4px solid var(--bad); }
 
     /* Status pill */
     .pill {
       display: inline-flex; align-items: center; gap: .4rem;
       padding: .15rem .55rem; border-radius: 999px; font-weight: 700; letter-spacing: .2px;
     }
-    .pill.ok   { color: var(--ok);   background: var(--ok-bg); }
-    .pill.warn { color: var(--warn); background: var(--warn-bg); }
-    .pill.bad  { color: var(--bad);  background: var(--bad-bg); }
+    .pill.ok   { color: var(--ok);   background: #eefcf0; }
+    .pill.warn { color: var(--warn); background: #fff3d6; }
+    .pill.bad  { color: var(--bad);  background: #ffe3e3; }
 
     /* Layout helpers */
     .grid-2 { display: grid; grid-template-columns: 1.2fr 1fr; gap: 1rem; }
@@ -142,7 +158,7 @@
   <header class="masthead">
     <div class="container">
       <h1>Poker Bankroll Ladder</h1>
-      <p class="lead">See readiness across NL2–NL5000 with custom shot‑taking rules, colored status pills, and a clear goal to the next stake.</p>
+      <p class="lead">See readiness across NL2–NL5000 with custom shot‑taking rules, colored status rows, and a clear goal to the next stake.</p>
       <p class="muted">Strong bankroll management cushions variance, reduces bust risk, and supports steady stake progression over time.</p>
       <div class="mast-actions">
         <a class="btn primary" href="#step1"><span aria-hidden="true">🎯</span>Get started</a>
@@ -226,7 +242,7 @@
         <div class="stack">
           <label for="moveDownDisplay">Move down (buy-ins)</label>
           <input id="moveDownDisplay" type="number" value="10" readonly />
-          <span class="muted"></span>
+          <span class="muted">Derived: Move down = Shot start − Shot size.</span>
         </div>
       </div>
 
@@ -234,10 +250,10 @@
       <div class="space"></div>
 
       <div class="row">
-        <button id="continue" class="btn" style="background:var(--brand);color:#fff;border-color:var(--brand);" type="button">
+        <button id="continue" class="btn primary" type="button">
           <span class="emoji" aria-hidden="true">➡️</span>Continue
         </button>
-        <span class="muted"></span>
+        <span class="muted">Shot size must be less than Shot start.</span>
       </div>
     </section>
 
@@ -250,7 +266,8 @@
 
       <div id="goal"></div>
       <table id="tbl" aria-describedby="tableHelp"></table>
-      <p id="tableHelp" class="muted"> 
+      <p id="tableHelp" class="muted">
+        Status shows readiness at each stake; emojis are decorative and not read by screen readers.
       </p>
 
       <div class="row">
@@ -274,11 +291,7 @@
 
     const LIMITS = [2,5,10,25,50,100,200,500,1000,2000,5000];
 
-    const EMOJI = {
-      ok:   { char: "✅" },
-      warn: { char: "⚠️" },
-      bad:  { char: "⛔" }
-    };
+    const EMOJI = { ok: {char: "✅"}, warn: {char: "⚠️"}, bad: {char: "⛔"} };
 
     const $  = (id) => document.getElementById(id);
     const hide = (el) => el.classList.add("hidden");
@@ -412,6 +425,9 @@
       const tbody = document.createElement("tbody");
       rows.forEach((r) => {
         const tr = document.createElement("tr");
+        // Critical: apply row classes for coloring
+        tr.className = statusClass(r.status);
+
         const cells = [
           r.limit, money(r.buyin), SHOT_START_BI, money(r.shotStartAmt),
           MOVE_DOWN_BI, money(r.moveDownAmt), SHOT_SIZE_BI, money(r.shotSizeAmt),
