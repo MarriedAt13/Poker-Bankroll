@@ -82,13 +82,13 @@
       <div class="stack">
         <label for="shotStart">Shot start (buy-ins)</label>
         <input id="shotStart" type="number" value="12" min="1" step="1" />
-        <span class="muted">Example: 12 means start shots at 12 buy-ins for the target limit.</span>
+        <span class="muted">Example: start shots at this many buy-ins for the target limit.</span>
       </div>
 
       <div class="stack">
         <label for="shotSize">Shot size (buy-ins)</label>
         <input id="shotSize" type="number" value="2" min="1" step="1" />
-        <span class="muted">Example: 2 means risk 2 buy-ins per shot attempt.</span>
+        <span class="muted">Example: risk this many buy-ins per shot attempt.</span>
       </div>
 
       <div class="stack">
@@ -106,7 +106,7 @@
         <span class="emoji" aria-hidden="true">➡️</span>Continue
       </button>
       <span class="muted">
-        Tip: Shot size must be less than Shot start (so the derived move-down is positive).
+        Tip: Shot size must be less than Shot start.
       </span>
     </div>
   </section>
@@ -201,6 +201,8 @@
             ? betweenLabel
             : "Below move-down";
 
+        const shortfall = Math.max(0, shotStartAmt - bankroll);
+
         return {
           limit: `NL${nl}`,
           buyin,
@@ -208,7 +210,8 @@
           moveDownAmt,
           shotSizeAmt,
           currentBI: currentBI.toFixed(2),
-          status
+          status,
+          shortfall
         };
       });
     }
@@ -263,7 +266,7 @@
         : `Already at ≥ ${SHOT_START_BI} BI for the top listed stake.`;
       goalDiv.append(goalEmoji, goalText);
 
-      // Table (shortfall columns removed)
+      // Table with Shortfall (currency) as the final column
       const tbl = $("tbl");
       tbl.innerHTML = "";
 
@@ -277,7 +280,8 @@
         `Shot size (BI)`,
         `Shot size (${CURRENCY})`,
         "Current BI",
-        "Status"
+        "Status",
+        `Shortfall (${CURRENCY})`
       ];
 
       const thead = document.createElement("thead");
@@ -306,12 +310,13 @@
           SHOT_SIZE_BI,
           money(r.shotSizeAmt),
           r.currentBI,
-          r.status
+          r.status,
+          money(r.shortfall)  // final column
         ];
 
         cells.forEach((v, idx) => {
           const td = document.createElement("td");
-          // Status column index is 9 after removing shortfall columns
+          // Status column index is 9 (0-based) with shortfall added at the end
           if (idx === 9) {
             const em = statusEmoji(r.status);
             td.appendChild(em);
