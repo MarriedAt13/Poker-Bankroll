@@ -30,6 +30,11 @@
       --panel-alt: #fcfcfc;
       --table-head: #f3f4f6;
       --zebra: #fafafa;
+
+      /* Goal highlight */
+      --goal-bg: #f0f9ff;   /* light sky */
+      --goal-border: #bae6fd; /* sky-200 */
+      --goal-accent: #0369a1; /* sky-700 */
     }
 
     html { scroll-behavior: smooth; }
@@ -135,6 +140,22 @@
     .pill.warn { color: var(--warn); background: #fff3d6; }
     .pill.bad  { color: var(--bad);  background: #ffe3e3; }
 
+    /* Goal highlight */
+    #goal {
+      margin: 1rem 0;
+      font-weight: 600;
+      background: var(--goal-bg);
+      border: 1px solid var(--goal-border);
+      border-radius: 12px;
+      padding: .9rem 1rem;
+      display: flex;
+      align-items: center;
+      gap: .6rem;
+    }
+    #goal .goal-emoji { font-size: 1.25rem; }
+    #goal .goal-text { font-size: 1.05rem; color: var(--goal-accent); }
+    #goal .goal-text b { font-weight: 800; }
+
     /* Layout helpers */
     .grid-2 { display: grid; grid-template-columns: 1.2fr 1fr; gap: 1rem; }
 
@@ -158,7 +179,7 @@
   <header class="masthead">
     <div class="container">
       <h1>Poker Bankroll Ladder</h1>
-      <p class="lead">See readiness across NL2–NL5000 with custom shot‑taking rules, and a clear goal to the next stake.</p>
+      <p class="lead">See readiness across NL2–NL5000 with custom shot‑taking rules, colored status rows, and a clear goal to the next stake.</p>
       <p class="muted">Strong bankroll management cushions variance, reduces bust risk, and supports steady stake progression over time.</p>
       <div class="mast-actions">
         <a class="btn primary" href="#step1"><span aria-hidden="true">🎯</span>Get started</a>
@@ -242,7 +263,7 @@
         <div class="stack">
           <label for="moveDownDisplay">Move down (buy-ins)</label>
           <input id="moveDownDisplay" type="number" value="10" readonly />
-          <span class="muted"></span>
+          <span class="muted">Derived: Move down = Shot start − Shot size.</span>
         </div>
       </div>
 
@@ -264,9 +285,15 @@
       <h2>Results</h2>
       <div id="summary" class="muted"></div>
 
-      <div id="goal"></div>
+      <!-- Prominent goal card -->
+      <div id="goal">
+        <span class="goal-emoji" aria-hidden="true">🎯</span>
+        <span class="goal-text" id="goalText"></span>
+      </div>
+
       <table id="tbl" aria-describedby="tableHelp"></table>
       <p id="tableHelp" class="muted">
+        Status colors mark readiness per stake; the shortfall shows how much more is needed to reach the shot‑start bankroll.
       </p>
 
       <div class="row">
@@ -277,7 +304,6 @@
           <span class="emoji" aria-hidden="true">🔁</span>Recompute
         </button>
       </div>
-      <p class="footnote">Shortfall shows how much more is needed to reach the shot‑start bankroll at each limit.</p>
     </section>
   </main>
 
@@ -378,23 +404,29 @@
       return wrap;
     }
 
+    function renderGoal(bankroll) {
+      const tgt = nextTarget(bankroll);
+      const goalText = $("goalText");
+      if (tgt) {
+        // Next target: bold the stake and the money needed
+        goalText.innerHTML =
+          `Next target: <b>${tgt.limit}</b>. Need <b>${money(tgt.need)}</b> more.`;
+        // Ensure target icon is a dart
+        document.querySelector("#goal .goal-emoji").textContent = "🎯";
+      } else {
+        goalText.textContent =
+          `Already at or above the chosen shot-start BI for the top listed stake.`;
+        document.querySelector("#goal .goal-emoji").textContent = "🏁";
+      }
+    }
+
     function renderTable(bankroll) {
       const rows = computeRows(bankroll);
-      const tgt = nextTarget(bankroll);
+      renderGoal(bankroll);
 
       $("summary").textContent =
         `Currency: ${CURRENCY} | Shot start: ${SHOT_START_BI} BI | ` +
         `Shot size: ${SHOT_SIZE_BI} BI | Move down: ${MOVE_DOWN_BI} BI (derived)`;
-
-      const goalDiv = $("goal");
-      goalDiv.textContent = "";
-      const ge = document.createElement("span");
-      ge.className = "emoji"; ge.setAttribute("aria-hidden", "true");
-      ge.textContent = tgt ? "🎯" : "🏁";
-      const gt = document.createElement("span");
-      gt.textContent = tgt ? `Next target: ${tgt.limit}. Need ${money(tgt.need)} more.`
-                           : `Already at ≥ ${SHOT_START_BI} BI for the top listed stake.`;
-      goalDiv.append(ge, gt);
 
       const tbl = $("tbl");
       tbl.innerHTML = "";
@@ -424,7 +456,6 @@
       const tbody = document.createElement("tbody");
       rows.forEach((r) => {
         const tr = document.createElement("tr");
-        // Critical: apply row classes for coloring
         tr.className = statusClass(r.status);
 
         const cells = [
