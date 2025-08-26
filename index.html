@@ -192,7 +192,7 @@
         const status = currentBI >= SHOT_START_BI
           ? "Shot-OK"
           : currentBI >= MOVE_DOWN_BI
-            ? "Between 10–12 BI" // label remains generic; logic uses chosen numbers
+            ? "Between move up and down" // label remains generic; logic uses chosen numbers
             : "Below move-down";
 
         const shortfall = Math.max(0, shotStartAmt - bankroll);
