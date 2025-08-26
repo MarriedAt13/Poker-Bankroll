@@ -94,7 +94,7 @@
       <div class="stack">
         <label for="moveDownDisplay">Move down (buy-ins)</label>
         <input id="moveDownDisplay" type="number" value="10" readonly />
-        <span class="muted"></span>
+        <span class="muted">Derived: Move down = Shot start − Shot size.</span>
       </div>
     </div>
 
@@ -106,6 +106,7 @@
         <span class="emoji" aria-hidden="true">➡️</span>Continue
       </button>
       <span class="muted">
+        Tip: Shot size must be less than Shot start.
       </span>
     </div>
   </section>
@@ -118,6 +119,7 @@
     <div id="goal"></div>
     <table id="tbl" aria-describedby="tableHelp"></table>
     <p id="tableHelp" class="muted">
+      Status shows readiness at each stake; emojis are decorative and not read by screen readers.
     </p>
 
     <div class="row">
