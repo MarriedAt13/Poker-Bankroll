@@ -11,39 +11,20 @@
       --ok:#16a34a; --warn:#d97706; --bad:#b91c1c;
     }
     body { font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif; margin:0; color:var(--ink); background:var(--bg); }
-    .container { max-width: 900px; margin: 0 auto; padding: 1.25rem 1.25rem 2rem; }
-
+    .container { max-width: 900px; margin: 0 auto; padding: 1.25rem; }
     header { padding: 1.25rem 0 0.5rem; }
     h1 { margin: 0 0 .25rem 0; font-size: 1.6rem; }
-    p.muted { color: var(--muted); margin-bottom: .5rem; }
-    a { color: var(--link); text-decoration: none; }
-    a:hover { text-decoration: underline; }
-
-    .card { background: var(--panel); border: 1px solid var(--border); border-radius: 14px; padding: 1rem; box-shadow: 0 6px 18px rgba(2,6,23,.04); }
-    .stack { display: grid; gap: .65rem; }
-    h2 { margin: 0 0 .5rem 0; font-size: 1.25rem; }
-    h3 { margin: .5rem 0 .35rem 0; font-size: 1.09rem; letter-spacing: .01em; }
-    ul { margin: .25rem 0 .5rem 1.25rem; }
-    li { margin: .15rem 0; }
-
-    .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
-    @media (max-width: 900px) { .grid { grid-template-columns: 1fr; } }
-
-    .pill { display:inline-block; padding:.15rem .5rem; border-radius:999px; font-weight:700; font-size:.85rem; }
-    .pill.ok { background:#e8f5e9; color:var(--ok); }
-    .pill.warn { background:#fff8e1; color:var(--warn); }
-    .pill.bad { background:#ffebee; color:var(--bad); }
-
-    .back { display:inline-block; margin-top:1.2rem; }
-
-    /* Category-wide description */
-    .category-desc { 
-      background: #f8fafc; 
-      padding: .75rem; 
-      border-radius: 8px; 
-      margin-bottom: .75rem; 
-      font-style: italic; 
-    }
+    .muted { color: var(--muted); margin-bottom: .5rem;}
+    .card { background: var(--panel); border: 1px solid var(--border); border-radius: 14px; padding: 1rem; box-shadow: 0 6px 18px rgba(2,6,23,.04);}
+    h2 { margin: 0 0 .5rem 0; font-size: 1.25rem;}
+    ul { margin: .15rem 0 .6rem 1.25rem;}
+    li { margin: .12rem 0;}
+    .pill { display:inline-block; padding:.15rem .5rem; border-radius:999px; font-weight:700; font-size:.85rem;}
+    .pill.ok { background:#e8f5e9; color:var(--ok);}
+    .pill.warn { background:#fff8e1; color:var(--warn);}
+    .pill.bad { background:#ffebee; color:var(--bad);}
+    .back { display:inline-block; margin-top:1.1rem;}
+    .category-desc { background: #f8fafc; padding:.7rem; border-radius:8px; margin-bottom:.65rem; font-style: italic;}
   </style>
 </head>
 <body>
@@ -51,88 +32,49 @@
     <header>
       <h1>Bankroll strategies</h1>
       <p class="muted">
-        Compare popular cash-game bankroll approaches and pick a plan that matches your risk tolerance, skill edge, and goals. Each preset can be used directly in the ladder settings.
+        Pick one style and use its numbers in the ladder’s settings. Each plan suits different risk comfort and progress wishes.
       </p>
     </header>
 
-    <div class="stack">
-      <div class="card stack">
-        <h2>Aggressive presets <span class="pill warn">higher risk</span></h2>
-        <div class="category-desc">
-          <strong>Who it suits:</strong> Confident winners with strong edges who play high volume and are comfortable with swings.<br>
-          <strong>Pro:</strong> Fastest climb to higher stakes.<br>
-          <strong>Con:</strong> More frequent move-downs and bigger bankroll swings.
-        </div>
-        <div class="grid">
-          <div class="stack">
-            <h3>12 BI, 2-shot ladder</h3>
-            <ul>
-              <li>Shot start: <b>12 BI</b>; Shot size: <b>2 BI</b>; Move down: <b>10 BI</b> (derived)</li>
-              <li>The most aggressive common approach—quick testing of higher limits with minimal cushion</li>
-            </ul>
-          </div>
-          <div class="stack">
-            <h3>15 BI, 2-shot ladder</h3>
-            <ul>
-              <li>Shot start: <b>15 BI</b>; Shot size: <b>2 BI</b>; Move down: <b>13 BI</b></li>
-              <li>Slightly more conservative than 12 BI while maintaining aggressive shot-taking speed</li>
-            </ul>
-          </div>
-        </div>
+    <div class="card" style="margin-bottom:1.1rem;">
+      <h2>Aggressive <span class="pill warn">higher risk</span></h2>
+      <div class="category-desc">
+        For confident, high-volume winners comfortable with swings.<br>
+        <strong>Pro:</strong> Fastest climb to bigger stakes.<br>
+        <strong>Con:</strong> Frequent move-downs, large fluctuations possible.
       </div>
-
-      <div class="card stack">
-        <h2>Balanced presets <span class="pill ok">popular</span></h2>
-        <div class="category-desc">
-          <strong>Who it suits:</strong> Solid players who want fewer move-downs while still progressing steadily.<br>
-          <strong>Pro:</strong> Good balance between safety and progression speed.<br>
-          <strong>Con:</strong> Slower climb compared to aggressive approaches.
-        </div>
-        <div class="grid">
-          <div class="stack">
-            <h3>20 BI, 3‑shot ladder</h3>
-            <ul>
-              <li>Shot start: <b>20 BI</b>; Shot size: <b>3 BI</b>; Move down: <b>17 BI</b></li>
-              <li>Popular middle-ground approach with larger shot sizes for extended testing periods</li>
-            </ul>
-          </div>
-          <div class="stack">
-            <h3>25 BI, 2‑shot ladder</h3>
-            <ul>
-              <li>Shot start: <b>25 BI</b>; Shot size: <b>2 BI</b>; Move down: <b>23 BI</b></li>
-              <li>Conservative shot-taking with smaller risk per attempt and larger safety cushions</li>
-            </ul>
-          </div>
-        </div>
-      </div>
-
-      <div class="card stack">
-        <h2>Conservative presets <span class="pill bad">lowest risk</span></h2>
-        <div class="category-desc">
-          <strong>Who it suits:</strong> New players, bankroll rebuilders, or anyone with low variance tolerance.<br>
-          <strong>Pro:</strong> Maximum stability and time to adapt at each level.<br>
-          <strong>Con:</strong> Slowest progression; may feel "stuck" at levels for long periods.
-        </div>
-        <div class="grid">
-          <div class="stack">
-            <h3>30 BI, 3‑shot ladder</h3>
-            <ul>
-              <li>Shot start: <b>30 BI</b>; Shot size: <b>3 BI</b>; Move down: <b>27 BI</b></li>
-              <li>Large cushions with substantial shot budgets for thorough limit testing</li>
-            </ul>
-          </div>
-          <div class="stack">
-            <h3>Classic cushion (no shots)</h3>
-            <ul>
-              <li>Operate at <b>30-40+ BI</b> for current stake; move up only when full buffer is achieved</li>
-              <li>Traditional approach without shot-taking—move up only with complete bankroll for next level</li>
-            </ul>
-          </div>
-        </div>
-      </div>
-
-      <a class="back" href="index.html">← Back to ladder</a>
+      <ul>
+        <li><b>12 BI, 2-shot ladder</b> — Shot start: 12 BI, shot size: 2 BI, move down: 10 BI.</li>
+        <li>Takes shots early for rapid growth, but with minimal buffer for variance.</li>
+      </ul>
     </div>
+
+    <div class="card" style="margin-bottom:1.1rem;">
+      <h2>Balanced <span class="pill ok">popular</span></h2>
+      <div class="category-desc">
+        For most winning players who want reliable progress with manageable swings.<br>
+        <strong>Pro:</strong> Good compromise of stability and speed.<br>
+        <strong>Con:</strong> Progress may be slower than aggressive options.
+      </div>
+      <ul>
+        <li><b>20 BI, 3‑shot ladder</b> — Shot start: 20 BI, shot size: 3 BI, move down: 17 BI.</li>
+        <li>Bigger cushion and shot size, avoids yo-yo swings while still moving up efficiently.</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <h2>Conservative <span class="pill bad">lowest risk</span></h2>
+      <div class="category-desc">
+        For new/rebuilding players or anyone wanting maximum safety.<br>
+        <strong>Pro:</strong> Extremely rare to run out of shots, very stable.<br>
+        <strong>Con:</strong> Slow climb, may feel “stuck” at stakes for longer.
+      </div>
+      <ul>
+        <li><b>30 BI, 3‑shot ladder</b> — Shot start: 30 BI, shot size: 3 BI, move down: 27 BI.</li>
+        <li>Large buffer before shots, rarely drop stakes, prioritize security over speed.</li>
+      </ul>
+    </div>
+    <a class="back" href="index.html">← Back to ladder</a>
   </div>
 </body>
 </html>
