@@ -1,83 +1,509 @@
-  --border: #e5e7eb; --muted: #6b7280; --ink: #111827;
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Poker Bankroll Ladder</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    :root {
+      /* Status colors */
+      --ok: #16a34a;
+      --ok-bg: #e8f5e9;
+      --warn: #d97706;
+      --warn-bg: #fff8e1;
+      --bad: #b91c1c;
+      --bad-bg: #ffebee;
 
-  --hero1: #0f172a; --hero2: #1f2937;
-  --brand: #0ea5e9; --brand-cta: #22c55e;
+      /* UI palette */
+      --border: #e5e7eb;
+      --muted: #6b7280;
+      --ink: #111827;
 
-  --panel: #ffffff; --panel-alt: #fcfcfc; --table-head: #f3f4f6; --zebra: #fafafa;
+      /* Hero gradient */
+      --hero1: #0f172a;
+      --hero2: #1f2937;
+      --brand: #0ea5e9;
+      --brand-cta: #22c55e;
 
-  --goal-bg: #f0f9ff; --goal-border: #bae6fd; --goal-accent: #0369a1;
-}
+      /* Surfaces */
+      --panel: #ffffff;
+      --panel-alt: #fcfcfc;
+      --table-head: #f3f4f6;
+      --zebra: #fafafa;
 
-html { scroll-behavior: smooth; }
-body { font-family: system-ui, -apple-system, Segoe UI, Roboto, "Noto Color Emoji","Apple Color Emoji","Segoe UI Emoji","EmojiOne Color","Android Emoji", sans-serif; margin: 0; color: var(--ink); background: #fff; }
+      /* Goal highlight */
+      --goal-bg: #f0f9ff;   /* light sky */
+      --goal-border: #bae6fd; /* sky-200 */
+      --goal-accent: #0369a1; /* sky-700 */
+    }
 
-.masthead {
-  background: radial-gradient(1200px 600px at 20% -10%, #0ea5e933, transparent 60%), linear-gradient(135deg, var(--hero1), var(--hero2));
-  color: #eef2ff; padding: 3rem 1.5rem 2.25rem; border-bottom: 1px solid #0b1220;
-}
-.container { max-width: 1080px; margin: 0 auto; }
-.masthead h1 { margin: 0 0 .5rem 0; font-size: 2rem; letter-spacing: .2px; }
-.masthead p.lead { margin: .25rem 0 .5rem; color: #cbd5e1; font-size: 1.05rem; }
-.mast-actions { display: flex; gap: .75rem; align-items: center; margin-top: .75rem; }
-.btn { display: inline-flex; align-items: center; gap: .45rem; padding: .6rem .95rem; border-radius: 10px; border: 1px solid transparent; cursor: pointer; font-weight: 600; text-decoration: none; }
-.btn.primary { background: var(--brand-cta); color: #fff; border-color: var(--brand-cta); }
-.btn.ghost { background: transparent; color: #e5e7eb; border-color: #64748b; }
+    html { scroll-behavior: smooth; }
 
-main { padding: 1.75rem 1.5rem 2.5rem; }
-h2 { margin: 0 0 1rem 0; font-size: 1.35rem; }
-.panel { border: 1px solid var(--border); border-radius: 14px; padding: 1rem; background: var(--panel); box-shadow: 0 6px 18px rgba(2,6,23,.06); }
-.space { height: 1rem; }
-.lead { font-size: 1.03rem; color: #374151; }
-.muted { color: var(--muted); font-size: .92rem; }
-.footnote { color: #6b7280; font-size: .85rem; }
+    body {
+      font-family: system-ui, -apple-system, Segoe UI, Roboto,
+                   "Noto Color Emoji", "Apple Color Emoji", "Segoe UI Emoji",
+                   "EmojiOne Color", "Android Emoji", sans-serif;
+      margin: 0;
+      color: var(--ink);
+      background: #fff;
+    }
 
-.row { display: flex; gap: .75rem; align-items: center; flex-wrap: wrap; }
-.stack { display: grid; gap: .5rem; }
-label { font-weight: 600; }
-select, input[type="number"], input[type="text"] { padding: .5rem .65rem; border: 1px solid var(--border); border-radius: 10px; background: #fff; min-height: 42px; }
-input[type="number"] { width: 11rem; }
-input[readonly] { background: #fafafa; color: #444; }
-select { min-width: 11rem; }
-button { padding: .55rem .95rem; border: 1px solid #d1d5db; border-radius: 10px; background: #f7f7f7; cursor: pointer; font-weight: 600; }
-button.primary { background: var(--brand); color: #fff; border-color: var(--brand); }
-button.ghost { background: transparent; }
-.emoji { margin-right: .35rem; }
+    /* Hero */
+    .masthead {
+      background: radial-gradient(1200px 600px at 20% -10%, #0ea5e933, transparent 60%),
+                  linear-gradient(135deg, var(--hero1), var(--hero2));
+      color: #eef2ff;
+      padding: 3rem 1.5rem 2.25rem;
+      border-bottom: 1px solid #0b1220;
+    }
+    .container { max-width: 1080px; margin: 0 auto; }
+    .masthead h1 { margin: 0 0 .5rem 0; font-size: 2rem; letter-spacing: .2px; }
+    .masthead p.lead { margin: .25rem 0 .5rem; color: #cbd5e1; font-size: 1.05rem; }
+    .mast-actions { display: flex; gap: .75rem; align-items: center; margin-top: .75rem; }
+    .btn {
+      display: inline-flex; align-items: center; gap: .45rem;
+      padding: .6rem .95rem; border-radius: 10px; border: 1px solid transparent;
+      cursor: pointer; font-weight: 600; text-decoration: none;
+    }
+    .btn.primary { background: var(--brand-cta); color: #fff; border-color: var(--brand-cta); }
+    .btn.ghost { background: transparent; color: #e5e7eb; border-color: #64748b; }
 
-table { border-collapse: collapse; width: 100%; background: #fff; }
-th, td { border: 1px solid var(--border); padding: 10px; text-align: right; vertical-align: top; }
-th { background: var(--table-head); position: sticky; top: 0; z-index: 1; }
-td:first-child, th:first-child { text-align: left; }
+    /* Sections */
+    main { padding: 1.75rem 1.5rem 2.5rem; }
+    h2 { margin: 0 0 1rem 0; font-size: 1.35rem; }
+    .panel {
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 1rem;
+      background: var(--panel);
+      box-shadow: 0 6px 18px rgba(2, 6, 23, 0.06);
+    }
+    .space { height: 1rem; }
+    .lead { font-size: 1.03rem; color: #374151; }
+    .muted { color: var(--muted); font-size: .92rem; }
+    .footnote { color: #6b7280; font-size: .85rem; }
 
-tbody tr:nth-child(odd) { background: var(--zebra); }
-tbody tr.ok   > td { background: var(--ok-bg) !important; }
-tbody tr.warn > td { background: var(--warn-bg) !important; }
-tbody tr.bad  > td { background: var(--bad-bg) !important; }
-tbody tr.ok   > td:first-child { border-left: 4px solid var(--ok); }
-tbody tr.warn > td:first-child { border-left: 4px solid var(--warn); }
-tbody tr.bad  > td:first-child { border-left: 4px solid var(--bad); }
+    .row { display: flex; gap: .75rem; align-items: center; flex-wrap: wrap; }
+    .stack { display: grid; gap: .5rem; }
+    label { font-weight: 600; }
 
-.pill { display: inline-flex; align-items: center; gap: .4rem; padding: .15rem .55rem; border-radius: 999px; font-weight: 700; letter-spacing: .2px; }
-.pill.ok { color: var(--ok); background: #eefcf0; }
-.pill.warn { color: var(--warn); background: #fff3d6; }
-.pill.bad { color: var(--bad); background: #ffe3e3; }
+    select, input[type="number"], input[type="text"] {
+      padding: .5rem .65rem; border: 1px solid var(--border); border-radius: 10px;
+      background: #fff; min-height: 42px;
+    }
+    input[type="number"] { width: 11rem; }
+    input[readonly] { background: #fafafa; color: #444; }
+    select { min-width: 11rem; }
+    button {
+      padding: .55rem .95rem; border: 1px solid #d1d5db; border-radius: 10px;
+      background: #f7f7f7; cursor: pointer; font-weight: 600;
+    }
+    button.primary { background: var(--brand); color: #fff; border-color: var(--brand); }
+    button.ghost { background: transparent; }
 
-#goal { margin: 1rem 0; font-weight: 600; background: var(--goal-bg); border: 1px solid var(--goal-border); border-radius: 12px; padding: .9rem 1rem; display: flex; align-items: center; gap: .6rem; }
-#goal .goal-emoji { font-size: 1.25rem; }
-#goal .goal-text { font-size: 1.05rem; color: var(--goal-accent); }
-#goal .goal-text b { font-weight: 800; }
+    /* Strategy cards */
+    .cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin-top: .75rem; }
+    .card {
+      border: 1px solid var(--border); border-radius: 12px; padding: 1rem; background: var(--panel-alt);
+      box-shadow: 0 8px 24px rgba(2, 6, 23, 0.05);
+    }
+    .card h3 { margin: 0 0 .35rem 0; font-size: 1.02rem; }
+    .badge { display: inline-block; padding: .15rem .5rem; border-radius: 999px;
+      font-size: .8rem; background: #eef2ff; color: #1e293b; margin-left: .35rem; }
+    .emoji { margin-right: .35rem; }
 
-.grid-2 { display: grid; grid-template-columns: 1.2fr 1fr; gap: 1rem; }
+    /* Table */
+    table { border-collapse: collapse; width: 100%; background: #fff; }
+    th, td { border: 1px solid var(--border); padding: 10px; text-align: right; vertical-align: top; }
+    th { background: var(--table-head); position: sticky; top: 0; z-index: 1; }
+    td:first-child, th:first-child { text-align: left; }
 
-@keyframes fadeUp { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
-.masthead .container, .panel { animation: fadeUp .5s ease both; }
+    /* Faint zebra striping as fallback (will be overridden by status classes below) */
+    tbody tr:nth-child(odd) { background: var(--zebra); }
 
-@media (max-width: 980px) {
-  .grid-2 { grid-template-columns: 1fr; }
-  input[type="number"] { width: 9rem; }
-  select { min-width: 9rem; }
-  th, td { font-size: .95rem; }
-}
+    /* Strong status colors: target TDs to override zebra background */
+    tbody tr.ok    > td { background: var(--ok-bg)   !important; }
+    tbody tr.warn  > td { background: var(--warn-bg) !important; }
+    tbody tr.bad   > td { background: var(--bad-bg)  !important; }
 
-/* Link button for strategies */
-.link-btn { display: inline-flex; align-items: center; gap: .4rem; padding: .5rem .8rem; border-radius: 10px; border: 1px solid var(--border); background: #fff; text-decoration: none; font-weight: 600; color: var(--ink); }
-.link-btn:hover { background: #f8fafc; }
+    /* Left accent to reinforce status */
+    tbody tr.ok   > td:first-child { border-left: 4px solid var(--ok); }
+    tbody tr.warn > td:first-child { border-left: 4px solid var(--warn); }
+    tbody tr.bad  > td:first-child { border-left: 4px solid var(--bad); }
+
+    /* Status pill */
+    .pill {
+      display: inline-flex; align-items: center; gap: .4rem;
+      padding: .15rem .55rem; border-radius: 999px; font-weight: 700; letter-spacing: .2px;
+    }
+    .pill.ok   { color: var(--ok);   background: #eefcf0; }
+    .pill.warn { color: var(--warn); background: #fff3d6; }
+    .pill.bad  { color: var(--bad);  background: #ffe3e3; }
+
+    /* Goal highlight */
+    #goal {
+      margin: 1rem 0;
+      font-weight: 600;
+      background: var(--goal-bg);
+      border: 1px solid var(--goal-border);
+      border-radius: 12px;
+      padding: .9rem 1rem;
+      display: flex;
+      align-items: center;
+      gap: .6rem;
+    }
+    #goal .goal-emoji { font-size: 1.25rem; }
+    #goal .goal-text { font-size: 1.05rem; color: var(--goal-accent); }
+    #goal .goal-text b { font-weight: 800; }
+
+    /* Layout helpers */
+    .grid-2 { display: grid; grid-template-columns: 1.2fr 1fr; gap: 1rem; }
+
+    /* Animations */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(6px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .masthead .container, .panel { animation: fadeUp .5s ease both; }
+
+    @media (max-width: 980px) {
+      .cards { grid-template-columns: 1fr; }
+      .grid-2 { grid-template-columns: 1fr; }
+      input[type="number"] { width: 9rem; }
+      select { min-width: 9rem; }
+      th, td { font-size: .95rem; }
+    }
+  </style>
+</head>
+<body>
+  <header class="masthead">
+    <div class="container">
+      <h1>Poker Bankroll Ladder</h1>
+      <p class="lead">See readiness across NL2–NL5000 with custom shot‑taking rules, colored status rows, and a clear goal to the next stake.</p>
+      <p class="muted">Strong bankroll management cushions variance, reduces bust risk, and supports steady stake progression over time.</p>
+      <div class="mast-actions">
+        <a class="btn primary" href="#step1"><span aria-hidden="true">🎯</span>Get started</a>
+        <a class="btn ghost" href="#why">Learn more</a>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+    <!-- Intro + strategies -->
+    <section id="why" class="panel">
+      <div class="grid-2">
+        <div>
+          <h2>Why bankroll management?</h2>
+          <p class="lead">
+            Variance creates downswings even for winning players; a dedicated bankroll and right‑sized stakes keep swings survivable and decisions consistent.
+          </p>
+          <p class="muted">
+            Separate funds, choose limits your bankroll can truly support, and adjust with discipline as results and risk tolerance evolve.
+          </p>
+          <p class="footnote">
+            Cash games shown here; tournaments and PLO generally require larger cushions due to higher variance.
+          </p>
+        </div>
+        <div>
+          <h2>Strategies at a glance</h2>
+          <div class="cards">
+            <div class="card">
+              <h3><span class="emoji" aria-hidden="true">🛡️</span>Conservative cushions <span class="badge">core</span></h3>
+              <p class="muted">Use many buy‑ins appropriate to format (e.g., cash 30–40+, MTTs 50–100+) and scale with win rate and risk tolerance.</p>
+            </div>
+            <div class="card">
+              <h3><span class="emoji" aria-hidden="true">🎯</span>Shot‑taking with stops</h3>
+              <p class="muted">Pick a shot‑start threshold, a fixed shot size, and move down automatically when the shot budget is spent.</p>
+            </div>
+            <div class="card">
+              <h3><span class="emoji" aria-hidden="true">⚖️</span>Format‑aware rules</h3>
+              <p class="muted">Increase buy‑in counts for higher‑variance formats (e.g., PLO/MTTs); decrease for lower‑variance ones (e.g., limit).</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div class="space"></div>
+
+    <!-- Step 1: Settings -->
+    <section id="step1" class="panel">
+      <h2>Choose settings</h2>
+      <div class="space"></div>
+
+      <div class="grid-2">
+        <div class="stack">
+          <label for="currency">Currency</label>
+          <select id="currency" aria-label="Currency symbol">
+            <option value="$" selected>USD ($)</option>
+            <option value="C$">CAD (C$)</option>
+            <option value="A$">AUD (A$)</option>
+            <option value="£">Pound (£)</option>
+            <option value="€">Euro (€)</option>
+          </select>
+        </div>
+
+        <div class="stack">
+          <label for="bankroll" id="bankrollLabel">Bankroll ($)</label>
+          <input id="bankroll" type="number" value="900" min="0" step="50" />
+        </div>
+
+        <div class="stack">
+          <label for="shotStart">Shot start (buy-ins)</label>
+          <input id="shotStart" type="number" value="12" min="1" step="1" />
+          <span class="muted">Start shots at this many buy‑ins for the target limit.</span>
+        </div>
+
+        <div class="stack">
+          <label for="shotSize">Shot size (buy-ins)</label>
+          <input id="shotSize" type="number" value="2" min="1" step="1" />
+          <span class="muted">Risk this many buy‑ins per shot attempt.</span>
+        </div>
+
+        <div class="stack">
+          <label for="moveDownDisplay">Move down (buy-ins)</label>
+          <input id="moveDownDisplay" type="number" value="10" readonly />
+          <span class="muted">Derived: Move down = Shot start − Shot size.</span>
+        </div>
+      </div>
+
+      <div id="errorBox" class="error hidden"></div>
+      <div class="space"></div>
+
+      <div class="row">
+        <button id="continue" class="btn primary" type="button">
+          <span class="emoji" aria-hidden="true">➡️</span>Continue
+        </button>
+        <span class="muted">Shot size must be less than Shot start.</span>
+      </div>
+    </section>
+
+    <div class="space"></div>
+
+    <!-- Step 2: Results -->
+    <section id="step2" class="panel hidden">
+      <h2>Results</h2>
+      <div id="summary" class="muted"></div>
+
+      <!-- Prominent goal card -->
+      <div id="goal">
+        <span class="goal-emoji" aria-hidden="true">🎯</span>
+        <span class="goal-text" id="goalText"></span>
+      </div>
+
+      <table id="tbl" aria-describedby="tableHelp"></table>
+      <p id="tableHelp" class="muted">
+        Status colors mark readiness per stake; the shortfall shows how much more is needed to reach the shot‑start bankroll.
+      </p>
+
+      <div class="row">
+        <button id="back" class="btn ghost" type="button">
+          <span class="emoji" aria-hidden="true">⬅️</span>Back
+        </button>
+        <button id="recompute" class="btn primary" type="button">
+          <span class="emoji" aria-hidden="true">🔁</span>Recompute
+        </button>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    // State
+    let CURRENCY = "$";
+    let SHOT_START_BI = 12;
+    let SHOT_SIZE_BI = 2;
+    let MOVE_DOWN_BI = SHOT_START_BI - SHOT_SIZE_BI; // derived
+
+    const LIMITS = [2,5,10,25,50,100,200,500,1000,2000,5000];
+
+    const EMOJI = { ok: {char: "✅"}, warn: {char: "⚠️"}, bad: {char: "⛔"} };
+
+    const $  = (id) => document.getElementById(id);
+    const hide = (el) => el.classList.add("hidden");
+    const show = (el) => el.classList.remove("hidden");
+
+    function setCurrencySymbol(sym) {
+      const clean = (sym || "").trim();
+      CURRENCY = clean.length ? clean : "$";
+      $("bankrollLabel").textContent = `Bankroll (${CURRENCY})`;
+    }
+
+    function updateDerivedMoveDownDisplay() {
+      const shotStart = parseInt($("shotStart").value || "0", 10);
+      const shotSize  = parseInt($("shotSize").value  || "0", 10);
+      const derived = shotStart - shotSize;
+      $("moveDownDisplay").value = Number.isFinite(derived) ? Math.max(0, derived) : 0;
+    }
+
+    function money(x) { return `${CURRENCY}${Number(x).toFixed(0)}`; }
+
+    function validateInputs() {
+      const errors = [];
+      const bankroll  = parseFloat($("bankroll").value || "0");
+      const shotStart = parseInt($("shotStart").value || "0", 10);
+      const shotSize  = parseInt($("shotSize").value  || "0", 10);
+      if (!(bankroll >= 0)) errors.push("Bankroll must be a number ≥ 0.");
+      if (!(shotStart >= 1)) errors.push("Shot start must be at least 1 BI.");
+      if (!(shotSize >= 1)) errors.push("Shot size must be at least 1 BI.");
+      if (shotSize >= shotStart) errors.push("Shot size must be less than Shot start.");
+      return { ok: errors.length === 0, errors, bankroll, shotStart, shotSize };
+    }
+
+    function computeRows(bankroll) {
+      return LIMITS.map((nl) => {
+        const buyin = nl;
+        const shotStartAmt = SHOT_START_BI * buyin;
+        const moveDownAmt  = MOVE_DOWN_BI  * buyin;
+        const shotSizeAmt  = SHOT_SIZE_BI  * buyin;
+        const currentBI = bankroll / buyin;
+
+        const betweenLabel = `Between ${MOVE_DOWN_BI}\u2013${SHOT_START_BI} BI`;
+        const status = currentBI >= SHOT_START_BI
+          ? "Shot-OK"
+          : currentBI >= MOVE_DOWN_BI
+            ? betweenLabel
+            : "Below move-down";
+
+        const shortfall = Math.max(0, shotStartAmt - bankroll);
+        return {
+          limit: `NL${nl}`,
+          buyin,
+          shotStartAmt,
+          moveDownAmt,
+          shotSizeAmt,
+          currentBI: currentBI.toFixed(2),
+          status,
+          shortfall
+        };
+      });
+    }
+
+    function nextTarget(bankroll) {
+      for (const nl of LIMITS) {
+        const need = SHOT_START_BI * nl - bankroll;
+        if (need > 0) return { limit: `NL${nl}`, need };
+      }
+      return null;
+    }
+
+    function statusClass(status) {
+      if (status === "Shot-OK") return "ok";
+      if (status.startsWith("Between")) return "warn";
+      return "bad";
+    }
+
+    function makeStatusPill(statusText) {
+      const cls = statusClass(statusText);
+      const wrap = document.createElement("span");
+      wrap.className = `pill ${cls}`;
+      const em = document.createElement("span");
+      em.className = "emoji"; em.setAttribute("aria-hidden", "true");
+      em.textContent = (cls === "ok" ? EMOJI.ok.char : cls === "warn" ? EMOJI.warn.char : EMOJI.bad.char);
+      wrap.appendChild(em);
+      wrap.appendChild(document.createTextNode(statusText));
+      return wrap;
+    }
+
+    function renderGoal(bankroll) {
+      const tgt = nextTarget(bankroll);
+      const goalText = $("goalText");
+      if (tgt) {
+        // Next target: bold the stake and the money needed
+        goalText.innerHTML =
+          `Next target: <b>${tgt.limit}</b>. Need <b>${money(tgt.need)}</b> more.`;
+        // Ensure target icon is a dart
+        document.querySelector("#goal .goal-emoji").textContent = "🎯";
+      } else {
+        goalText.textContent =
+          `Already at or above the chosen shot-start BI for the top listed stake.`;
+        document.querySelector("#goal .goal-emoji").textContent = "🏁";
+      }
+    }
+
+    function renderTable(bankroll) {
+      const rows = computeRows(bankroll);
+      renderGoal(bankroll);
+
+      $("summary").textContent =
+        `Currency: ${CURRENCY} | Shot start: ${SHOT_START_BI} BI | ` +
+        `Shot size: ${SHOT_SIZE_BI} BI | Move down: ${MOVE_DOWN_BI} BI (derived)`;
+
+      const tbl = $("tbl");
+      tbl.innerHTML = "";
+
+      const headers = [
+        "Limit",
+        `Buy-in (${CURRENCY})`,
+        `Shot start (BI)`,
+        `Shot start (${CURRENCY})`,
+        `Move down (BI)`,
+        `Move down (${CURRENCY})`,
+        `Shot size (BI)`,
+        `Shot size (${CURRENCY})`,
+        "Current BI",
+        "Status",
+        `Shortfall (${CURRENCY})`
+      ];
+
+      const thead = document.createElement("thead");
+      const trh = document.createElement("tr");
+      headers.forEach((h) => {
+        const th = document.createElement("th");
+        th.setAttribute("scope", "col"); th.textContent = h; trh.appendChild(th);
+      });
+      thead.appendChild(trh); tbl.appendChild(thead);
+
+      const tbody = document.createElement("tbody");
+      rows.forEach((r) => {
+        const tr = document.createElement("tr");
+        tr.className = statusClass(r.status);
+
+        const cells = [
+          r.limit, money(r.buyin), SHOT_START_BI, money(r.shotStartAmt),
+          MOVE_DOWN_BI, money(r.moveDownAmt), SHOT_SIZE_BI, money(r.shotSizeAmt),
+          r.currentBI, r.status, money(r.shortfall)
+        ];
+        cells.forEach((v, idx) => {
+          const td = document.createElement("td");
+          if (idx === 9) {
+            td.appendChild(makeStatusPill(r.status));
+          } else {
+            td.textContent = v;
+          }
+          tr.appendChild(td);
+        });
+        tbody.appendChild(tr);
+      });
+      tbl.appendChild(tbody);
+    }
+
+    // Live updates on Step 1
+    $("shotStart").addEventListener("input", updateDerivedMoveDownDisplay);
+    $("shotSize").addEventListener("input", updateDerivedMoveDownDisplay);
+    $("currency").addEventListener("change", (e) => setCurrencySymbol(e.target.value));
+
+    // Navigation
+    $("continue").addEventListener("click", () => {
+      const v = validateInputs();
+      const box = $("errorBox");
+      if (!v.ok) { box.innerHTML = v.errors.map((e) => `• ${e}`).join("<br>"); box.classList.remove("hidden"); return; }
+      box.innerHTML = ""; box.classList.add("hidden");
+
+      setCurrencySymbol($("currency").value);
+      SHOT_START_BI = v.shotStart;
+      SHOT_SIZE_BI  = v.shotSize;
+      MOVE_DOWN_BI  = SHOT_START_BI - SHOT_SIZE_BI;
+
+      hide($("step1")); show($("step2"));
+      renderTable(parseFloat($("bankroll").value || "0"));
+    });
+
+    $("back").addEventListener("click", () => { show($("step1")); hide($("step2")); });
+    $("recompute").addEventListener("click", () => { renderTable(parseFloat($("bankroll").value || "0")); });
+
+    // Init
+    setCurrencySymbol($("currency").value);
+    updateDerivedMoveDownDisplay();
+  </script>
+</body>
+</html>
