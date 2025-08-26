@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Bankroll Strategies • Poker Bankroll Ladder</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    :root {
+      --border: #e5e7eb; --ink:#111827; --muted:#6b7280;
+      --panel:#fff; --bg:#f8fafc; --link:#0369a1;
+      --ok:#16a34a; --warn:#d97706; --bad:#b91c1c;
+    }
+    body { font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif; margin:0; color:var(--ink); background:var(--bg); }
+    .container { max-width: 900px; margin: 0 auto; padding: 1.25rem; }
+    header { padding: 1.25rem 0 0.5rem; }
+    h1 { margin: 0 0 .25rem 0; font-size: 1.6rem; }
+    p.muted { color: var(--muted); }
+    a { color: var(--link); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    .card { background: var(--panel); border: 1px solid var(--border); border-radius: 14px; padding: 1rem; box-shadow: 0 6px 18px rgba(2,6,23,.04); }
+    .stack { display: grid; gap: .65rem; }
+    h2 { margin: 0 0 .5rem 0; font-size: 1.25rem; }
+    h3 { margin: .5rem 0 .35rem 0; font-size: 1.05rem; }
+    ul { margin: .25rem 0 .5rem 1.25rem; }
+    li { margin: .15rem 0; }
+
+    .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+    @media (max-width: 900px) { .grid { grid-template-columns: 1fr; } }
+
+    .pill { display:inline-block; padding:.15rem .5rem; border-radius:999px; font-weight:700; font-size:.85rem; }
+    .pill.ok { background:#e8f5e9; color:var(--ok); }
+    .pill.warn { background:#fff8e1; color:var(--warn); }
+    .pill.bad { background:#ffebee; color:var(--bad); }
+
+    .back { display:inline-block; margin-top:1rem; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>Bankroll strategies</h1>
+      <p class="muted">
+        Compare popular cash-game bankroll approaches and pick a plan that matches your risk tolerance, skill edge, and goals. Each preset can be used directly in the ladder settings.
+      </p>
+    </header>
+
+    <div class="stack">
+      <div class="card stack">
+        <h2>Aggressive presets <span class="pill warn">higher risk</span></h2>
+        <div class="grid">
+          <div class="stack">
+            <h3>12 BI, 2-shot ladder</h3>
+            <ul>
+              <li>Shot start: <b>12 BI</b>; Shot size: <b>2 BI</b>; Move down: <b>10 BI</b> (derived)</li>
+              <li>Who it suits: confident winners with a strong edge who play lots of hands and are comfortable with swings</li>
+              <li>Pros: Fastest climb, quick to test higher stakes</li>
+              <li>Cons: More frequent move-downs, bigger bankroll swings</li>
+            </ul>
+          </div>
+          <div class="stack">
+            <h3>15 BI, 2-shot ladder</h3>
+            <ul>
+              <li>Shot start: <b>15 BI</b>; Shot size: <b>2 BI</b>; Move down: <b>13 BI</b></li>
+              <li>Who it suits: proven winners who want a small cushion but value speed over maximum safety</li>
+              <li>Pros: Still relatively fast, but steadier than 12 BI</li>
+              <li>Cons: Shot-taking can still be swingy</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="card stack">
+        <h2>Balanced presets <span class="pill ok">popular</span></h2>
+        <div class="grid">
+          <div class="stack">
+            <h3>20 BI, 3‑shot ladder</h3>
+            <ul>
+              <li>Shot start: <b>20 BI</b>; Shot size: <b>3 BI</b>; Move down: <b>17 BI</b></li>
+              <li>Who it suits: grinders with solid edge who want fewer “yo-yo” move-downs</li>
+              <li>Pros: Fewer move-downs, balanced shot/cushion speed</li>
+              <li>Cons: Climb is slower than aggressive ladders</li>
+            </ul>
+          </div>
+          <div class="stack">
+            <h3>25 BI, 2‑shot ladder</h3>
+            <ul>
+              <li>Shot start: <b>25 BI</b>; Shot size: <b>2 BI</b>; Move down: <b>23 BI</b></li>
+              <li>Who it suits: steady players optimizing for fewer move-downs and more cushion</li>
+              <li>Pros: Gentler swings, more time at each limit</li>
+              <li>Cons: Slowest progress to the next limit among shot-takers</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="card stack">
+        <h2>Conservative presets <span class="pill bad">lowest risk</span></h2>
+        <div class="grid">
+          <div class="stack">
+            <h3>30 BI, 3‑shot ladder</h3>
+            <ul>
+              <li>Shot start: <b>30 BI</b>; Shot size: <b>3 BI</b>; Move down: <b>27 BI</b></li>
+              <li>Who it suits: newer players, those rebuilding a bankroll, anyone with a low tolerance for swings</li>
+              <li>Pros: Almost never bust the shot budget, plenty of time to adapt at each limit</li>
+              <li>Cons: Climb is slowest; players may feel “stuck” at a level</li>
+            </ul>
+          </div>
+          <div class="stack">
+            <h3>Classic cushion (no shots)</h3>
+            <ul>
+              <li>Operate at <b>30-40+ BI</b> for the current stake, move up only when the full buffer for the next stake is achieved</li>
+              <li>Who it suits: very conservative or variance-sensitive players, beginners</li>
+              <li>Pros: Extremely stable, lowest risk of ruin</li>
+              <li>Cons: Slowest progress, less exposure to high-stakes play</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <a class="back" href="index.html">← Back to ladder</a>
+    </div>
+  </div>
+</body>
+</html>
