@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>PLO Bankroll Strategies • PLO Bankroll Calculator</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    :root {
+      --border: #e5e7eb; --ink:#111827; --muted:#6b7280;
+      --panel:#fff; --bg:#f8fafc; --link:#0369a1;
+      --ok:#16a34a; --warn:#d97706; --bad:#b91c1c;
+    }
+    body { font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif; margin:0; color:var(--ink); background:var(--bg); }
+    .container { max-width: 900px; margin: 0 auto; padding: 1.25rem; }
+    header { padding: 1.25rem 0 0.5rem; }
+    h1 { margin: 0 0 .25rem 0; font-size: 1.6rem; }
+    .muted { color: var(--muted); margin-bottom: .5rem;}
+    .card { background: var(--panel); border: 1px solid var(--border); border-radius: 14px; padding: 1rem; box-shadow: 0 6px 18px rgba(2,6,23,.04);}
+    h2 { margin: 0 0 .5rem 0; font-size: 1.25rem;}
+    ul { margin: .15rem 0 .6rem 1.25rem;}
+    li { margin: .12rem 0;}
+    .pill { display:inline-block; padding:.15rem .5rem; border-radius:999px; font-weight:700; font-size:.85rem;}
+    .pill.ok { background:#e8f5e9; color:var(--ok);}
+    .pill.warn { background:#fff8e1; color:var(--warn);}
+    .pill.bad { background:#ffebee; color:var(--bad);}
+    .back { display:inline-block; margin-top:1.1rem;}
+    .category-desc { background: #f8fafc; padding:.7rem; border-radius:8px; margin-bottom:.65rem; font-style: italic;}
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>PLO bankroll strategies</h1>
+      <p class="muted">
+        PLO's higher variance requires significantly larger bankrolls than NLH. Pick a conservative approach that matches your risk tolerance and can handle 25+ buy-in swings.
+      </p>
+    </header>
+
+    <div class="card" style="margin-bottom:1.1rem;">
+      <h2>Aggressive <span class="pill warn">higher risk</span></h2>
+      <div class="category-desc">
+        For highly skilled PLO players with proven edges and high volume who can handle massive swings.<br>
+        <strong>Pro:</strong> Faster progression through stakes despite high variance.<br>
+        <strong>Con:</strong> Extreme bankroll swings, frequent move-downs during bad runs.
+      </div>
+      <ul>
+        <li><b>40 BI, 10-shot ladder</b>: Shot start 40 BI, shot size 10 BI, move down 30 BI.</li>
+        <li>Minimum viable for skilled players, but expect 20-30 BI swings regularly.</li>
+      </ul>
+    </div>
+
+    <div class="card" style="margin-bottom:1.1rem;">
+      <h2>Balanced <span class="pill ok">recommended</span></h2>
+      <div class="category-desc">
+        For consistent PLO winners who want steady progression with manageable swings.<br>
+        <strong>Pro:</strong> Good balance of safety and growth, handles most variance.<br>
+        <strong>Con:</strong> Still significant swings compared to NLH strategies.
+      </div>
+      <ul>
+        <li><b>80 BI, 15-shot ladder</b>: Shot start 80 BI, shot size 15 BI, move down 65 BI.</li>
+        <li>Solid middle ground that can weather typical PLO variance while progressing.</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <h2>Conservative <span class="pill bad">safest</span></h2>
+      <div class="category-desc">
+        For PLO beginners, professionals, or anyone who wants maximum protection from variance.<br>
+        <strong>Pro:</strong> Nearly bulletproof against downswings, minimal risk of going broke.<br>
+        <strong>Con:</strong> Very slow progression, requires patience and large starting bankrolls.
+      </div>
+      <ul>
+        <li><b>150 BI, 25-shot ladder</b>: Shot start 150 BI, shot size 25 BI, move down 125 BI.</li>
+        <li>Professional-level safety for those who cannot afford to rebuild bankrolls.</li>
+      </ul>
+    </div>
+    <a class="back" href="plo.html">← Back to PLO calculator</a>
+  </div>
+</body>
+</html>
