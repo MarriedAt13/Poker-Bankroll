@@ -173,7 +173,7 @@
         <div>
           <h2>Why bankroll management?</h2>
           <p class="lead">Variance creates downswings even for winning players; a dedicated bankroll and right‑sized stakes keep swings survivable and decisions consistent.</p>
-          <p class="muted">Separate funds, choose limits your bankroll can support, and adjust with discipline as results and risk tolerance evolve.</p>
+          <p class="muted">Separate funds, choose limits your bankroll can support, and adjust with discipline as results and risk tolerance evolve. This calculator focuses on No Limit Hold'em cash games.</p>
         </div>
         <div>
           <h2>Strategies</h2>
@@ -251,14 +251,6 @@
       </div>
       <table id="tbl" aria-describedby="tableHelp"></table>
       <p id="tableHelp" class="muted">Status colors mark readiness per stake; the shortfall shows how much more is needed to reach the shot‑start bankroll.</p>
-      <div class="row">
-        <button id="back" class="btn ghost" type="button">
-          <span class="emoji" aria-hidden="true">⬅️</span>Back
-        </button>
-        <button id="recompute" class="btn primary" type="button">
-          <span class="emoji" aria-hidden="true">🔁</span>Recompute
-        </button>
-      </div>
     </section>
   </main>
 
@@ -466,7 +458,6 @@
 
     // Live validation
     function onFieldInput() {
-      // Clear top box progressively if errors are fixed
       validateInputs();
       updateDerivedMoveDownDisplay();
     }
@@ -478,7 +469,7 @@
 
     $("continue").addEventListener("click", () => {
       const v = validateInputs();
-      if (!v.ok) return; // don't proceed until valid
+      if (!v.ok) return;
 
       setCurrencySymbol($("currency").value);
       SHOT_START_BI = v.shotStart;
@@ -487,7 +478,6 @@
 
       hide($("step1")); show($("step2"));
 
-      // Defensive parse for bankroll
       const brParsed = parseFloatSafe($("bankroll").value);
       const bankroll = (brParsed.ok && Number.isFinite(brParsed.value)) ? brParsed.value : 0;
       renderTable(bankroll);
