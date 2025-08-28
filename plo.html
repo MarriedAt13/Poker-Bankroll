@@ -251,25 +251,17 @@
       </div>
       <table id="tbl" aria-describedby="tableHelp"></table>
       <p id="tableHelp" class="muted">Status colors mark readiness per stake; larger bankrolls are essential for PLO's variance.</p>
-      <div class="row">
-        <button id="back" class="btn ghost" type="button">
-          <span class="emoji" aria-hidden="true">⬅️</span>Back
-        </button>
-        <button id="recompute" class="btn primary" type="button">
-          <span class="emoji" aria-hidden="true">🔁</span>Recompute
-        </button>
-      </div>
     </section>
   </main>
 
   <script>
     // State - PLO defaults are more conservative
     let CURRENCY = "$";
-    let SHOT_START_BI = 25;  // More conservative than NLH
-    let SHOT_SIZE_BI = 5;    // Larger shots due to higher variance
+    let SHOT_START_BI = 25;
+    let SHOT_SIZE_BI = 5;
     let MOVE_DOWN_BI = SHOT_START_BI - SHOT_SIZE_BI;
 
-    // PLO stakes ladder (typically 5-card PLO)
+    // PLO stakes ladder
     const LIMITS = [5,10,25,50,100,200,500,1000,2000,5000];
 
     // Shortcuts
@@ -379,7 +371,7 @@
 
         const shortfall = Math.max(0, shotStartAmt - bankroll);
         return {
-          limit: `PLO${nl}`,  // PLO prefix instead of NL
+          limit: `PLO${nl}`,
           buyin,
           shotStartAmt,
           moveDownAmt,
@@ -494,9 +486,9 @@
 
     // Initial PLO defaults (more conservative)
     setCurrencySymbol($("currency").value);
-    $("bankroll").value = "2500";  // Higher starting bankroll
-    $("shotStart").value = "25";   // More conservative shot start
-    $("shotSize").value = "5";     // Larger shot size
+    $("bankroll").value = "2500";
+    $("shotStart").value = "25";
+    $("shotSize").value = "5";
     updateDerivedMoveDownDisplay();
   </script>
 </body>
