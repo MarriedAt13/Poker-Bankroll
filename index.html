@@ -51,6 +51,43 @@
     button.primary { background: var(--brand); color: #fff; border-color: var(--brand); }
     button.ghost { background: transparent; }
 
+    /* Tab Navigation */
+    .tab-nav {
+      display: flex;
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: .25rem;
+      margin-bottom: 1.5rem;
+      box-shadow: 0 6px 18px rgba(2,6,23,.04);
+    }
+    .tab-item {
+      flex: 1;
+      text-align: center;
+      padding: .7rem 1rem;
+      border-radius: 8px;
+      text-decoration: none;
+      font-weight: 600;
+      color: var(--muted);
+      transition: all .2s ease;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: .4rem;
+    }
+    .tab-item:hover {
+      color: var(--brand);
+      background: #f8fafc;
+    }
+    .tab-item.active {
+      background: var(--brand);
+      color: #fff;
+      box-shadow: 0 2px 8px rgba(14,165,233,.2);
+    }
+    .tab-emoji {
+      font-size: 1.1rem;
+    }
+
     /* Inline error styles */
     .field { display: grid; gap: .35rem; }
     .error-inline {
@@ -94,6 +131,7 @@
       input[type="number"] { width: 9rem; }
       select { min-width: 9rem; }
       th, td { font-size: .95rem; }
+      .tab-item { padding: .6rem .7rem; font-size: .9rem; }
     }
     .link-btn { display: inline-flex; align-items: center; gap: .4rem; padding: .5rem .8rem; border-radius: 10px; border: 1px solid var(--border); background: #fff; text-decoration: none; font-weight: 600; color: var(--ink); }
     .link-btn:hover { background: #f8fafc; }
@@ -103,8 +141,8 @@
   <header class="masthead">
     <div class="container">
       <h1>Poker Bankroll Calculator</h1>
-      <p class="lead">See readiness across NL2–NL5000 with custom shot‑taking rules, and a clear goal to the next stake.</p>
-      <p class="muted">Strong bankroll management cushions variance, reduces bust risk, and supports steady stake progression over time.</p>
+      <p class="lead">Professional bankroll management tools for No Limit Hold'em, PLO, and tournament play.</p>
+      <p class="muted">Choose your format below and calculate optimal shot-taking strategies for steady progression.</p>
       <div class="mast-actions">
         <a class="btn primary" href="#step1"><span aria-hidden="true">🎯</span>Get started</a>
         <a class="btn ghost" href="#why">Learn more</a>
@@ -113,13 +151,29 @@
   </header>
 
   <main class="container">
+    <!-- Tab Navigation -->
+    <nav class="tab-nav" role="tablist">
+      <a href="index.html" class="tab-item active" role="tab" aria-selected="true">
+        <span class="tab-emoji" aria-hidden="true">♠️</span>
+        NLH Cash
+      </a>
+      <a href="plo.html" class="tab-item" role="tab" aria-selected="false">
+        <span class="tab-emoji" aria-hidden="true">♦️</span>
+        PLO Cash
+      </a>
+      <a href="tournament.html" class="tab-item" role="tab" aria-selected="false">
+        <span class="tab-emoji" aria-hidden="true">🏆</span>
+        Tournaments
+      </a>
+    </nav>
+
     <!-- Intro -->
     <section id="why" class="panel">
       <div class="grid-2">
         <div>
           <h2>Why bankroll management?</h2>
           <p class="lead">Variance creates downswings even for winning players; a dedicated bankroll and right‑sized stakes keep swings survivable and decisions consistent.</p>
-          <p class="muted">Separate funds, choose limits your bankroll can support, and adjust with discipline as results and risk tolerance evolve. Cash games shown here; tournaments and PLO generally require larger cushions.</p>
+          <p class="muted">Separate funds, choose limits your bankroll can support, and adjust with discipline as results and risk tolerance evolve. This calculator focuses on No Limit Hold'em cash games.</p>
         </div>
         <div>
           <h2>Strategies</h2>
@@ -133,7 +187,7 @@
 
     <!-- Step 1: Settings -->
     <section id="step1" class="panel">
-      <h2>Bankroll Calculator</h2>
+      <h2>NLH Cash Game Calculator</h2>
       <div class="space"></div>
 
       <!-- Top error box -->
