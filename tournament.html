@@ -17,7 +17,7 @@
       --err: #b00020; --err-bg: #fdecea; --err-border: #f5c6cb;
     }
     html { scroll-behavior: smooth; }
-    body { font-family: system-ui, -apple-system, Segoe UI, Roboto, "Noto Color Emoji","```le Color Emoji","Segoe UI Emoji","```jiOne Color","Androi```moji", sans-serif; margin: 0; color: var(--ink); background: #fff; }
+    body { font-family: system-ui, -apple-system, Segoe UI, Roboto, "Noto Color Emoji","Apple Color Emoji","Segoe UI Emoji","EmojiOne Color","Android Emoji", sans-serif; margin: 0; color: var(--ink); background: #fff; }
     .masthead {
       background: radial-gradient(1200px 600px at 20% -10%, #0ea5e933, transparent 60%), linear-gradient(135deg, var(--hero1), var(--hero2));
       color: #eef2ff; padding: 3rem 1.5rem 2.25rem; border-bottom: 1px solid #0b1220;
@@ -36,7 +36,6 @@
     .space { height: 1rem; }
     .lead { font-size: 1.03rem; color: #374151; }
     .muted { color: var(--muted); font-size: .92rem; }
-    .footnote { color: #6b7280; font-size: .85rem; }
     .row { display: flex; gap: .75rem; align-items: center; flex-wrap: wrap; }
     .stack { display: grid; gap: .5rem; }
     label { font-weight: 600; }
@@ -49,57 +48,19 @@
     select { min-width: 11rem; }
     button { padding: .55rem .95rem; border: 1px solid #d1d5db; border-radius: 10px; background: #f7f7f7; cursor: pointer; font-weight: 600; }
     button.primary { background: var(--brand); color: #fff; border-color: var(--brand); }
-    button.ghost { background: transparent; }
 
     /* Tab Navigation */
-    .tab-nav {
-      display: flex;
-      background: var(--panel);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: .25rem;
-      margin-bottom: 1.5rem;
-      box-shadow: 0 6px 18px rgba(2,6,23,.04);
-    }
-    .tab-item {
-      flex: 1;
-      text-align: center;
-      padding: .7rem 1rem;
-      border-radius: 8px;
-      text-decoration: none;
-      font-weight: 600;
-      color: var(--muted);
-      transition: all .2s ease;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: .4rem;
-    }
-    .tab-item:hover {
-      color: var(--brand);
-      background: #f8fafc;
-    }
-    .tab-item.active {
-      background: var(--brand);
-      color: #fff;
-      box-shadow: 0 2px 8px rgba(14,165,233,.2);
-    }
-    .tab-emoji {
-      font-size: 1.1rem;
-    }
+    .tab-nav { display: flex; background: var(--panel); border: 1px solid var(--border); border-radius: 12px; padding: .25rem; margin-bottom: 1.5rem; box-shadow: 0 6px 18px rgba(2,6,23,.04); }
+    .tab-item { flex: 1; text-align: center; padding: .7rem 1rem; border-radius: 8px; text-decoration: none; font-weight: 600; color: var(--muted); transition: all .2s ease; display: inline-flex; align-items: center; justify-content: center; gap: .4rem; }
+    .tab-item:hover { color: var(--brand); background: #f8fafc; }
+    .tab-item.active { background: var(--brand); color: #fff; box-shadow: 0 2px 8px rgba(14,165,233,.2); }
+    .tab-emoji { font-size: 1.1rem; }
 
-    /* Inline error styles */
+    /* Error styles */
     .field { display: grid; gap: .35rem; }
-    .error-inline {
-      color: var(--err); font-size: .9rem; display: none;
-    }
+    .error-inline { color: var(--err); font-size: .9rem; display: none; }
     .invalid { border-color: var(--err); outline: none; box-shadow: 0 0 0 3px rgba(176,0,32,0.08); }
-
-    /* Top error box */
-    .error-box {
-      display: none; background: var(--err-bg); color: var(--err);
-      border: 1px solid var(--err-border); border-radius: 10px; padding: .75rem .9rem; font-weight: 600;
-    }
+    .error-box { display: none; background: var(--err-bg); color: var(--err); border: 1px solid var(--err-border); border-radius: 10px; padding: .75rem .9rem; font-weight: 600; }
 
     table { border-collapse: collapse; width: 100%; background: #fff; }
     th, td { border: 1px solid var(--border); padding: 10px; text-align: right; vertical-align: top; }
@@ -124,8 +85,6 @@
     #goal .goal-text b { font-weight: 800; }
 
     .grid-2 { display: grid; grid-template-columns: 1.2fr 1fr; gap: 1rem; }
-    @keyframes fadeUp { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
-    .masthead .container, .panel { animation: fadeUp .5s ease both; }
     @media (max-width: 980px) {
       .grid-2 { grid-template-columns: 1fr; }
       input[type="number"] { width: 9rem; }
@@ -141,30 +100,21 @@
   <header class="masthead">
     <div class="container">
       <h1>Tournament Bankroll Calculator</h1>
-      <p class="lead">Manage extreme tournament```riance with proper bankroll sizing for sustainable```T play.</p>
-      <p class="muted">Calculate buy``` requirements based on your ROI, field size preferences```nd custom risk tolerance.</p>
+      <p class="lead">Manage extreme tournament variance with proper bankroll sizing for sustainable MTT play.</p>
+      <p class="muted">Tournaments often require 100–300 buy-ins depending on field size, edge, and desired risk of ruin due to long dry spells and top-heavy payouts.</p>
       <div class="mast-actions">
         <a class="btn primary" href="#step1"><span aria-hidden="true">🎯</span>Get started</a>
-        <a class="btn ghost" href="#why">```rn more</a>
+        <a class="btn ghost" href="#why">Learn more</a>
       </div>
     </div>
   </header>
 
   <main class="container">
-    <!-- Tab Navigation -->
+    <!-- Tabs -->
     <nav class="tab-nav" role="tablist">
-      <a href="index.html" class="tab-item" role="tab" aria-selected="false">
-        <span class="tab-emoji" aria-hidden="true">♠️</span>
-        NLH Cash
-      </a>
-      <a href="plo.html" class="tab-item" role="tab" aria-selected="false">
-        <span class="tab-emoji" aria-hidden="true">♦️</span>
-        PLO Cash
-      </a>
-      <a href="tournament.html" class="tab-item active" role="tab" aria-selected="true">
-        <span class="tab-emoji" aria-hidden="true">🏆</span>
-        Tournaments
-      </a>
+      <a href="index.html" class="tab-item" role="tab" aria-selected="false"><span class="tab-emoji" aria-hidden="true">♠️</span> NLH Cash</a>
+      <a href="plo.html" class="tab-item" role="tab" aria-selected="false"><span class="tab-emoji" aria-hidden="true">♦️</span> PLO Cash</a>
+      <a href="tournament.html" class="tab-item active" role="tab" aria-selected="true"><span class="tab-emoji" aria-hidden="true">🏆</span> Tournaments</a>
     </nav>
 
     <!-- Intro -->
@@ -172,25 +122,24 @@
       <div class="grid-2">
         <div>
           <h2>Why tournaments need huge bankrolls?</h2>
-          <p class="lead">Tournament poker features extreme variance where you```se 80-90% of the time but occasionally hit massive scores. Long```y spells without significant cashes are normal```p>
-          <p class="muted">Bankroll requirements depend on your ROI,```eld size, and acceptable risk of ruin. Higher```I reduces requirements, while larger```elds increase them dramatically.</p>
+          <p class="lead">Large fields and top-heavy payouts create extreme variance, so even strong players can have long breakeven stretches before a few big scores drive results.</p>
+          <p class="muted">Bankroll requirements rise as fields grow and as ROI falls, and drop as a higher risk of ruin is tolerated, which is why MTT guidance commonly recommends triple-digit buy-in buffers.</p>
         </div>
         <div>
-          <h2>Tournament Strategies</h2>
-          <p class="muted">Compare conservative vs aggressive tournament```nkroll approaches based on field size an```OI expectations.</p>
-          <a class="link-btn" href="tournamentstrategies.html">```an aria-hidden="true">📚</span> View tournament strategies</a>
+          <h2>Tournament strategies</h2>
+          <p class="muted">See aggressive, balanced, and conservative tournament bankroll approaches with who they suit and typical buy-in multiples.</p>
+          <a class="link-btn" href="tournamentstrategies.html"><span aria-hidden="true">📚</span> View tournament strategies</a>
         </div>
       </div>
     </section>
 
     <div class="space"></div>
 
-    <!-- Step 1: Settings -->
+    <!-- Step 1 -->
     <section id="step1" class="panel">
       <h2>Tournament Bankroll Calculator</h2>
       <div class="space"></div>
 
-      <!-- Top error box -->
       <div id="errorBox" class="error-box" role="alert"></div>
 
       <div class="grid-2">
@@ -207,199 +156,159 @@
 
         <div class="field">
           <label for="bankroll" id="bankrollLabel">Bankroll ($)</label>
-          <input id="bankroll" type="text```nputmode="decimal" placeholder="e```, 5000" />
+          <input id="bankroll" type="text" inputmode="decimal" placeholder="e.g., 5000" />
           <div id="errBankroll" class="error-inline">Enter a valid number ≥ 0.</div>
         </div>
 
         <div class="field">
           <label for="fieldSize">Field size</label>
           <select id="fieldSize" aria-label="Tournament field size">
-            <option value="small">Small (50-200 players)</option>
-            <option value="medium" selected>Medium (200-1000 players)</option>
-            <option value="large">Large (1000+ players)</option>
+            <option value="small">Small (50–200)</option>
+            <option value="medium" selected>Medium (200–1000)</option>
+            <option value="large">Large (1000+)</option>
           </select>
         </div>
 
         <div class="field">
           <label for="roi">Expected ROI (%)</label>
-          <input id="roi" type="text" inputmode="numeric```laceholder="e.g., 20" />
+          <input id="roi" type="text" inputmode="numeric" placeholder="e.g., 20" />
           <div id="errROI" class="error-inline">Enter a valid ROI between -50% and 100%.</div>
         </div>
 
         <div class="field">
-          <label for="riskOfRuin">Risk of ruin (%)</label>
-          <input id="riskOfRuin" type="text```nputmode="numeric" placeholder="e.g., 5" />
-          <div id="errRiskOfRuin" class```rror-inline">Enter a risk percentage between 0.1% and 50%.</div>
-          <div class="muted">Lower values require larger```nkrolls (1% = very safe, 10% = aggressive).</div>
+          <label for="ror">Risk of ruin (%)</label>
+          <input id="ror" type="text" inputmode="numeric" placeholder="e.g., 5" />
+          <div id="errROR" class="error-inline">Enter a valid risk (0.1–20%). Lower risk requires more buy-ins.</div>
         </div>
       </div>
 
       <div class="space"></div>
       <div class="row">
-        <button id="continue" class="btn primary" type="```ton">
-          <span class="emoji" aria-hidden="true">➡️</span>Continue
-        </button>
-        <span class="muted">ROI and risk tolerance```rectly affect bankroll requirements.</span>
+        <button id="continue" class="btn primary" type="button"><span class="emoji" aria-hidden="true">➡️</span>Continue</button>
+        <span class="muted">ROI and risk of ruin directly adjust required buy-ins.</span>
       </div>
     </section>
 
     <div class="space"></div>
 
-    <!-- Step 2: Results -->
+    <!-- Step 2 -->
     <section id="step2" class="panel hidden">
       <h2>Results</h2>
-      <div id="summary" class="muted">```iv>
+      <div id="summary" class="muted"></div>
       <div id="goal">
         <span class="goal-emoji" aria-hidden="true">🎯</span>
         <span class="goal-text" id="goalText"></span>
       </div>
       <table id="tbl" aria-describedby="tableHelp"></table>
-      <p id="tableHelp" class="muted">Buy-in requirements calculated using your specific ROI and risk of ruin parameters```p>
+      <p id="tableHelp" class="muted">Status shows which buy-in levels are safe for the chosen field size, ROI, and risk of ruin.</p>
     </section>
   </main>
 
   <script>
-    // State - Tournament defaults
+    // Defaults
     let CURRENCY = "$";
     let FIELD_SIZE = "medium";
-    let ROI = 20; // percentage
-    let RISK_OF_RUIN = 5; // percentage
+    let ROI = 20;          // %
+    let ROR_PCT = 5;       // % risk of ruin
 
-    // Tournament buy-in levels
+    // Buy-in tiers to evaluate
     const BUY_INS = [1, 2, 5, 10, 20, 50, 100, 200, 500, 1000, 2500];
 
-    // Base variance multipliers by field size
-    const VARIANCE_MULTIPLIERS = {
-      small: 1.0,   // Less variance in smaller fields
-      medium: 1.5,  // Medium variance
-      large: 2.2    // High variance in large fields
+    // Baseline multipliers for field size at ROI_ref=20% and ROR_ref=5%
+    const ROI_REF = 20;     // % reference ROI
+    const ROR_REF = 5;      // % reference risk of ruin
+    const BASE_MULTIPLIER = {
+      small: 80,    // small fields need fewer BIs at same ROI & RoR
+      medium: 150,  // medium fields typical pro guidance baseline
+      large: 250    // large fields need many more BIs
     };
 
-    // Shortcuts
+    // Utility
     const $ = (id) => document.getElementById(id);
     const hide = (el) => el.classList.add("hidden");
     const show = (el) => el.classList.remove("hidden");
 
-    // Parsing helpers
-    function parseFloatSafe(val) {
-      const n = Number(val);
-      return { ok: Number.isFinite(n), value: n };
-    }
+    function parseFloatSafe(val) { const n = Number(val); return { ok: Number.isFinite(n), value: n }; }
 
     function setCurrencySymbol(sym) {
       CURRENCY = (sym || "$").trim() || "$";
       $("bankrollLabel").textContent = `Bankroll (${CURRENCY})`;
     }
 
-    function money(x) { return `${CURRENCY}${Number(x).toFixed(0)}`; }
+    function money(x){ return `${CURRENCY}${Number(x).toFixed(0)}`; }
 
-    // Inline validation display
     function setInvalid(inputEl, errorEl, isInvalid) {
-      if (isInvalid) {
-        inputEl.classList.add("invalid");
-        errorEl.style.display = "block";
-      } else {
-        inputEl.classList.remove("invalid");
-        errorEl.style.display = "none";
-      }
+      if (isInvalid) { inputEl.classList.add("invalid"); errorEl.style.display = "block"; }
+      else { inputEl.classList.remove("invalid"); errorEl.style.display = "none"; }
     }
 
-    // Full validation
     function validateInputs() {
       const messages = [];
 
-      // Bankroll: float >= 0
+      // Bankroll
       const brRaw = $("bankroll").value;
       const br = parseFloatSafe(brRaw);
-      const bankrollValid = br.ok && br.value``` 0;
+      const bankrollValid = br.ok && br.value >= 0;
       setInvalid($("bankroll"), $("errBankroll"), !bankrollValid);
       if (!bankrollValid) messages.push("Bankroll must be a valid number ≥ 0.");
 
-      // ROI: float between -50 and 100
+      // ROI
       const roiRaw = $("roi").value;
-      const roiParsed = parseFloatSafe```iRaw);
-      const roiValid = roiParsed.ok && roiParsed.value >=```0 && roiParsed.value <= 100;
+      const roiParsed = parseFloatSafe(roiRaw);
+      const roiValid = roiParsed.ok && roiParsed.value >= -50 && roiParsed.value <= 100;
       setInvalid($("roi"), $("errROI"), !roiValid);
       if (!roiValid) messages.push("ROI must be between -50% and 100%.");
 
-      // Risk of Ruin: float between 0.1 and 50
-      const rorRaw = $("riskOfRuin").value;
+      // Risk of ruin
+      const rorRaw = $("ror").value;
       const rorParsed = parseFloatSafe(rorRaw);
-      const rorValid = rorParsed.ok && rorParsed.value``` 0.1 && rorParsed.value <= 50;
-      setInvalid($("riskOfRuin"), $("errRiskOfRuin"), !rorValid);
-      if (!rorValid) messages.push("Risk of ruin must be between 0.1% and 50%.");
+      const rorValid = rorParsed.ok && rorParsed.value >= 0.1 && rorParsed.value <= 20;
+      setInvalid($("ror"), $("errROR"), !rorValid);
+      if (!rorValid) messages.push("Risk of ruin must be between 0.1% and 20%.");
 
-      // Show/hide top error box
       const box = $("errorBox");
-      if (messages.length) {
-        box.innerHTML = messages.map```=> `• ${m}`).join("<br>");
-        box.style.display = "block";
-      } else {
-        box.innerHTML = "";
-        box.style.display = "none";
-      }
+      if (messages.length) { box.innerHTML = messages.map(m => `• ${m}`).join("<br>"); box.style.display = "block"; }
+      else { box.innerHTML = ""; box.style.display = "none"; }
 
       return {
         ok: messages.length === 0,
-        bankroll: bankrollValid ? br.value : N```
+        bankroll: bankrollValid ? br.value : NaN,
         roi: roiValid ? roiParsed.value : NaN,
-        riskOfRuin: rorValid ? rorParsed.value : NaN
+        ror: rorValid ? rorParsed.value : NaN
       };
     }
 
-    // Calculate bankroll requirements using tournament formula
-    function calculateBuyinRequirement(roi, riskOfRuin, fieldSizeMultiplier) {
-      // Convert percentages to decimals
-      const roiDecimal = roi / 100;
-      const riskDecimal = riskOfRuin /```0;
-      
-      // Base formula: higher ROI = fewer```y-ins needed, higher risk tolerance = fewer```y-ins needed
-      // Lower risk of ruin = more buy-ins needed, larger fields = more buy-ins needed
-      
-      // Minimum base of 30 buy-ins, then adjust based on parameters```    let baseBuyins = 30;
-      
-      // ROI adjustment: each 1% ROI reduces requirement by ~2 buy-ins
-      if (roiDecimal > 0) {
-        baseBuyins = baseBuyins - (roiDecimal * 200);
-      } else {
-        baseBuyins = baseBuyins - (roiDecimal * 400); // Negative ROI increases requirement more
-      }
-      
-      // Risk of ruin adjustment: ln(1/risk) gives the multiplier
-      const riskMultiplier = Math.log(1 / riskDecimal);
-      baseBuyins = baseBuyins * riskMultiplier * 0.8; // Scale down the multiplier
-      
-      // Field size adjustment
-      baseBuyins = baseBuyins * fieldSizeMultiplier;
-      
-      // Ensure minimum of 20 buy-ins
-      return Math.max(20, Math.round(baseBuyins));
+    // Compute required buy-in multiple given ROI and risk of ruin via proportional scaling:
+    // multiplier = base(field) * (ROI_REF / max(ROI, floor)) * (ln(1/r) / ln(1/r_ref))
+    // Clamp ROI floor to avoid division blowups; if ROI ≤ 0, treat as unsustainable and mark all "Too risky".
+    function requiredMultiplier(field, roiPct, rorPct) {
+      if (!(field in BASE_MULTIPLIER)) field = "medium";
+      const base = BASE_MULTIPLIER[field];
+      const roi = Number(roiPct);
+      const ror = Number(rorPct) / 100;
+      const roiFloor = 1; // 1% floor for scaling
+      if (!Number.isFinite(roi) || roi <= 0) return Infinity;
+      const roiScale = ROI_REF / Math.max(roi, roiFloor);
+      const rorScale = Math.log(1 / Math.max(ror, 0.0005)) / Math.log(1 / (ROR_REF/100));
+      return base * roiScale * rorScale;
     }
 
     function computeRows(bankroll) {
-      const fieldSizeMultiplier = VARIANCE```LTIPLIERS[FIELD_SIZE];
-      const requiredBuyins = calculateBuyinRequirement(ROI, RISK_OF_RUIN, fieldSizeMultiplier);
-      
+      const mult = requiredMultiplier(FIELD_SIZE, ROI, ROR_PCT);
       return BUY_INS.map((buyin) => {
-        const requiredBankroll = bu``` * requiredBuyins;
-        const currentBuyins = buyin ? (bankroll / buyin) : 0;
-        
+        const reqBR = (mult === Infinity) ? Infinity : buyin * mult;
+        const yourBIs = buyin ? bankroll / buyin : 0;
         let status;
-        if (currentBuyins >= requiredBuyins) {
-          status = "Safe";
-        } else if (currentBuyins >= requiredBuyins * 0.8) {
-          status = "Marginal";
-        } else {
-          status = "Too risky";
-        }
-
-        const shortfall = Math.max(0, requiredBankroll - bankroll);
-        
+        if (mult === Infinity) status = "Too risky";
+        else if (yourBIs >= mult) status = "Safe";
+        else if (yourBIs >= mult * 0.8) status = "Marginal";
+        else status = "Too risky";
+        const shortfall = (mult === Infinity) ? Infinity : Math.max(0, reqBR - bankroll);
         return {
-          buyin: `${money(buyin)}`,
-          requiredBankroll,
-          requiredBuyins,
-          currentBuyins: Number.isFinite(currentBuyins) ? currentBuyins.toFixed(0) : "0",
+          buyinDisp: money(buyin),
+          requiredBankroll: reqBR,
+          requiredBIs: (mult === Infinity) ? "—" : Math.ceil(mult),
+          yourBIs: Number.isFinite(yourBIs) ? yourBIs.toFixed(0) : "0",
           status,
           shortfall
         };
@@ -407,96 +316,63 @@
     }
 
     function nextTarget(bankroll) {
-      const fieldSizeMultiplier = VARIANCE_MULTIPLIERS[FIELD_SIZE];
-      const requiredBuyins = calculateBuyinRequ```ment(ROI, RISK_OF_RUIN, fieldSizeMultiplier);
-      
+      const mult = requiredMultiplier(FIELD_SIZE, ROI, ROR_PCT);
       for (const buyin of BUY_INS) {
-        const need = (buyin * requiredBuyins) - bankroll;
-        if (need > 0) return { buyin: money(buyin), need };
+        const need = (mult === Infinity) ? Infinity : (buyin * mult - bankroll);
+        if (Number.isFinite(need) && need > 0) return { buyin: money(buyin), need };
       }
       return null;
     }
 
-    function statusClass(s) {
-      if (s === "Safe") return "ok";
-      if (s === "Marginal") return "warn";
-      return "bad";
-    }
+    function statusClass(s) { if (s === "Safe") return "ok"; if (s === "Marginal") return "warn"; return "bad"; }
 
     function makeStatusPill(statusText) {
       const cls = statusClass(statusText);
       const wrap = document.createElement("span");
       wrap.className = `pill ${cls}`;
       const em = document.createElement("span");
-      em.className = "emoji";
-      em.setAttribute("aria-hidden", "true");
-      em.textContent = cls === "ok" ? "✅"```cls === "warn" ? "⚠️" : "```
-      wrap.appendChild(em);
-      wrap.appendChild(document.createTextNode(statusText));
+      em.className = "emoji"; em.setAttribute("aria-hidden","true");
+      em.textContent = cls==="ok" ? "✅" : cls==="warn" ? "⚠️" : "⛔";
+      wrap.appendChild(em); wrap.appendChild(document.createTextNode(statusText));
       return wrap;
     }
 
     function renderGoal(bankroll) {
       const tgt = nextTarget(bankroll);
-      if (tgt) {
-        $("goalText").innerHTML = `Next buy-in level: <b>${tgt.buyin}</b>. Need <b>${money(tgt.need)}</b> more.`;
-      } else {
-        $("goalText").textContent = "You can safely play all tournament buy``` levels shown.";
-      }
+      if (tgt) { $("goalText").innerHTML = `Next buy-in level: <b>${tgt.buyin}</b>. Need <b>${money(tgt.need)}</b> more.`; }
+      else { $("goalText").textContent = "You can safely play all tournament buy-in levels shown."; }
     }
 
     function renderTable(bankroll) {
       const rows = computeRows(bankroll);
       renderGoal(bankroll);
 
-      const fieldSizeText = FIELD_SIZE.charAt(0).toUpperCase() + FIELD_SIZE.slice(1);
-      const fieldSizeMultiplier = VARIANCE_MULTIPLIERS[FIELD_SIZE];
-      const requiredBuyins = calculateBuy```equirement(ROI, RISK_OF_RUIN, fieldSizeMultiplier);
-      
-      $("summary").textContent = 
-        `${fieldSizeText} field tournaments | ${ROI}% ROI | ${RISK_OF_RUIN}% risk of ruin | ${requiredBuyins} buy-ins required`;
+      const fieldText = FIELD_SIZE.charAt(0).toUpperCase() + FIELD_SIZE.slice(1);
+      $("summary").textContent = `${fieldText} fields | ROI ${ROI}% | Risk of ruin ${ROR_PCT}%`;
 
-      const tbl = $("tbl");
-      tbl.innerHTML = "";
-
-      const headers = [
-        "Buy-in",
-        `Required Bankroll (${CURRENCY})`,
-        "Buy-ins Required",
-        "Your Buy-ins",
-        "Status",
-        `Shortfall (${CURRENCY})`
-      ];
-
+      const tbl = $("tbl"); tbl.innerHTML = "";
+      const headers = ["Buy-in", `Required Bankroll (${CURRENCY})`, "Buy-ins Required", "Your Buy-ins", "Status", `Shortfall (${CURRENCY})`];
       const thead = document.createElement("thead");
       const trh = document.createElement("tr");
-      headers.forEach(h => {
-        const th = document.createElement("th");
-        th.textContent = h;
-        trh.appendChild(th);
-      });
-      thead.appendChild(trh);
-      tbl.appendChild(thead);
+      headers.forEach(h => { const th = document.createElement("th"); th.textContent = h; trh.appendChild(th); });
+      thead.appendChild(trh); tbl.appendChild(thead);
 
-      const tbody = document.createElement```body");
+      const tbody = document.createElement("tbody");
       rows.forEach(r => {
         const tr = document.createElement("tr");
         tr.className = statusClass(r.status);
         const cells = [
-          r.buyin,
-          money(r.requiredBankroll),
-          r.requiredBuyins,
-          r.currentBuyins,
+          r.buyinDisp,
+          Number.isFinite(r.requiredBankroll) ? money(r.requiredBankroll) : "—",
+          r.requiredBIs,
+          r.yourBIs,
           r.status,
-          money(r.shortfall)
+          Number.isFinite(r.shortfall) ? money(r.shortfall) : "—"
         ];
         cells.forEach((v, idx) => {
           const td = document.createElement("td");
-          if (idx === 4) {
-            td.appendChild(makeStatusPill(r.status));
-          } else {
-            td.textContent = v;
-          }
+          if (idx === 4) td.appendChild(makeStatusPill(r.status));
+          else td.textContent = v;
           tr.appendChild(td);
         });
         tbody.appendChild(tr);
@@ -504,38 +380,30 @@
       tbl.appendChild(tbody);
     }
 
-    // Live validation
-    function onFieldInput() {
-      validateInputs();
-    }
+    function onFieldInput() { validateInputs(); }
 
     $("bankroll").addEventListener("input", onFieldInput);
     $("roi").addEventListener("input", onFieldInput);
-    $("riskOfRuin").addEventListener("input", onFieldInput);
+    $("ror").addEventListener("input", onFieldInput);
     $("currency").addEventListener("change", (e) => setCurrencySymbol(e.target.value));
     $("fieldSize").addEventListener("change", (e) => FIELD_SIZE = e.target.value);
 
     $("continue").addEventListener("click", () => {
       const v = validateInputs();
       if (!v.ok) return;
-
       setCurrencySymbol($("currency").value);
       ROI = v.roi;
-      RISK_OF_RUIN = v.riskOfRuin;
+      ROR_PCT = v.ror;
       FIELD_SIZE = $("fieldSize").value;
-
-      hide($("step1"));
-      show($("step2"));
-
-      const bankroll = v.bankroll;
-      renderTable(bankroll);
+      hide($("step1")); show($("step2"));
+      renderTable(v.bankroll);
     });
 
-    // Initial tournament defaults
+    // Defaults
     setCurrencySymbol($("currency").value);
     $("bankroll").value = "5000";
     $("roi").value = "20";
-    $("riskOfRuin").value = "5";
+    $("ror").value = "5";
   </script>
 </body>
 </html>
