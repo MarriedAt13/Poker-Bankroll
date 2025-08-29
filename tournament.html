@@ -17,7 +17,7 @@
       --err: #b00020; --err-bg: #fdecea; --err-border: #f5c6cb;
     }
     html { scroll-behavior: smooth; }
-    body { font-family: system-ui, -apple-system, Segoe UI, Roboto, "Noto Color Emoji","Apple Color Emoji","Segoe UI Emoji","EmojiOne Color","Android Emoji", sans-serif; margin: 0; color: var(--ink); background: #fff; }
+    body { font-family: system-ui, -apple-system, Segoe UI, Roboto, "Noto Color Emoji","```le Color Emoji","Segoe UI Emoji","```jiOne Color","Androi```moji", sans-serif; margin: 0; color: var(--ink); background: #fff; }
     .masthead {
       background: radial-gradient(1200px 600px at 20% -10%, #0ea5e933, transparent 60%), linear-gradient(135deg, var(--hero1), var(--hero2));
       color: #eef2ff; padding: 3rem 1.5rem 2.25rem; border-bottom: 1px solid #0b1220;
@@ -141,11 +141,11 @@
   <header class="masthead">
     <div class="container">
       <h1>Tournament Bankroll Calculator</h1>
-      <p class="lead">Manage extreme tournament variance with proper bankroll sizing for sustainable MTT play.</p>
-      <p class="muted">Tournaments require 100-300 buy-ins due to long dry spells between scores and massive variance.</p>
+      <p class="lead">Manage extreme tournament```riance with proper bankroll sizing for sustainable```T play.</p>
+      <p class="muted">Calculate buy``` requirements based on your ROI, field size preferences```nd custom risk tolerance.</p>
       <div class="mast-actions">
         <a class="btn primary" href="#step1"><span aria-hidden="true">🎯</span>Get started</a>
-        <a class="btn ghost" href="#why">Learn more</a>
+        <a class="btn ghost" href="#why">```rn more</a>
       </div>
     </div>
   </header>
@@ -172,13 +172,13 @@
       <div class="grid-2">
         <div>
           <h2>Why tournaments need huge bankrolls?</h2>
-          <p class="lead">Tournament poker features extreme variance where you lose 80-90% of the time but occasionally hit massive scores. Long dry spells without significant cashes are normal.</p>
-          <p class="muted">Professional tournament players use 150-300 buy-ins for large field MTTs. Unlike cash games, you can't quit when ahead.</p>
+          <p class="lead">Tournament poker features extreme variance where you```se 80-90% of the time but occasionally hit massive scores. Long```y spells without significant cashes are normal```p>
+          <p class="muted">Bankroll requirements depend on your ROI,```eld size, and acceptable risk of ruin. Higher```I reduces requirements, while larger```elds increase them dramatically.</p>
         </div>
         <div>
           <h2>Tournament Strategies</h2>
-          <p class="muted">Compare conservative vs aggressive tournament bankroll approaches based on field size and ROI expectations.</p>
-          <a class="link-btn" href="tournamentstrategies.html"><span aria-hidden="true">📚</span> View tournament strategies</a>
+          <p class="muted">Compare conservative vs aggressive tournament```nkroll approaches based on field size an```OI expectations.</p>
+          <a class="link-btn" href="tournamentstrategies.html">```an aria-hidden="true">📚</span> View tournament strategies</a>
         </div>
       </div>
     </section>
@@ -207,7 +207,7 @@
 
         <div class="field">
           <label for="bankroll" id="bankrollLabel">Bankroll ($)</label>
-          <input id="bankroll" type="text" inputmode="decimal" placeholder="e.g., 5000" />
+          <input id="bankroll" type="text```nputmode="decimal" placeholder="e```, 5000" />
           <div id="errBankroll" class="error-inline">Enter a valid number ≥ 0.</div>
         </div>
 
@@ -222,26 +222,24 @@
 
         <div class="field">
           <label for="roi">Expected ROI (%)</label>
-          <input id="roi" type="text" inputmode="numeric" placeholder="e.g., 20" />
+          <input id="roi" type="text" inputmode="numeric```laceholder="e.g., 20" />
           <div id="errROI" class="error-inline">Enter a valid ROI between -50% and 100%.</div>
         </div>
 
         <div class="field">
-          <label for="riskTolerance">Risk tolerance</label>
-          <select id="riskTolerance" aria-label="Risk tolerance level">
-            <option value="conservative" selected>Conservative (2% risk of ruin)</option>
-            <option value="moderate">Moderate (5% risk of ruin)</option>
-            <option value="aggressive">Aggressive (10% risk of ruin)</option>
-          </select>
+          <label for="riskOfRuin">Risk of ruin (%)</label>
+          <input id="riskOfRuin" type="text```nputmode="numeric" placeholder="e.g., 5" />
+          <div id="errRiskOfRuin" class```rror-inline">Enter a risk percentage between 0.1% and 50%.</div>
+          <div class="muted">Lower values require larger```nkrolls (1% = very safe, 10% = aggressive).</div>
         </div>
       </div>
 
       <div class="space"></div>
       <div class="row">
-        <button id="continue" class="btn primary" type="button">
+        <button id="continue" class="btn primary" type="```ton">
           <span class="emoji" aria-hidden="true">➡️</span>Continue
         </button>
-        <span class="muted">Tournaments require massive bankrolls due to extreme variance.</span>
+        <span class="muted">ROI and risk tolerance```rectly affect bankroll requirements.</span>
       </div>
     </section>
 
@@ -250,13 +248,13 @@
     <!-- Step 2: Results -->
     <section id="step2" class="panel hidden">
       <h2>Results</h2>
-      <div id="summary" class="muted"></div>
+      <div id="summary" class="muted">```iv>
       <div id="goal">
         <span class="goal-emoji" aria-hidden="true">🎯</span>
         <span class="goal-text" id="goalText"></span>
       </div>
       <table id="tbl" aria-describedby="tableHelp"></table>
-      <p id="tableHelp" class="muted">Status shows which buy-in levels are safe for your bankroll and risk tolerance.</p>
+      <p id="tableHelp" class="muted">Buy-in requirements calculated using your specific ROI and risk of ruin parameters```p>
     </section>
   </main>
 
@@ -265,16 +263,16 @@
     let CURRENCY = "$";
     let FIELD_SIZE = "medium";
     let ROI = 20; // percentage
-    let RISK_TOLERANCE = "conservative";
+    let RISK_OF_RUIN = 5; // percentage
 
     // Tournament buy-in levels
     const BUY_INS = [1, 2, 5, 10, 20, 50, 100, 200, 500, 1000, 2500];
 
-    // Bankroll multipliers based on field size and risk tolerance
-    const BANKROLL_MULTIPLIERS = {
-      small: { conservative: 120, moderate: 100, aggressive: 80 },
-      medium: { conservative: 200, moderate: 150, aggressive: 120 },
-      large: { conservative: 300, moderate: 250, aggressive: 200 }
+    // Base variance multipliers by field size
+    const VARIANCE_MULTIPLIERS = {
+      small: 1.0,   // Less variance in smaller fields
+      medium: 1.5,  // Medium variance
+      large: 2.2    // High variance in large fields
     };
 
     // Shortcuts
@@ -313,21 +311,28 @@
       // Bankroll: float >= 0
       const brRaw = $("bankroll").value;
       const br = parseFloatSafe(brRaw);
-      const bankrollValid = br.ok && br.value >= 0;
+      const bankrollValid = br.ok && br.value``` 0;
       setInvalid($("bankroll"), $("errBankroll"), !bankrollValid);
       if (!bankrollValid) messages.push("Bankroll must be a valid number ≥ 0.");
 
       // ROI: float between -50 and 100
       const roiRaw = $("roi").value;
-      const roiParsed = parseFloatSafe(roiRaw);
-      const roiValid = roiParsed.ok && roiParsed.value >= -50 && roiParsed.value <= 100;
+      const roiParsed = parseFloatSafe```iRaw);
+      const roiValid = roiParsed.ok && roiParsed.value >=```0 && roiParsed.value <= 100;
       setInvalid($("roi"), $("errROI"), !roiValid);
       if (!roiValid) messages.push("ROI must be between -50% and 100%.");
+
+      // Risk of Ruin: float between 0.1 and 50
+      const rorRaw = $("riskOfRuin").value;
+      const rorParsed = parseFloatSafe(rorRaw);
+      const rorValid = rorParsed.ok && rorParsed.value``` 0.1 && rorParsed.value <= 50;
+      setInvalid($("riskOfRuin"), $("errRiskOfRuin"), !rorValid);
+      if (!rorValid) messages.push("Risk of ruin must be between 0.1% and 50%.");
 
       // Show/hide top error box
       const box = $("errorBox");
       if (messages.length) {
-        box.innerHTML = messages.map(m => `• ${m}`).join("<br>");
+        box.innerHTML = messages.map```=> `• ${m}`).join("<br>");
         box.style.display = "block";
       } else {
         box.innerHTML = "";
@@ -336,22 +341,53 @@
 
       return {
         ok: messages.length === 0,
-        bankroll: bankrollValid ? br.value : NaN,
-        roi: roiValid ? roiParsed.value : NaN
+        bankroll: bankrollValid ? br.value : N```
+        roi: roiValid ? roiParsed.value : NaN,
+        riskOfRuin: rorValid ? rorParsed.value : NaN
       };
     }
 
+    // Calculate bankroll requirements using tournament formula
+    function calculateBuyinRequirement(roi, riskOfRuin, fieldSizeMultiplier) {
+      // Convert percentages to decimals
+      const roiDecimal = roi / 100;
+      const riskDecimal = riskOfRuin /```0;
+      
+      // Base formula: higher ROI = fewer```y-ins needed, higher risk tolerance = fewer```y-ins needed
+      // Lower risk of ruin = more buy-ins needed, larger fields = more buy-ins needed
+      
+      // Minimum base of 30 buy-ins, then adjust based on parameters```    let baseBuyins = 30;
+      
+      // ROI adjustment: each 1% ROI reduces requirement by ~2 buy-ins
+      if (roiDecimal > 0) {
+        baseBuyins = baseBuyins - (roiDecimal * 200);
+      } else {
+        baseBuyins = baseBuyins - (roiDecimal * 400); // Negative ROI increases requirement more
+      }
+      
+      // Risk of ruin adjustment: ln(1/risk) gives the multiplier
+      const riskMultiplier = Math.log(1 / riskDecimal);
+      baseBuyins = baseBuyins * riskMultiplier * 0.8; // Scale down the multiplier
+      
+      // Field size adjustment
+      baseBuyins = baseBuyins * fieldSizeMultiplier;
+      
+      // Ensure minimum of 20 buy-ins
+      return Math.max(20, Math.round(baseBuyins));
+    }
+
     function computeRows(bankroll) {
-      const multiplier = BANKROLL_MULTIPLIERS[FIELD_SIZE][RISK_TOLERANCE];
+      const fieldSizeMultiplier = VARIANCE```LTIPLIERS[FIELD_SIZE];
+      const requiredBuyins = calculateBuyinRequirement(ROI, RISK_OF_RUIN, fieldSizeMultiplier);
       
       return BUY_INS.map((buyin) => {
-        const requiredBankroll = buyin * multiplier;
+        const requiredBankroll = bu``` * requiredBuyins;
         const currentBuyins = buyin ? (bankroll / buyin) : 0;
         
         let status;
-        if (currentBuyins >= multiplier) {
+        if (currentBuyins >= requiredBuyins) {
           status = "Safe";
-        } else if (currentBuyins >= multiplier * 0.8) {
+        } else if (currentBuyins >= requiredBuyins * 0.8) {
           status = "Marginal";
         } else {
           status = "Too risky";
@@ -362,8 +398,8 @@
         return {
           buyin: `${money(buyin)}`,
           requiredBankroll,
+          requiredBuyins,
           currentBuyins: Number.isFinite(currentBuyins) ? currentBuyins.toFixed(0) : "0",
-          multiplier,
           status,
           shortfall
         };
@@ -371,10 +407,11 @@
     }
 
     function nextTarget(bankroll) {
-      const multiplier = BANKROLL_MULTIPLIERS[FIELD_SIZE][RISK_TOLERANCE];
+      const fieldSizeMultiplier = VARIANCE_MULTIPLIERS[FIELD_SIZE];
+      const requiredBuyins = calculateBuyinRequ```ment(ROI, RISK_OF_RUIN, fieldSizeMultiplier);
       
       for (const buyin of BUY_INS) {
-        const need = (buyin * multiplier) - bankroll;
+        const need = (buyin * requiredBuyins) - bankroll;
         if (need > 0) return { buyin: money(buyin), need };
       }
       return null;
@@ -393,7 +430,7 @@
       const em = document.createElement("span");
       em.className = "emoji";
       em.setAttribute("aria-hidden", "true");
-      em.textContent = cls === "ok" ? "✅" : cls === "warn" ? "⚠️" : "⛔";
+      em.textContent = cls === "ok" ? "✅"```cls === "warn" ? "⚠️" : "```
       wrap.appendChild(em);
       wrap.appendChild(document.createTextNode(statusText));
       return wrap;
@@ -404,7 +441,7 @@
       if (tgt) {
         $("goalText").innerHTML = `Next buy-in level: <b>${tgt.buyin}</b>. Need <b>${money(tgt.need)}</b> more.`;
       } else {
-        $("goalText").textContent = "You can safely play all tournament buy-in levels shown.";
+        $("goalText").textContent = "You can safely play all tournament buy``` levels shown.";
       }
     }
 
@@ -412,12 +449,12 @@
       const rows = computeRows(bankroll);
       renderGoal(bankroll);
 
-      const multiplier = BANKROLL_MULTIPLIERS[FIELD_SIZE][RISK_TOLERANCE];
       const fieldSizeText = FIELD_SIZE.charAt(0).toUpperCase() + FIELD_SIZE.slice(1);
-      const riskText = RISK_TOLERANCE.charAt(0).toUpperCase() + RISK_TOLERANCE.slice(1);
+      const fieldSizeMultiplier = VARIANCE_MULTIPLIERS[FIELD_SIZE];
+      const requiredBuyins = calculateBuy```equirement(ROI, RISK_OF_RUIN, fieldSizeMultiplier);
       
       $("summary").textContent = 
-        `${fieldSizeText} field tournaments | ${ROI}% ROI | ${riskText} risk (${multiplier} buy-ins required)`;
+        `${fieldSizeText} field tournaments | ${ROI}% ROI | ${RISK_OF_RUIN}% risk of ruin | ${requiredBuyins} buy-ins required`;
 
       const tbl = $("tbl");
       tbl.innerHTML = "";
@@ -441,14 +478,14 @@
       thead.appendChild(trh);
       tbl.appendChild(thead);
 
-      const tbody = document.createElement("tbody");
+      const tbody = document.createElement```body");
       rows.forEach(r => {
         const tr = document.createElement("tr");
         tr.className = statusClass(r.status);
         const cells = [
           r.buyin,
           money(r.requiredBankroll),
-          r.multiplier,
+          r.requiredBuyins,
           r.currentBuyins,
           r.status,
           money(r.shortfall)
@@ -474,9 +511,9 @@
 
     $("bankroll").addEventListener("input", onFieldInput);
     $("roi").addEventListener("input", onFieldInput);
+    $("riskOfRuin").addEventListener("input", onFieldInput);
     $("currency").addEventListener("change", (e) => setCurrencySymbol(e.target.value));
     $("fieldSize").addEventListener("change", (e) => FIELD_SIZE = e.target.value);
-    $("riskTolerance").addEventListener("change", (e) => RISK_TOLERANCE = e.target.value);
 
     $("continue").addEventListener("click", () => {
       const v = validateInputs();
@@ -484,8 +521,8 @@
 
       setCurrencySymbol($("currency").value);
       ROI = v.roi;
+      RISK_OF_RUIN = v.riskOfRuin;
       FIELD_SIZE = $("fieldSize").value;
-      RISK_TOLERANCE = $("riskTolerance").value;
 
       hide($("step1"));
       show($("step2"));
@@ -498,6 +535,7 @@
     setCurrencySymbol($("currency").value);
     $("bankroll").value = "5000";
     $("roi").value = "20";
+    $("riskOfRuin").value = "5";
   </script>
 </body>
 </html>
