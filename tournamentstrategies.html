@@ -2,89 +2,31 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <title>Tournament Bankroll Strategies</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Tournament Bankroll Strategies```Tournament```nkroll Calculator```itle>
+  <meta name="viewport" content="width```vice-width, initial-scale=1" />
   <style>
     :root {
-      --border: #e5e7eb; --ink:#111827; --muted:#6b7280;
-      --panel:#fff; --bg:#f8fafc; --link:#0369a1;
+      --border:#e5e7eb; --ink:#111827; --muted:#6b7280;
+      --panel:#fff; --bg:#f8fafc;
       --ok:#16a34a; --warn:#d97706; --bad:#b91c1c;
     }
-    body { 
-      font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif; 
-      margin:0; 
-      color:var(--ink); 
-      background:var(--bg); 
-    }
-    .container { 
-      max-width: 900px; 
-      margin: 0 auto; 
-      padding: 1.25rem; 
-    }
-    header { 
-      padding: 1.25rem 0 0.5rem; 
-    }
-    h1 { 
-      margin: 0 0 .25rem 0; 
-      font-size: 1.6rem; 
-    }
-    .muted { 
-      color: var(--muted); 
-      margin-bottom: .5rem;
-    }
-    .card { 
-      background: var(--panel); 
-      border: 1px solid var(--border); 
-      border-radius: 14px; 
-      padding: 1rem; 
-      box-shadow: 0 6px 18px rgba(2,6,23,.04);
-      margin-bottom: 1.1rem;
-    }
-    h2 { 
-      margin: 0 0 .5rem 0; 
-      font-size: 1.25rem;
-    }
-    ul { 
-      margin: .15rem 0 .6rem 1.25rem;
-    }
-    li { 
-      margin: .12rem 0;
-    }
-    .pill { 
-      display:inline-block; 
-      padding:.15rem .5rem; 
-      border-radius:999px; 
-      font-weight:700; 
-      font-size:.85rem;
-    }
-    .pill.ok { 
-      background:#e8f5e9; 
-      color:var(--ok);
-    }
-    .pill.warn { 
-      background:#fff8e1; 
-      color:var(--warn);
-    }
-    .pill.bad { 
-      background:#ffebee; 
-      color:var(--bad);
-    }
-    .back { 
-      display:inline-block; 
-      margin-top:1.1rem;
-      color: var(--link);
-      text-decoration: none;
-    }
-    .back:hover {
-      text-decoration: underline;
-    }
-    .category-desc { 
-      background: #f8fafc; 
-      padding:.7rem; 
-      border-radius:8px; 
-      margin-bottom:.65rem; 
-      font-style: italic;
-    }
+    body{font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;margin:0;color:var(--ink);background:var(--bg);}
+    .container{max-width:900px;margin:0 auto;padding:1.25rem;}
+    header{padding:1.25rem 0 .5rem;}
+    h1{margin:0 0 .25rem;font-size:1.6rem;}
+    .muted{color:var(--muted);margin-bottom:.5rem;}
+    .card{background:var(--panel);border:1px solid var(--border);border-radius:14px;padding:1rem;box-shadow:0 6px 18px rgba(2,6,23,.04);margin-bottom:1.1rem;}
+    h2{margin:0 0 .5rem;font-size:1.25rem;}
+    ul{margin:.15rem 0 .6rem 1.25rem;}
+    li{margin:.12rem 0;}
+    .pill{display:inline-block;padding:.15rem .55rem;border-radius:999px;font-weight:700;font-size:.85rem;}
+    .pill.ok{background:#e8f5e9;color:var(--ok);}
+    .pill.warn{background:#fff8e1;color:var(--warn);}
+    .pill.bad{background:#ffebee;color:var(--bad);}
+    .tag{display:inline-block;margin-left:.4rem;color:var(--muted);font-size:.78rem;font-weight:600;}
+    .back{display:inline-block;margin-top:1.1rem;text-decoration:none;color:#0369a1;}
+    .back:hover{text-decoration:underline;}
+    .category-desc{background:#f8fafc;padding:.7rem;border-radius:8px;margin-bottom:.65rem;font-style:italic;}
   </style>
 </head>
 <body>
@@ -92,53 +34,55 @@
     <header>
       <h1>Tournament bankroll strategies</h1>
       <p class="muted">
-        Tournament poker requires massive bankrolls due to extreme variance. Even winning players can go months without significant scores. Choose a conservative approach based on your risk tolerance.
+        Multi-table tournaments have the <em>highest```m> variance``` poker. Pick```bankroll plan```at
+        matches your edge, volume, and```petite for```wnswings.
       </p>
     </header>
 
+    <!-- Conservative -->
     <div class="card">
-      <h2>Conservative <span class="pill ok">recommended</span></h2>
+      <h2>Conservative <span class="pill ok">```% RoR</span></h2>
       <div class="category-desc">
-        For tournament beginners, rebuilding players, or anyone who cannot afford to go broke.<br>
-        <strong>Pro:</strong> Maximum protection against long downswings and variance.<br>
-        <strong>Con:</strong> Requires very large bankrolls to play meaningful buy-ins.
+        For beginners, rebuilding players```r anyone who```n’t top-up easily.<br>
+        <strong>Pros:</strong> Surv```s brutal dry```ells.<br>
+        <strong>Cons:</strong> Requires```large roll```d slower move```s.
       </div>
       <ul>
-        <li><b>150+ buy-ins:</b> Maintain 150-300 buy-ins for your chosen tournament level.</li>
-        <li>Best for large field tournaments (1000+ players) where variance is extreme.</li>
-        <li>Can survive 100+ buy-in downswings that are common in tournament poker.</li>
+        <li><b>150+ buy-ins</b> per stake (200–300 for huge fields).</li>
+        <li><b>ROI target:</b> 1–3 % long-term is enough when variance is tamed```li>
+        <li>Suitable for large-field MTTs, turbos, or frequent re-entries.</li>
       </ul>
     </div>
 
+    <!-- Standard -->
     <div class="card">
-      <h2>Standard <span class="pill warn">balanced</span></h2>
+      <h2>Standard <span class="pill warn">~``` RoR</span></h2>
       <div class="category-desc">
-        For experienced tournament players with proven results and steady bankroll growth.<br>
-        <strong>Pro:</strong> Reasonable balance of risk and bankroll requirements.<br>
-        <strong>Con:</strong> Still vulnerable to extended downswings without careful management.
+        The most common professional```ideline for```dium-field online schedules.<br>
+        <strong>Pros:</strong> Good```end of safety```d growth.<br>
+        <strong>Cons:</strong> Still```ces multi-month breakeven stretches.
       </div>
       <ul>
-        <li><b>100 buy-ins:</b> The most common professional tournament bankroll standard.</li>
-        <li>Works well for medium field tournaments (100-1000 players) with good ROI.</li>
-        <li>Assumes solid tournament skills and disciplined bankroll management.</li>
+        <li><b>100 buy-ins</b> per stake; move-down at ~75.</li>
+        <li><b>ROI target:</b> 5–10 % over a large sample.</li>
+        <li>Works for 200–1,000-runner events and live dailies.</li```     </ul>
+    </div>
+
+    <!-- Aggressive -->
+    <div class="card">
+      <h2>Aggressive <span class="pill bad">```% + RoR</span></h2>
+      <div class="category-desc">
+        For proven crushers who want```ster shots```d can reload``` needed.<br>
+        <strong>Pros:</strong> Reach```gher buy-ins sooner.<br>
+        <strong>Cons:</strong> High```st risk; long```wnswings likely```     </div>
+      <ul>
+        <li><b>50–75 buy-ins</b>; drop back if roll falls below```0.</li>
+        <li><b>ROI target:</b> 10 % + to compensate for risk.</li>
+        <li>Best for small-field nightly MTTs or SNG grinds.</```
       </ul>
     </div>
 
-    <div class="card">
-      <h2>Aggressive <span class="pill bad">high risk</span></h2>
-      <div class="category-desc">
-        For highly skilled players with large sample sizes and proven positive ROI.<br>
-        <strong>Pro:</strong> Allows playing higher buy-ins with smaller total bankrolls.<br>
-        <strong>Con:</strong> High risk of ruin during inevitable downswings.
-      </div>
-      <ul>
-        <li><b>50-75 buy-ins:</b> Minimum viable for skilled tournament professionals.</li>
-        <li>Only suitable for small field tournaments (less than 100 players) or sit-and-gos.</li>
-        <li>Requires excellent game selection and strong mental game to survive swings.</li>
-      </ul>
-    </div>
-    
-    <a class="back" href="tournament.html">← Back to tournament calculator</a>
+    <a class="back" href="tournament```ml">← Back to```urnament calculator```>
   </div>
 </body>
 </html>
