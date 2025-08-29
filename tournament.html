@@ -49,14 +49,12 @@
     button { padding: .55rem .95rem; border: 1px solid #d1d5db; border-radius: 10px; background: #f7f7f7; cursor: pointer; font-weight: 600; }
     button.primary { background: var(--brand); color: #fff; border-color: var(--brand); }
 
-    /* Tab Navigation */
     .tab-nav { display: flex; background: var(--panel); border: 1px solid var(--border); border-radius: 12px; padding: .25rem; margin-bottom: 1.5rem; box-shadow: 0 6px 18px rgba(2,6,23,.04); }
     .tab-item { flex: 1; text-align: center; padding: .7rem 1rem; border-radius: 8px; text-decoration: none; font-weight: 600; color: var(--muted); transition: all .2s ease; display: inline-flex; align-items: center; justify-content: center; gap: .4rem; }
     .tab-item:hover { color: var(--brand); background: #f8fafc; }
     .tab-item.active { background: var(--brand); color: #fff; box-shadow: 0 2px 8px rgba(14,165,233,.2); }
     .tab-emoji { font-size: 1.1rem; }
 
-    /* Error styles */
     .field { display: grid; gap: .35rem; }
     .error-inline { color: var(--err); font-size: .9rem; display: none; }
     .invalid { border-color: var(--err); outline: none; box-shadow: 0 0 0 3px rgba(176,0,32,0.08); }
@@ -110,14 +108,12 @@
   </header>
 
   <main class="container">
-    <!-- Tabs -->
     <nav class="tab-nav" role="tablist">
       <a href="index.html" class="tab-item" role="tab" aria-selected="false"><span class="tab-emoji" aria-hidden="true">♠️</span> NLH Cash</a>
       <a href="plo.html" class="tab-item" role="tab" aria-selected="false"><span class="tab-emoji" aria-hidden="true">♦️</span> PLO Cash</a>
       <a href="tournament.html" class="tab-item active" role="tab" aria-selected="true"><span class="tab-emoji" aria-hidden="true">🏆</span> Tournaments</a>
     </nav>
 
-    <!-- Intro -->
     <section id="why" class="panel">
       <div class="grid-2">
         <div>
@@ -135,7 +131,6 @@
 
     <div class="space"></div>
 
-    <!-- Step 1 -->
     <section id="step1" class="panel">
       <h2>Tournament Bankroll Calculator</h2>
       <div class="space"></div>
@@ -191,7 +186,6 @@
 
     <div class="space"></div>
 
-    <!-- Step 2 -->
     <section id="step2" class="panel hidden">
       <h2>Results</h2>
       <div id="summary" class="muted"></div>
@@ -205,25 +199,20 @@
   </main>
 
   <script>
-    // Defaults
     let CURRENCY = "$";
     let FIELD_SIZE = "medium";
-    let ROI = 20;          // %
-    let ROR_PCT = 5;       // % risk of ruin
+    let ROI = 20;
+    let ROR_PCT = 5;
 
-    // Buy-in tiers to evaluate
     const BUY_INS = [1, 2, 5, 10, 20, 50, 100, 200, 500, 1000, 2500];
-
-    // Baseline multipliers for field size at ROI_ref=20% and ROR_ref=5%
-    const ROI_REF = 20;     // % reference ROI
-    const ROR_REF = 5;      // % reference risk of ruin
+    const ROI_REF = 20;
+    const ROR_REF = 5;
     const BASE_MULTIPLIER = {
-      small: 80,    // small fields need fewer BIs at same ROI & RoR
-      medium: 150,  // medium fields typical pro guidance baseline
-      large: 250    // large fields need many more BIs
+      small: 80,
+      medium: 150,
+      large: 250
     };
 
-    // Utility
     const $ = (id) => document.getElementById(id);
     const hide = (el) => el.classList.add("hidden");
     const show = (el) => el.classList.remove("hidden");
@@ -245,21 +234,18 @@
     function validateInputs() {
       const messages = [];
 
-      // Bankroll
       const brRaw = $("bankroll").value;
       const br = parseFloatSafe(brRaw);
       const bankrollValid = br.ok && br.value >= 0;
       setInvalid($("bankroll"), $("errBankroll"), !bankrollValid);
       if (!bankrollValid) messages.push("Bankroll must be a valid number ≥ 0.");
 
-      // ROI
       const roiRaw = $("roi").value;
       const roiParsed = parseFloatSafe(roiRaw);
       const roiValid = roiParsed.ok && roiParsed.value >= -50 && roiParsed.value <= 100;
       setInvalid($("roi"), $("errROI"), !roiValid);
       if (!roiValid) messages.push("ROI must be between -50% and 100%.");
 
-      // Risk of ruin
       const rorRaw = $("ror").value;
       const rorParsed = parseFloatSafe(rorRaw);
       const rorValid = rorParsed.ok && rorParsed.value >= 0.1 && rorParsed.value <= 20;
@@ -278,10 +264,6 @@
       };
     }
 
-    // Corrected buy-in multiple:
-    // - Cap ROI factor at 1 when ROI < ROI_REF to avoid inflating requirements at lower ROI
-    // - Reduce requirements when ROI > ROI_REF
-    // - Scale with risk of ruin via ln(1/r) vs reference risk
     function requiredMultiplier(field, roiPct, rorPct) {
       if (!(field in BASE_MULTIPLIER)) field = "medium";
       const base = BASE_MULTIPLIER[field];
@@ -290,7 +272,8 @@
 
       if (!Number.isFinite(roi) || roi <= 0) return Infinity;
 
-      const roiFactor = Math.min(1, ROI_REF / Math.max(roi, 0.1));
+      // Fixed ROI factor: cap at 1 when ROI <= ROI_REF to prevent inflation
+      const roiFactor = roi >= ROI_REF ? ROI_REF / roi : 1;
       const rorFactor = Math.log(1 / Math.max(ror, 0.0005)) / Math.log(1 / (ROR_REF / 100));
 
       return base * roiFactor * rorFactor;
@@ -402,7 +385,6 @@
       renderTable(v.bankroll);
     });
 
-    // Defaults
     setCurrencySymbol($("currency").value);
     $("bankroll").value = "5000";
     $("roi").value = "20";
