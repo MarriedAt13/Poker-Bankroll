@@ -1,0 +1,503 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Tournament Bankroll Calculator</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    :root {
+      --ok: #16a34a; --ok-bg: #e8f5e9;
+      --warn: #d97706; --warn-bg: #fff8e1;
+      --bad: #b91c1c; --bad-bg: #ffebee;
+      --border: #e5e7eb; --muted: #6b7280; --ink: #111827;
+      --hero1: #0f172a; --hero2: #1f2937;
+      --brand: #0ea5e9; --brand-cta: #22c55e;
+      --panel: #ffffff; --panel-alt: #fcfcfc; --table-head: #f3f4f6; --zebra: #fafafa;
+      --goal-bg: #f0f9ff; --goal-border: #bae6fd; --goal-accent: #0369a1;
+      --err: #b00020; --err-bg: #fdecea; --err-border: #f5c6cb;
+    }
+    html { scroll-behavior: smooth; }
+    body { font-family: system-ui, -apple-system, Segoe UI, Roboto, "Noto Color Emoji","Apple Color Emoji","Segoe UI Emoji","EmojiOne Color","Android Emoji", sans-serif; margin: 0; color: var(--ink); background: #fff; }
+    .masthead {
+      background: radial-gradient(1200px 600px at 20% -10%, #0ea5e933, transparent 60%), linear-gradient(135deg, var(--hero1), var(--hero2));
+      color: #eef2ff; padding: 3rem 1.5rem 2.25rem; border-bottom: 1px solid #0b1220;
+    }
+    .container { max-width: 1080px; margin: 0 auto; }
+    .masthead h1 { margin: 0 0 .5rem 0; font-size: 2rem; letter-spacing: .2px; }
+    .masthead p.lead { margin: .25rem 0 .5rem; color: #cbd5e1; font-size: 1.05rem; }
+    .mast-actions { display: flex; gap: .75rem; align-items: center; margin-top: .75rem; }
+    .btn { display: inline-flex; align-items: center; gap: .45rem; padding: .6rem .95rem; border-radius: 10px; border: 1px solid transparent; cursor: pointer; font-weight: 600; text-decoration: none; }
+    .btn.primary { background: var(--brand-cta); color: #fff; border-color: var(--brand-cta); }
+    .btn.ghost { background: transparent; color: #e5e7eb; border-color: #64748b; }
+
+    main { padding: 1.75rem 1.5rem 2.5rem; }
+    h2 { margin: 0 0 1rem 0; font-size: 1.35rem; }
+    .panel { border: 1px solid var(--border); border-radius: 14px; padding: 1rem; background: var(--panel); box-shadow: 0 6px 18px rgba(2,6,23,.06); }
+    .space { height: 1rem; }
+    .lead { font-size: 1.03rem; color: #374151; }
+    .muted { color: var(--muted); font-size: .92rem; }
+    .footnote { color: #6b7280; font-size: .85rem; }
+    .row { display: flex; gap: .75rem; align-items: center; flex-wrap: wrap; }
+    .stack { display: grid; gap: .5rem; }
+    label { font-weight: 600; }
+
+    select, input[type="number"], input[type="text"] {
+      padding: .5rem .65rem; border: 1px solid var(--border); border-radius: 10px; background: #fff; min-height: 42px;
+    }
+    input[type="number"] { width: 11rem; }
+    input[readonly] { background: #fafafa; color: #444; }
+    select { min-width: 11rem; }
+    button { padding: .55rem .95rem; border: 1px solid #d1d5db; border-radius: 10px; background: #f7f7f7; cursor: pointer; font-weight: 600; }
+    button.primary { background: var(--brand); color: #fff; border-color: var(--brand); }
+    button.ghost { background: transparent; }
+
+    /* Tab Navigation */
+    .tab-nav {
+      display: flex;
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: .25rem;
+      margin-bottom: 1.5rem;
+      box-shadow: 0 6px 18px rgba(2,6,23,.04);
+    }
+    .tab-item {
+      flex: 1;
+      text-align: center;
+      padding: .7rem 1rem;
+      border-radius: 8px;
+      text-decoration: none;
+      font-weight: 600;
+      color: var(--muted);
+      transition: all .2s ease;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: .4rem;
+    }
+    .tab-item:hover {
+      color: var(--brand);
+      background: #f8fafc;
+    }
+    .tab-item.active {
+      background: var(--brand);
+      color: #fff;
+      box-shadow: 0 2px 8px rgba(14,165,233,.2);
+    }
+    .tab-emoji {
+      font-size: 1.1rem;
+    }
+
+    /* Inline error styles */
+    .field { display: grid; gap: .35rem; }
+    .error-inline {
+      color: var(--err); font-size: .9rem; display: none;
+    }
+    .invalid { border-color: var(--err); outline: none; box-shadow: 0 0 0 3px rgba(176,0,32,0.08); }
+
+    /* Top error box */
+    .error-box {
+      display: none; background: var(--err-bg); color: var(--err);
+      border: 1px solid var(--err-border); border-radius: 10px; padding: .75rem .9rem; font-weight: 600;
+    }
+
+    table { border-collapse: collapse; width: 100%; background: #fff; }
+    th, td { border: 1px solid var(--border); padding: 10px; text-align: right; vertical-align: top; }
+    th { background: var(--table-head); position: sticky; top: 0; z-index: 1; }
+    td:first-child, th:first-child { text-align: left; }
+    tbody tr:nth-child(odd) { background: var(--zebra); }
+    tbody tr.ok   > td { background: var(--ok-bg) !important; }
+    tbody tr.warn > td { background: var(--warn-bg) !important; }
+    tbody tr.bad  > td { background: var(--bad-bg) !important; }
+    tbody tr.ok   > td:first-child { border-left: 4px solid var(--ok); }
+    tbody tr.warn > td:first-child { border-left: 4px solid var(--warn); }
+    tbody tr.bad  > td:first-child { border-left: 4px solid var(--bad); }
+
+    .pill { display: inline-flex; align-items: center; gap: .4rem; padding: .15rem .55rem; border-radius: 999px; font-weight: 700; letter-spacing: .2px; }
+    .pill.ok { color: var(--ok); background: #eefcf0; }
+    .pill.warn { color: var(--warn); background: #fff3d6; }
+    .pill.bad { color: var(--bad); background: #ffe3e3; }
+
+    #goal { margin: 1rem 0; font-weight: 600; background: var(--goal-bg); border: 1px solid var(--goal-border); border-radius: 12px; padding: .9rem 1rem; display: flex; align-items: center; gap: .6rem; }
+    #goal .goal-emoji { font-size: 1.25rem; }
+    #goal .goal-text { font-size: 1.05rem; color: var(--goal-accent); }
+    #goal .goal-text b { font-weight: 800; }
+
+    .grid-2 { display: grid; grid-template-columns: 1.2fr 1fr; gap: 1rem; }
+    @keyframes fadeUp { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+    .masthead .container, .panel { animation: fadeUp .5s ease both; }
+    @media (max-width: 980px) {
+      .grid-2 { grid-template-columns: 1fr; }
+      input[type="number"] { width: 9rem; }
+      select { min-width: 9rem; }
+      th, td { font-size: .95rem; }
+      .tab-item { padding: .6rem .7rem; font-size: .9rem; }
+    }
+    .link-btn { display: inline-flex; align-items: center; gap: .4rem; padding: .5rem .8rem; border-radius: 10px; border: 1px solid var(--border); background: #fff; text-decoration: none; font-weight: 600; color: var(--ink); }
+    .link-btn:hover { background: #f8fafc; }
+  </style>
+</head>
+<body>
+  <header class="masthead">
+    <div class="container">
+      <h1>Tournament Bankroll Calculator</h1>
+      <p class="lead">Manage extreme tournament variance with proper bankroll sizing for sustainable MTT play.</p>
+      <p class="muted">Tournaments require 100-300 buy-ins due to long dry spells between scores and massive variance.</p>
+      <div class="mast-actions">
+        <a class="btn primary" href="#step1"><span aria-hidden="true">🎯</span>Get started</a>
+        <a class="btn ghost" href="#why">Learn more</a>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+    <!-- Tab Navigation -->
+    <nav class="tab-nav" role="tablist">
+      <a href="index.html" class="tab-item" role="tab" aria-selected="false">
+        <span class="tab-emoji" aria-hidden="true">♠️</span>
+        NLH Cash
+      </a>
+      <a href="plo.html" class="tab-item" role="tab" aria-selected="false">
+        <span class="tab-emoji" aria-hidden="true">♦️</span>
+        PLO Cash
+      </a>
+      <a href="tournament.html" class="tab-item active" role="tab" aria-selected="true">
+        <span class="tab-emoji" aria-hidden="true">🏆</span>
+        Tournaments
+      </a>
+    </nav>
+
+    <!-- Intro -->
+    <section id="why" class="panel">
+      <div class="grid-2">
+        <div>
+          <h2>Why tournaments need huge bankrolls?</h2>
+          <p class="lead">Tournament poker features extreme variance where you lose 80-90% of the time but occasionally hit massive scores. Long dry spells without significant cashes are normal.</p>
+          <p class="muted">Professional tournament players use 150-300 buy-ins for large field MTTs. Unlike cash games, you can't quit when ahead—you either bust or final table.</p>
+        </div>
+        <div>
+          <h2>Tournament Strategies</h2>
+          <p class="muted">Compare conservative vs aggressive tournament bankroll approaches based on field size and ROI expectations.</p>
+          <a class="link-btn" href="tournamentstrategies.html"><span aria-hidden="true">📚</span> View tournament strategies</a>
+        </div>
+      </div>
+    </section>
+
+    <div class="space"></div>
+
+    <!-- Step 1: Settings -->
+    <section id="step1" class="panel">
+      <h2>Tournament Bankroll Calculator</h2>
+      <div class="space"></div>
+
+      <!-- Top error box -->
+      <div id="errorBox" class="error-box" role="alert"></div>
+
+      <div class="grid-2">
+        <div class="field">
+          <label for="currency">Currency</label>
+          <select id="currency" aria-label="Currency symbol">
+            <option value="$" selected>USD ($)</option>
+            <option value="C$">CAD (C$)</option>
+            <option value="A$">AUD (A$)</option>
+            <option value="£">Pound (£)</option>
+            <option value="€">Euro (€)</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label for="bankroll" id="bankrollLabel">Bankroll ($)</label>
+          <input id="bankroll" type="text" inputmode="decimal" placeholder="e.g., 5000" />
+          <div id="errBankroll" class="error-inline">Enter a valid number ≥ 0.</div>
+        </div>
+
+        <div class="field">
+          <label for="fieldSize">Field size</label>
+          <select id="fieldSize" aria-label="Tournament field size">
+            <option value="small">Small (50-200 players)</option>
+            <option value="medium" selected>Medium (200-1000 players)</option>
+            <option value="large">Large (1000+ players)</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label for="roi">Expected ROI (%)</label>
+          <input id="roi" type="text" inputmode="numeric" placeholder="e.g., 20" />
+          <div id="errROI" class="error-inline">Enter a valid ROI between -50% and 100%.</div>
+        </div>
+
+        <div class="field">
+          <label for="riskTolerance">Risk tolerance</label>
+          <select id="riskTolerance" aria-label="Risk tolerance level">
+            <option value="conservative" selected>Conservative (2% risk of ruin)</option>
+            <option value="moderate">Moderate (5% risk of ruin)</option>
+            <option value="aggressive">Aggressive (10% risk of ruin)</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="space"></div>
+      <div class="row">
+        <button id="continue" class="btn primary" type="button">
+          <span class="emoji" aria-hidden="true">➡️</span>Continue
+        </button>
+        <span class="muted">Tournaments require massive bankrolls due to extreme variance.</span>
+      </div>
+    </section>
+
+    <div class="space"></div>
+
+    <!-- Step 2: Results -->
+    <section id="step2" class="panel hidden">
+      <h2>Results</h2>
+      <div id="summary" class="muted"></div>
+      <div id="goal">
+        <span class="goal-emoji" aria-hidden="true">🎯</span>
+        <span class="goal-text" id="goalText"></span>
+      </div>
+      <table id="tbl" aria-describedby="tableHelp"></table>
+      <p id="tableHelp" class="muted">Status shows which buy-in levels are safe for your bankroll and risk tolerance.</p>
+    </section>
+  </main>
+
+  <script>
+    // State - Tournament defaults
+    let CURRENCY = "$";
+    let FIELD_SIZE = "medium";
+    let ROI = 20; // percentage
+    let RISK_TOLERANCE = "conservative";
+
+    // Tournament buy-in levels
+    const BUY_INS = [1, 2, 5, 10, 20, 50, 100, 200, 500, 1000, 2500];
+
+    // Bankroll multipliers based on field size and risk tolerance
+    const BANKROLL_MULTIPLIERS = {
+      small: { conservative: 120, moderate: 100, aggressive: 80 },
+      medium: { conservative: 200, moderate: 150, aggressive: 120 },
+      large: { conservative: 300, moderate: 250, aggressive: 200 }
+    };
+
+    // Shortcuts
+    const $ = (id) => document.getElementById(id);
+    const hide = (el) => el.classList.add("hidden");
+    const show = (el) => el.classList.remove("hidden");
+
+    // Parsing helpers
+    function parseFloatSafe(val) {
+      const n = Number(val);
+      return { ok: Number.isFinite(n), value: n };
+    }
+
+    function setCurrencySymbol(sym) {
+      CURRENCY = (sym || "$").trim() || "$";
+      $("bankrollLabel").textContent = `Bankroll (${CURRENCY})`;
+    }
+
+    function money(x) { return `${CURRENCY}${Number(x).toFixed(0)}`; }
+
+    // Inline validation display
+    function setInvalid(inputEl, errorEl, isInvalid) {
+      if (isInvalid) {
+        inputEl.classList.add("invalid");
+        errorEl.style.display = "block";
+      } else {
+        inputEl.classList.remove("invalid");
+        errorEl.style.display = "none";
+      }
+    }
+
+    // Full validation
+    function validateInputs() {
+      const messages = [];
+
+      // Bankroll: float >= 0
+      const brRaw = $("bankroll").value;
+      const br = parseFloatSafe(brRaw);
+      const bankrollValid = br.ok && br.value >= 0;
+      setInvalid($("bankroll"), $("errBankroll"), !bankrollValid);
+      if (!bankrollValid) messages.push("Bankroll must be a valid number ≥ 0.");
+
+      // ROI: float between -50 and 100
+      const roiRaw = $("roi").value;
+      const roiParsed = parseFloatSafe(roiRaw);
+      const roiValid = roiParsed.ok && roiParsed.value >= -50 && roiParsed.value <= 100;
+      setInvalid($("roi"), $("errROI"), !roiValid);
+      if (!roiValid) messages.push("ROI must be between -50% and 100%.");
+
+      // Show/hide top error box
+      const box = $("errorBox");
+      if (messages.length) {
+        box.innerHTML = messages.map(m => `• ${m}`).join("<br>");
+        box.style.display = "block";
+      } else {
+        box.innerHTML = "";
+        box.style.display = "none";
+      }
+
+      return {
+        ok: messages.length === 0,
+        bankroll: bankrollValid ? br.value : NaN,
+        roi: roiValid ? roiParsed.value : NaN
+      };
+    }
+
+    function computeRows(bankroll) {
+      const multiplier = BANKROLL_MULTIPLIERS[FIELD_SIZE][RISK_TOLERANCE];
+      
+      return BUY_INS.map((buyin) => {
+        const requiredBankroll = buyin * multiplier;
+        const currentBuyins = buyin ? (bankroll / buyin) : 0;
+        
+        let status;
+        if (currentBuyins >= multiplier) {
+          status = "Safe";
+        } else if (currentBuyins >= multiplier * 0.8) {
+          status = "Marginal";
+        } else {
+          status = "Too risky";
+        }
+
+        const shortfall = Math.max(0, requiredBankroll - bankroll);
+        
+        return {
+          buyin: `${money(buyin)}`,
+          requiredBankroll,
+          currentBuyins: Number.isFinite(currentBuyins) ? currentBuyins.toFixed(0) : "0",
+          multiplier,
+          status,
+          shortfall
+        };
+      });
+    }
+
+    function nextTarget(bankroll) {
+      const multiplier = BANKROLL_MULTIPLIERS[FIELD_SIZE][RISK_TOLERANCE];
+      
+      for (const buyin of BUY_INS) {
+        const need = (buyin * multiplier) - bankroll;
+        if (need > 0) return { buyin: money(buyin), need };
+      }
+      return null;
+    }
+
+    function statusClass(s) {
+      if (s === "Safe") return "ok";
+      if (s === "Marginal") return "warn";
+      return "bad";
+    }
+
+    function makeStatusPill(statusText) {
+      const cls = statusClass(statusText);
+      const wrap = document.createElement("span");
+      wrap.className = `pill ${cls}`;
+      const em = document.createElement("span");
+      em.className = "emoji";
+      em.setAttribute("aria-hidden", "true");
+      em.textContent = cls === "ok" ? "✅" : cls === "warn" ? "⚠️" : "⛔";
+      wrap.appendChild(em);
+      wrap.appendChild(document.createTextNode(statusText));
+      return wrap;
+    }
+
+    function renderGoal(bankroll) {
+      const tgt = nextTarget(bankroll);
+      if (tgt) {
+        $("goalText").innerHTML = `Next buy-in level: <b>${tgt.buyin}</b>. Need <b>${money(tgt.need)}</b> more.`;
+      } else {
+        $("goalText").textContent = "You can safely play all tournament buy-in levels shown.";
+      }
+    }
+
+    function renderTable(bankroll) {
+      const rows = computeRows(bankroll);
+      renderGoal(bankroll);
+
+      const multiplier = BANKROLL_MULTIPLIERS[FIELD_SIZE][RISK_TOLERANCE];
+      const fieldSizeText = FIELD_SIZE.charAt(0).toUpperCase() + FIELD_SIZE.slice(1);
+      const riskText = RISK_TOLERANCE.charAt(0).toUpperCase() + RISK_TOLERANCE.slice(1);
+      
+      $("summary").textContent = 
+        `${fieldSizeText} field tournaments | ${ROI}% ROI | ${riskText} risk (${multiplier} buy-ins required)`;
+
+      const tbl = $("tbl");
+      tbl.innerHTML = "";
+
+      const headers = [
+        "Buy-in",
+        `Required Bankroll (${CURRENCY})`,
+        "Buy-ins Required",
+        "Your Buy-ins",
+        "Status",
+        `Shortfall (${CURRENCY})`
+      ];
+
+      const thead = document.createElement("thead");
+      const trh = document.createElement("tr");
+      headers.forEach(h => {
+        const th = document.createElement("th");
+        th.textContent = h;
+        trh.appendChild(th);
+      });
+      thead.appendChild(trh);
+      tbl.appendChild(thead);
+
+      const tbody = document.createElement("tbody");
+      rows.forEach(r => {
+        const tr = document.createElement("tr");
+        tr.className = statusClass(r.status);
+        const cells = [
+          r.buyin,
+          money(r.requiredBankroll),
+          r.multiplier,
+          r.currentBuyins,
+          r.status,
+          money(r.shortfall)
+        ];
+        cells.forEach((v, idx) => {
+          const td = document.createElement("td");
+          if (idx === 4) {
+            td.appendChild(makeStatusPill(r.status));
+          } else {
+            td.textContent = v;
+          }
+          tr.appendChild(td);
+        });
+        tbody.appendChild(tr);
+      });
+      tbl.appendChild(tbody);
+    }
+
+    // Live validation
+    function onFieldInput() {
+      validateInputs();
+    }
+
+    $("bankroll").addEventListener("input", onFieldInput);
+    $("roi").addEventListener("input", onFieldInput);
+    $("currency").addEventListener("change", (e) => setCurrencySymbol(e.target.value));
+    $("fieldSize").addEventListener("change", (e) => FIELD_SIZE = e.target.value);
+    $("riskTolerance").addEventListener("change", (e) => RISK_TOLERANCE = e.target.value);
+
+    $("continue").addEventListener("click", () => {
+      const v = validateInputs();
+      if (!v.ok) return;
+
+      setCurrencySymbol($("currency").value);
+      ROI = v.roi;
+      FIELD_SIZE = $("fieldSize").value;
+      RISK_TOLERANCE = $("riskTolerance").value;
+
+      hide($("step1"));
+      show($("step2"));
+
+      const bankroll = v.bankroll;
+      renderTable(bankroll);
+    });
+
+    // Initial tournament defaults
+    setCurrencySymbol($("currency").value);
+    $("bankroll").value = "5000";
+    $("roi").value = "20";
+  </script>
+</body>
+</html>
