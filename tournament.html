@@ -278,19 +278,22 @@
       };
     }
 
-    // Compute required buy-in multiple given ROI and risk of ruin via proportional scaling:
-    // multiplier = base(field) * (ROI_REF / max(ROI, floor)) * (ln(1/r) / ln(1/r_ref))
-    // Clamp ROI floor to avoid division blowups; if ROI ≤ 0, treat as unsustainable and mark all "Too risky".
+    // Corrected buy-in multiple:
+    // - Cap ROI factor at 1 when ROI < ROI_REF to avoid inflating requirements at lower ROI
+    // - Reduce requirements when ROI > ROI_REF
+    // - Scale with risk of ruin via ln(1/r) vs reference risk
     function requiredMultiplier(field, roiPct, rorPct) {
       if (!(field in BASE_MULTIPLIER)) field = "medium";
       const base = BASE_MULTIPLIER[field];
       const roi = Number(roiPct);
       const ror = Number(rorPct) / 100;
-      const roiFloor = 1; // 1% floor for scaling
+
       if (!Number.isFinite(roi) || roi <= 0) return Infinity;
-      const roiScale = ROI_REF / Math.max(roi, roiFloor);
-      const rorScale = Math.log(1 / Math.max(ror, 0.0005)) / Math.log(1 / (ROR_REF/100));
-      return base * roiScale * rorScale;
+
+      const roiFactor = Math.min(1, ROI_REF / Math.max(roi, 0.1));
+      const rorFactor = Math.log(1 / Math.max(ror, 0.0005)) / Math.log(1 / (ROR_REF / 100));
+
+      return base * roiFactor * rorFactor;
     }
 
     function computeRows(bankroll) {
