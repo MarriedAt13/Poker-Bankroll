@@ -2,84 +2,88 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <title>Tournament Bankroll Strategies```Tournament```nkroll Calculator```itle>
-  <meta name="viewport" content="width```vice-width, initial-scale=1" />
+  <title>Tournament Bankroll Strategies • Tournament Bankroll Calculator</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
   <style>
     :root{
       --border:#e5e7eb; --ink:#111827; --muted:#6b7280;
       --panel:#fff; --bg:#f8fafc;
       --ok:#16a34a; --warn:#d97706; --bad:#b91c1c;
     }
-    body{font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;margin:0;color:var(--ink);background:var(--bg);}
-    .container{max-width:900px;margin:0 auto;padding:1.25rem;}
+    /* Layout */
+    body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;color:var(--ink);background:var(--bg);}
+    .wrap{max-width:900px;margin:0 auto;padding:1.25rem;}
     header{padding:1.25rem 0 .5rem;}
     h1{margin:0 0 .25rem;font-size:1.6rem;}
     .muted{color:var(--muted);margin-bottom:.5rem;}
-    .card{background:var(--panel);border:1px solid var(--border);border-radius:14px;padding:1rem;box-shadow:0 6px 18px rgba(2,6,23,.04);margin-bottom:1.1rem;}
+
+    /* Cards */
+    .card{background:var(--panel);border:1px solid var(--border);border-radius:14px;padding:1rem;
+          box-shadow:0 6px 18px rgba(2,6,23,.04);margin-bottom:1.1rem;}
     h2{margin:0 0 .5rem;font-size:1.25rem;}
-    ul{margin:.15rem 0 .6rem 1.25rem;}
-    li{margin:.12rem 0;}
+    .category-desc{background:#f8fafc;padding:.7rem;border-radius:8px;margin-bottom:.65rem;font-style:italic;}
+    ul{margin:.15rem 0 .6rem 1.25rem;} li{margin:.12rem 0;}
+
+    /* Pills */
     .pill{display:inline-block;padding:.15rem .55rem;border-radius:999px;font-weight:700;font-size:.85rem;}
     .pill.ok{background:#e8f5e9;color:var(--ok);}
     .pill.warn{background:#fff8e1;color:var(--warn);}
     .pill.bad{background:#ffebee;color:var(--bad);}
+
+    /* Back link */
     .back{display:inline-block;margin-top:1.1rem;text-decoration:none;color:#0369a1;}
     .back:hover{text-decoration:underline;}
-    .category-desc{background:#f8fafc;padding:.7rem;border-radius:8px;margin-bottom:.65rem;font-style:italic;}
   </style>
 </head>
 <body>
-  <div class="container">
+  <div class="wrap">
     <header>
       <h1>Tournament bankroll strategies</h1>
       <p class="muted">
-        MTT variance is brutal—pick```bankroll plan```at matches```ur edge and```e downswings you``` willing to```ce.
+        Choose a bankroll plan that matches your edge, volume, and how much <em>risk of ruin</em> you can stomach.
       </p>
     </header>
 
     <!-- Conservative -->
     <div class="card">
-      <h2>Conservative <span class="pill ok">```% RoR</span></h2>
+      <h2>Conservative <span class="pill ok">≈1 % RoR</span></h2>
       <div class="category-desc">
-        For beginners or anyone who```n’t reload```sily.<br>
-        <strong>Pros:</strong> Surv```s 100-buy-in downswings common in large-field MTTs.<br>
-        <strong>Cons:</strong> Slow```ake progression```ery large roll```eded.
+        For beginners or anyone who cannot reload easily.
       </div>
       <ul>
-        <li><b>150 + buy-ins</b> (200-300 for 1,000-runner events).</li>
-        <li><b>Recommended ROI:</b>```– 3 % long-term is enough when risk is minimal```li>
+        <li><strong>Buy-in cushion:</strong> 150 + (200–300 for 1,000-runner MTTs)</li>
+        <li><strong>Recommended ROI:</strong> 1 – 3 %</li>
+        <li>Survives 100-buy-in downswings but advances slowly.</li>
       </ul>
     </div>
 
     <!-- Standard -->
     <div class="card">
-      <h2>Standard <span class="pill warn">≈``` RoR</span></h2>
+      <h2>Standard <span class="pill warn">≈5 % RoR</span></h2>
       <div class="category-desc">
-        Most common professional guideline```r medium-field online schedules.<br>
-        <strong>Pros:</strong> Good```lance of safety```d growth.<br>
-        <strong>Cons:</strong> Multi```nth breakeven stretches still likely```     </div>
+        The most common professional guideline for medium-field schedules.
+      </div>
       <ul>
-        <li><b>100 buy-ins</b>; drop down if roll falls below```5.</li>
-        <li><b>Recommended ROI:</b>```– 10 % to grow while controlling risk.</```
+        <li><strong>Buy-in cushion:</strong> 100 (move down below ≈75)</li>
+        <li><strong>Recommended ROI:</strong> 5 – 10 %</li>
+        <li>Good balance of growth and safety; still endures long breakeven stretches.</li>
       </ul>
     </div>
 
     <!-- Aggressive -->
     <div class="card">
-      <h2>Aggressive <span class="pill bad">```%+ RoR</span></h2>
+      <h2>Aggressive <span class="pill bad">10 %+ RoR</span></h2>
       <div class="category-desc">
-        For proven crushers chasing```ster shot-taking and willing to reload.<br>
-        <strong>Pros:</strong> Reach```gher stakes```oner.<br>
-        <strong>Cons:</strong> High```st probability```entally tough```wnswings.
+        For proven crushers who can reload and handle wild variance.
       </div>
       <ul>
-        <li><b>50 – 75 buy-ins</b>; move down if roll dips below```0.</li>
-        <li><b>Recommended ROI:</b>``` %+ to compensate for elevated risk```li>
-        <li>Best for small-field nightly MTTs or sit-and-gos.</li>
+        <li><strong>Buy-in cushion:</strong> 50 – 75 (drop down below ≈40)</li>
+        <li><strong>Recommended ROI:</strong> 10 %+</li>
+        <li>Fast stake jumps but high bust probability and mental strain.</li>
       </ul>
     </div>
 
-    <a class="back" href="tournament```ml">← Back``` tournament```lculator</a>
+    <a class="back" href="tournament.html">← Back to tournament calculator</a>
   </div>
 </body>
 </html>
