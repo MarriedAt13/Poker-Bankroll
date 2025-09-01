@@ -52,54 +52,19 @@
     button.ghost { background: transparent; }
 
     /* Tab Navigation */
-    .tab-nav {
-      display: flex;
-      background: var(--panel);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: .25rem;
-      margin-bottom: 1.5rem;
-      box-shadow: 0 6px 18px rgba(2,6,23,.04);
-    }
-    .tab-item {
-      flex: 1;
-      text-align: center;
-      padding: .7rem 1rem;
-      border-radius: 8px;
-      text-decoration: none;
-      font-weight: 600;
-      color: var(--muted);
-      transition: all .2s ease;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: .4rem;
-    }
-    .tab-item:hover {
-      color: var(--brand);
-      background: #f8fafc;
-    }
-    .tab-item.active {
-      background: var(--brand);
-      color: #fff;
-      box-shadow: 0 2px 8px rgba(14,165,233,.2);
-    }
-    .tab-emoji {
-      font-size: 1.1rem;
-    }
+    .tab-nav { display: flex; background: var(--panel); border: 1px solid var(--border); border-radius: 12px; padding: .25rem; margin-bottom: 1.5rem; box-shadow: 0 6px 18px rgba(2,6,23,.04); }
+    .tab-item { flex: 1; text-align: center; padding: .7rem 1rem; border-radius: 8px; text-decoration: none; font-weight: 600; color: var(--muted); transition: all .2s ease; display: inline-flex; align-items: center; justify-content: center; gap: .4rem; }
+    .tab-item:hover { color: var(--brand); background: #f8fafc; }
+    .tab-item.active { background: var(--brand); color: #fff; box-shadow: 0 2px 8px rgba(14,165,233,.2); }
+    .tab-emoji { font-size: 1.1rem; }
 
     /* Inline error styles */
-    .field { display: grid; gap: .35rem; position: relative; }
-    .error-inline {
-      color: var(--err); font-size: .9rem; display: none;
-    }
+    .field { display: grid; gap: .35rem; }
+    .error-inline { color: var(--err); font-size: .9rem; display: none; }
     .invalid { border-color: var(--err); outline: none; box-shadow: 0 0 0 3px rgba(176,0,32,0.08); }
 
     /* Top error box */
-    .error-box {
-      display: none; background: var(--err-bg); color: var(--err);
-      border: 1px solid var(--err-border); border-radius: 10px; padding: .75rem .9rem; font-weight: 600;
-    }
+    .error-box { display: none; background: var(--err-bg); color: var(--err); border: 1px solid var(--err-border); border-radius: 10px; padding: .75rem .9rem; font-weight: 600; }
 
     table { border-collapse: collapse; width: 100%; background: #fff; }
     th, td { border: 1px solid var(--border); padding: 10px; text-align: right; vertical-align: top; }
@@ -155,41 +120,6 @@
       background: var(--brand);
       border-color: var(--brand);
       color: #fff;
-    }
-
-    /* Info button and tooltips */
-    .info-btn {
-      display: inline-block;
-      width: 1.1rem;
-      height: 1.1rem;
-      line-height: 1.1rem;
-      margin-left: .25rem;
-      border-radius: 50%;
-      background: #eef2ff;
-      color: #3b82f6;
-      font-size: .78rem;
-      text-align: center;
-      font-weight: 700;
-      cursor: pointer;
-      user-select: none;
-    }
-    .tooltip {
-      display: none;
-      position: absolute;
-      z-index: 10;
-      max-width: 260px;
-      background: #fff;
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      padding: .55rem .8rem;
-      font-size: .9rem;
-      color: var(--ink);
-      box-shadow: 0 4px 14px rgba(0,0,0,.06);
-      top: 130%;
-      left: 0;
-    }
-    .tooltip.show {
-      display: block;
     }
   </style>
 </head>
@@ -294,31 +224,27 @@
         </div>
 
         <div class="field">
-          <label for="bankroll" id="bankrollLabel">Bankroll ($) <span class="info-btn" data-tip="tipBR">?</span></label>
+          <label for="bankroll" id="bankrollLabel">Bankroll ($)</label>
           <input id="bankroll" type="text" inputmode="decimal" placeholder="e.g., 900" />
           <div id="errBankroll" class="error-inline">Enter a valid number ≥ 0.</div>
-          <div id="tipBR" class="tooltip">Amount of money you have dedicated specifically for poker play. Keep this separate from living expenses.</div>
         </div>
 
         <div class="field">
-          <label for="shotStart">Shot start (buy-ins) <span class="info-btn" data-tip="tipSS">?</span></label>
+          <label for="shotStart">Shot start (buy-ins)</label>
           <input id="shotStart" type="text" inputmode="numeric" placeholder="e.g., 12" />
           <div id="errShotStart" class="error-inline">Enter a whole number ≥ 1.</div>
-          <div id="tipSS" class="tooltip">Number of buy-ins needed before it's safe to take a shot at the next higher limit. More conservative = higher number.</div>
         </div>
 
         <div class="field">
-          <label for="shotSize">Shot size (buy-ins) <span class="info-btn" data-tip="tipSZ">?</span></label>
+          <label for="shotSize">Shot size (buy-ins)</label>
           <input id="shotSize" type="text" inputmode="numeric" placeholder="e.g., 2" />
           <div id="errShotSize" class="error-inline">Enter a whole number ≥ 1 and less than Shot start.</div>
-          <div id="tipSZ" class="tooltip">Number of buy-ins you're willing to lose at the higher limit before moving back down. Higher = more risk.</div>
         </div>
 
         <div class="field">
-          <label for="moveDownDisplay">Move down (buy-ins) <span class="info-btn" data-tip="tipMD">?</span></label>
+          <label for="moveDownDisplay">Move down (buy-ins)</label>
           <input id="moveDownDisplay" type="number" value="10" readonly />
           <div class="muted">Derived: Shot start − Shot size.</div>
-          <div id="tipMD" class="tooltip">Bankroll level where you drop down to protect remaining funds. Calculated as Shot Start minus Shot Size.</div>
         </div>
       </div>
 
@@ -388,27 +314,6 @@
       });
     });
 
-    // Tooltip functionality
-    document.querySelectorAll('.info-btn').forEach(btn => {
-      btn.addEventListener('click', e => {
-        e.stopPropagation();
-        const tipId = btn.dataset.tip;
-        const tip = $(tipId);
-        // Close other tooltips
-        document.querySelectorAll('.tooltip.show').forEach(t => {
-          if (t !== tip) t.classList.remove('show');
-        });
-        tip.classList.toggle('show');
-      });
-    });
-
-    // Close tooltips when clicking elsewhere
-    document.addEventListener('click', e => {
-      if (!e.target.classList.contains('info-btn')) {
-        document.querySelectorAll('.tooltip.show').forEach(t => t.classList.remove('show'));
-      }
-    });
-
     // Parsing helpers that return {ok:bool, value:number}
     function parseFloatSafe(val) {
       const n = Number(val);
@@ -422,18 +327,7 @@
 
     function setCurrencySymbol(sym) {
       CURRENCY = (sym || "$").trim() || "$";
-      $("bankrollLabel").innerHTML = `Bankroll (${CURRENCY}) <span class="info-btn" data-tip="tipBR">?</span>`;
-      
-      // Re-attach event listener to the new info button
-      const newInfoBtn = $("bankrollLabel").querySelector('.info-btn');
-      newInfoBtn.addEventListener('click', e => {
-        e.stopPropagation();
-        const tip = $('tipBR');
-        document.querySelectorAll('.tooltip.show').forEach(t => {
-          if (t !== tip) t.classList.remove('show');
-        });
-        tip.classList.toggle('show');
-      });
+      $("bankrollLabel").textContent = `Bankroll (${CURRENCY})`;
     }
 
     function updateDerivedMoveDownDisplay() {
