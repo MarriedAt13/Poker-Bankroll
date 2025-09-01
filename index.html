@@ -31,7 +31,7 @@
     .btn.ghost { background: transparent; color: #e5e7eb; border-color: #64748b; }
 
     main { padding: 1.75rem 1.5rem 2.5rem; }
-    h2 { margin: 0 0 1rem 0; font-size: 1.35rem; }
+    h2 { margin: 0 0 1rem 0; font-size: 1.35rem; position: relative; }
     .panel { border: 1px solid var(--border); border-radius: 14px; padding: 1rem; background: var(--panel); box-shadow: 0 6px 18px rgba(2,6,23,.06); }
     .space { height: 1rem; }
     .lead { font-size: 1.03rem; color: #374151; }
@@ -121,6 +121,58 @@
       border-color: var(--brand);
       color: #fff;
     }
+
+    /* Single info button next to title */
+    .title-info-btn {
+      display: inline-block;
+      width: 1.3rem;
+      height: 1.3rem;
+      line-height: 1.3rem;
+      margin-left: .5rem;
+      border-radius: 50%;
+      background: #eef2ff;
+      color: #3b82f6;
+      font-size: .8rem;
+      text-align: center;
+      font-weight: 700;
+      cursor: pointer;
+      user-select: none;
+      vertical-align: top;
+    }
+    .title-tooltip {
+      display: none;
+      position: absolute;
+      z-index: 10;
+      max-width: 350px;
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 1rem;
+      font-size: .9rem;
+      color: var(--ink);
+      box-shadow: 0 4px 14px rgba(0,0,0,.1);
+      top: 100%;
+      left: 0;
+      margin-top: .5rem;
+    }
+    .title-tooltip.show {
+      display: block;
+    }
+    .title-tooltip h3 {
+      margin: 0 0 .75rem 0;
+      font-size: 1rem;
+      color: var(--brand);
+    }
+    .title-tooltip .field-explanation {
+      margin-bottom: .75rem;
+    }
+    .title-tooltip .field-explanation:last-child {
+      margin-bottom: 0;
+    }
+    .title-tooltip .field-name {
+      font-weight: 600;
+      color: var(--ink);
+    }
   </style>
 </head>
 <body>
@@ -173,7 +225,38 @@
 
     <!-- Step 1: Settings -->
     <section id="step1" class="panel">
-      <h2>NLH Cash Game Calculator</h2>
+      <h2>NLH Cash Game Calculator <span class="title-info-btn" id="titleInfoBtn">?</span></h2>
+      
+      <!-- Comprehensive tooltip for all inputs -->
+      <div id="titleTooltip" class="title-tooltip">
+        <h3>Input Field Guide</h3>
+        
+        <div class="field-explanation">
+          <div class="field-name">Profile:</div>
+          Pre-configured bankroll strategies. Aggressive (12/2) takes shots with less cushion, Balanced (20/3) is the standard approach, Conservative (30/3) prioritizes safety, Custom lets you set your own values.
+        </div>
+        
+        <div class="field-explanation">
+          <div class="field-name">Bankroll:</div>
+          Amount of money dedicated specifically for poker play. Keep this separate from living expenses and other investments.
+        </div>
+        
+        <div class="field-explanation">
+          <div class="field-name">Shot Start:</div>
+          Number of buy-ins needed before it's safe to take a shot at the next higher limit. More conservative players use higher numbers (20-30), aggressive players use lower numbers (8-15).
+        </div>
+        
+        <div class="field-explanation">
+          <div class="field-name">Shot Size:</div>
+          Number of buy-ins you're willing to lose at the higher limit before moving back down. This determines how much you risk when shot-taking.
+        </div>
+        
+        <div class="field-explanation">
+          <div class="field-name">Move Down:</div>
+          Automatically calculated as Shot Start minus Shot Size. This is your bankroll protection level - when you hit this point, drop down to preserve remaining funds.
+        </div>
+      </div>
+
       <div class="space"></div>
 
       <!-- Top error box -->
@@ -293,6 +376,20 @@
     const $ = (id) => document.getElementById(id);
     const hide = (el) => el.classList.add("hidden");
     const show = (el) => el.classList.remove("hidden");
+
+    // Single title info button functionality
+    $('titleInfoBtn').addEventListener('click', e => {
+      e.stopPropagation();
+      const tooltip = $('titleTooltip');
+      tooltip.classList.toggle('show');
+    });
+
+    // Close tooltip when clicking elsewhere
+    document.addEventListener('click', e => {
+      if (!e.target.closest('#titleInfoBtn') && !e.target.closest('#titleTooltip')) {
+        $('titleTooltip').classList.remove('show');
+      }
+    });
 
     // Profile selector functionality
     document.querySelectorAll('#profiles .pill-btn').forEach(btn => {
