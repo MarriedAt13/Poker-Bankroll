@@ -136,7 +136,7 @@
     .link-btn { display: inline-flex; align-items: center; gap: .4rem; padding: .5rem .8rem; border-radius: 10px; border: 1px solid var(--border); background: #fff; text-decoration: none; font-weight: 600; color: var(--ink); }
     .link-btn:hover { background: #f8fafc; }
 
-    /* NEW: Profile pill buttons */
+    /* Profile pill buttons */
     .pill-btn {
       padding: .35rem .9rem;
       border: 1px solid var(--border);
@@ -157,7 +157,7 @@
       color: #fff;
     }
 
-    /* NEW: Info button and tooltips */
+    /* Info button and tooltips */
     .info-btn {
       display: inline-block;
       width: 1.1rem;
@@ -177,7 +177,7 @@
       display: none;
       position: absolute;
       z-index: 10;
-      max-width: 240px;
+      max-width: 260px;
       background: #fff;
       border: 1px solid var(--border);
       border-radius: 8px;
@@ -249,13 +249,14 @@
       <!-- Top error box -->
       <div id="errorBox" class="error-box" role="alert"></div>
 
-      <!-- NEW: Profile selector -->
+      <!-- Profile selector -->
       <div class="field">
         <label>Profile</label>
         <div id="profiles" class="row">
           <button type="button" data-prof="aggr" class="pill-btn">Aggressive</button>
           <button type="button" data-prof="bal" class="pill-btn active">Balanced</button>
           <button type="button" data-prof="cons" class="pill-btn">Conservative</button>
+          <button type="button" data-prof="custom" class="pill-btn">Custom</button>
           <a class="muted" href="strategies.html" style="margin-left:.5rem">what's this?</a>
         </div>
       </div>
@@ -296,28 +297,28 @@
           <label for="bankroll" id="bankrollLabel">Bankroll ($) <span class="info-btn" data-tip="tipBR">?</span></label>
           <input id="bankroll" type="text" inputmode="decimal" placeholder="e.g., 900" />
           <div id="errBankroll" class="error-inline">Enter a valid number ≥ 0.</div>
-          <div id="tipBR" class="tooltip">Cash you have dedicated specifically for poker play.</div>
+          <div id="tipBR" class="tooltip">Amount of money you have dedicated specifically for poker play. Keep this separate from living expenses.</div>
         </div>
 
         <div class="field">
           <label for="shotStart">Shot start (buy-ins) <span class="info-btn" data-tip="tipSS">?</span></label>
           <input id="shotStart" type="text" inputmode="numeric" placeholder="e.g., 12" />
           <div id="errShotStart" class="error-inline">Enter a whole number ≥ 1.</div>
-          <div id="tipSS" class="tooltip">How many buy-ins you need to take a shot at the next limit.</div>
+          <div id="tipSS" class="tooltip">Number of buy-ins needed before it's safe to take a shot at the next higher limit. More conservative = higher number.</div>
         </div>
 
         <div class="field">
           <label for="shotSize">Shot size (buy-ins) <span class="info-btn" data-tip="tipSZ">?</span></label>
           <input id="shotSize" type="text" inputmode="numeric" placeholder="e.g., 2" />
           <div id="errShotSize" class="error-inline">Enter a whole number ≥ 1 and less than Shot start.</div>
-          <div id="tipSZ" class="tooltip">How many buy-ins to risk when taking a shot before moving down.</div>
+          <div id="tipSZ" class="tooltip">Number of buy-ins you're willing to lose at the higher limit before moving back down. Higher = more risk.</div>
         </div>
 
         <div class="field">
           <label for="moveDownDisplay">Move down (buy-ins) <span class="info-btn" data-tip="tipMD">?</span></label>
           <input id="moveDownDisplay" type="number" value="10" readonly />
           <div class="muted">Derived: Shot start − Shot size.</div>
-          <div id="tipMD" class="tooltip">Bankroll level where you move down to protect remaining funds.</div>
+          <div id="tipMD" class="tooltip">Bankroll level where you drop down to protect remaining funds. Calculated as Shot Start minus Shot Size.</div>
         </div>
       </div>
 
@@ -346,17 +347,18 @@
   </main>
 
   <script>
-    // NEW: Profile presets
+    // Profile presets with Custom option
     const PROFILE_PRESETS = {
-      aggr: { shotStart: 12, shotSize: 2 },  // Aggressive: take shots with less cushion
-      bal: { shotStart: 20, shotSize: 3 },  // Balanced: standard approach
-      cons: { shotStart: 30, shotSize: 3 }  // Conservative: need more cushion
+      aggr: { shotStart: 12, shotSize: 2 },   // Aggressive: 12/2
+      bal: { shotStart: 20, shotSize: 3 },    // Balanced: 20/3  
+      cons: { shotStart: 30, shotSize: 3 },   // Conservative: 30/3
+      custom: { shotStart: 0, shotSize: 0 }   // Custom: user enters their own
     };
 
     // State
     let CURRENCY = "$";
-    let SHOT_START_BI = 12;
-    let SHOT_SIZE_BI = 2;
+    let SHOT_START_BI = 20;
+    let SHOT_SIZE_BI = 3;
     let MOVE_DOWN_BI = SHOT_START_BI - SHOT_SIZE_BI;
 
     const LIMITS = [2,5,10,25,50,100,200,500,1000,2000,5000];
@@ -366,19 +368,27 @@
     const hide = (el) => el.classList.add("hidden");
     const show = (el) => el.classList.remove("hidden");
 
-    // NEW: Profile selector functionality
+    // Profile selector functionality
     document.querySelectorAll('#profiles .pill-btn').forEach(btn => {
       btn.addEventListener('click', () => {
         document.querySelector('#profiles .active')?.classList.remove('active');
         btn.classList.add('active');
         const p = PROFILE_PRESETS[btn.dataset.prof];
-        $('shotStart').value = p.shotStart;
-        $('shotSize').value = p.shotSize;
+        
+        // For Custom profile, clear the inputs so user can enter their own values
+        if (btn.dataset.prof === 'custom') {
+          $('shotStart').value = '';
+          $('shotSize').value = '';
+        } else {
+          $('shotStart').value = p.shotStart;
+          $('shotSize').value = p.shotSize;
+        }
+        
         onFieldInput(); // refresh validation and calculations
       });
     });
 
-    // NEW: Tooltip functionality
+    // Tooltip functionality
     document.querySelectorAll('.info-btn').forEach(btn => {
       btn.addEventListener('click', e => {
         e.stopPropagation();
@@ -412,13 +422,11 @@
 
     function setCurrencySymbol(sym) {
       CURRENCY = (sym || "$").trim() || "$";
-      $("bankrollLabel").textContent = `Bankroll (${CURRENCY}) `;
-      // Re-add the info button
-      const infoBtn = document.createElement('span');
-      infoBtn.className = 'info-btn';
-      infoBtn.setAttribute('data-tip', 'tipBR');
-      infoBtn.textContent = '?';
-      infoBtn.addEventListener('click', e => {
+      $("bankrollLabel").innerHTML = `Bankroll (${CURRENCY}) <span class="info-btn" data-tip="tipBR">?</span>`;
+      
+      // Re-attach event listener to the new info button
+      const newInfoBtn = $("bankrollLabel").querySelector('.info-btn');
+      newInfoBtn.addEventListener('click', e => {
         e.stopPropagation();
         const tip = $('tipBR');
         document.querySelectorAll('.tooltip.show').forEach(t => {
@@ -426,7 +434,6 @@
         });
         tip.classList.toggle('show');
       });
-      $("bankrollLabel").appendChild(infoBtn);
     }
 
     function updateDerivedMoveDownDisplay() {
@@ -628,11 +635,11 @@
       renderTable(bankroll);
     });
 
-    // Initial defaults
+    // Initial defaults (Balanced profile)
     setCurrencySymbol($("currency").value);
     $("bankroll").value = "900";
-    $("shotStart").value = "12";
-    $("shotSize").value = "2";
+    $("shotStart").value = "20";
+    $("shotSize").value = "3";
     updateDerivedMoveDownDisplay();
   </script>
 </body>
