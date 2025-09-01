@@ -122,7 +122,7 @@
       color: #fff;
     }
 
-    /* Single info button next to title */
+    /* Hover-activated info button and tooltip */
     .title-info-btn {
       display: inline-block;
       width: 1.3rem;
@@ -135,9 +135,15 @@
       font-size: .8rem;
       text-align: center;
       font-weight: 700;
-      cursor: pointer;
+      cursor: help;
       user-select: none;
       vertical-align: top;
+      transition: all .2s ease;
+    }
+    .title-info-btn:hover {
+      background: #3b82f6;
+      color: #fff;
+      transform: scale(1.05);
     }
     .title-tooltip {
       display: none;
@@ -150,13 +156,20 @@
       padding: 1rem;
       font-size: .9rem;
       color: var(--ink);
-      box-shadow: 0 4px 14px rgba(0,0,0,.1);
+      box-shadow: 0 8px 25px rgba(0,0,0,.15);
       top: 100%;
       left: 0;
       margin-top: .5rem;
+      opacity: 0;
+      transform: translateY(-10px);
+      transition: all .3s ease;
+      pointer-events: none;
     }
     .title-tooltip.show {
       display: block;
+      opacity: 1;
+      transform: translateY(0);
+      pointer-events: auto;
     }
     .title-tooltip h3 {
       margin: 0 0 .75rem 0;
@@ -227,7 +240,7 @@
     <section id="step1" class="panel">
       <h2>NLH Cash Game Calculator <span class="title-info-btn" id="titleInfoBtn">?</span></h2>
       
-      <!-- Comprehensive tooltip for all inputs -->
+      <!-- Hover tooltip for all inputs -->
       <div id="titleTooltip" class="title-tooltip">
         <h3>Input Field Guide</h3>
         
@@ -377,18 +390,30 @@
     const hide = (el) => el.classList.add("hidden");
     const show = (el) => el.classList.remove("hidden");
 
-    // Single title info button functionality
-    $('titleInfoBtn').addEventListener('click', e => {
-      e.stopPropagation();
-      const tooltip = $('titleTooltip');
-      tooltip.classList.toggle('show');
+    // Hover-based tooltip functionality
+    const titleInfoBtn = $('titleInfoBtn');
+    const titleTooltip = $('titleTooltip');
+
+    titleInfoBtn.addEventListener('mouseenter', () => {
+      titleTooltip.classList.add('show');
     });
 
-    // Close tooltip when clicking elsewhere
-    document.addEventListener('click', e => {
-      if (!e.target.closest('#titleInfoBtn') && !e.target.closest('#titleTooltip')) {
-        $('titleTooltip').classList.remove('show');
-      }
+    titleInfoBtn.addEventListener('mouseleave', () => {
+      // Small delay to allow moving to tooltip
+      setTimeout(() => {
+        if (!titleTooltip.matches(':hover') && !titleInfoBtn.matches(':hover')) {
+          titleTooltip.classList.remove('show');
+        }
+      }, 100);
+    });
+
+    // Keep tooltip open when hovering over it
+    titleTooltip.addEventListener('mouseenter', () => {
+      titleTooltip.classList.add('show');
+    });
+
+    titleTooltip.addEventListener('mouseleave', () => {
+      titleTooltip.classList.remove('show');
     });
 
     // Profile selector functionality
