@@ -238,37 +238,40 @@
 
     <!-- Step 1: Settings -->
     <section id="step1" class="panel">
-      <h2>NLH Cash Game Calculator <span class="title-info-btn" id="titleInfoBtn">?</span></h2>
-      
-      <!-- Hover tooltip for all inputs -->
-      <div id="titleTooltip" class="title-tooltip">
-        <h3>Input Field Guide</h3>
-        
-        <div class="field-explanation">
-          <div class="field-name">Profile:</div>
-          Pre-configured bankroll strategies. Aggressive (12/2) takes shots with less cushion, Balanced (20/3) is the standard approach, Conservative (30/3) prioritizes safety, Custom lets you set your own values.
+      <h2>
+        NLH Cash Game Calculator
+        <span class="title-info-btn" id="titleInfoBtn">?</span>
+
+        <!-- Hover-tooltip that explains each field -->
+        <div id="titleTooltip" class="title-tooltip">
+          <h3>Calculator Inputs</h3>
+
+          <div class="field-explanation">
+            <span class="field-name">Profile</span><br>
+            Aggressive (12/2) = quicker shots, Balanced (20/3) = standard, Conservative (30/3) = safer, Custom = set your own.
+          </div>
+
+          <div class="field-explanation">
+            <span class="field-name">Bankroll</span><br>
+            Total money strictly reserved for poker—not rent, bills or investments.
+          </div>
+
+          <div class="field-explanation">
+            <span class="field-name">Shot Start</span><br>
+            Buy-ins required in your roll before moving up a stake. Higher = safer.
+          </div>
+
+          <div class="field-explanation">
+            <span class="field-name">Shot Size</span><br>
+            Buy-ins you're willing to risk at the higher stake before dropping back.
+          </div>
+
+          <div class="field-explanation">
+            <span class="field-name">Move Down</span><br>
+            Auto-calculated (Shot Start – Shot Size). Hit this level → move down a stake.
+          </div>
         </div>
-        
-        <div class="field-explanation">
-          <div class="field-name">Bankroll:</div>
-          Amount of money dedicated specifically for poker play. Keep this separate from living expenses and other investments.
-        </div>
-        
-        <div class="field-explanation">
-          <div class="field-name">Shot Start:</div>
-          Number of buy-ins needed before it's safe to take a shot at the next higher limit. More conservative players use higher numbers (20-30), aggressive players use lower numbers (8-15).
-        </div>
-        
-        <div class="field-explanation">
-          <div class="field-name">Shot Size:</div>
-          Number of buy-ins you're willing to lose at the higher limit before moving back down. This determines how much you risk when shot-taking.
-        </div>
-        
-        <div class="field-explanation">
-          <div class="field-name">Move Down:</div>
-          Automatically calculated as Shot Start minus Shot Size. This is your bankroll protection level - when you hit this point, drop down to preserve remaining funds.
-        </div>
-      </div>
+      </h2>
 
       <div class="space"></div>
 
@@ -391,23 +394,21 @@
     const show = (el) => el.classList.remove("hidden");
 
     // Hover-based tooltip functionality
-    const titleInfoBtn = $('titleInfoBtn');
-    const titleTooltip = $('titleTooltip');
+    const titleInfoBtn = document.getElementById('titleInfoBtn');
+    const titleTooltip = document.getElementById('titleTooltip');
 
     titleInfoBtn.addEventListener('mouseenter', () => {
       titleTooltip.classList.add('show');
     });
 
     titleInfoBtn.addEventListener('mouseleave', () => {
-      // Small delay to allow moving to tooltip
       setTimeout(() => {
         if (!titleTooltip.matches(':hover') && !titleInfoBtn.matches(':hover')) {
           titleTooltip.classList.remove('show');
         }
-      }, 100);
+      }, 120);
     });
 
-    // Keep tooltip open when hovering over it
     titleTooltip.addEventListener('mouseenter', () => {
       titleTooltip.classList.add('show');
     });
