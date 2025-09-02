@@ -377,16 +377,16 @@
   <script>
     // PLO Profile presets - higher buy-in requirements due to variance
     const PROFILE_PRESETS = {
-      aggr: { shotStart: 40, shotSize: 10 },   // Aggressive: 20/3
-      bal: { shotStart: 80, shotSize: 15 },    // Balanced: 25/5
-      cons: { shotStart: 150, shotSize: 25 },   // Conservative: 40/5
-      custom: { shotStart: 0, shotSize: 0 }   // Custom: user enters their own
+      aggr: { shotStart: 40, shotSize: 10 },   
+      bal: { shotStart: 80, shotSize: 15 },   
+      cons: { shotStart: 150, shotSize: 25 },   
+      custom: { shotStart: 0, shotSize: 0 }   
     };
 
     // State - PLO defaults are more conservative
     let CURRENCY = "$";
-    let SHOT_START_BI = 25;
-    let SHOT_SIZE_BI = 5;
+    let SHOT_START_BI = 80;
+    let SHOT_SIZE_BI = 15;
     let MOVE_DOWN_BI = SHOT_START_BI - SHOT_SIZE_BI;
 
     // PLO stakes ladder
