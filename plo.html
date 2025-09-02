@@ -253,8 +253,6 @@
 
           <div class="field-explanation">
             <span class="field-name">Profile</span><br>
-            Aggressive (20/3) = quicker shots, Balanced (25/5) = standard PLO approach, Conservative (40/5) = maximum safety, Custom = set your own.
-          </div>
 
           <div class="field-explanation">
             <span class="field-name">Bankroll</span><br>
@@ -335,19 +333,19 @@
 
         <div class="field">
           <label for="shotStart">Shot start (buy-ins)</label>
-          <input id="shotStart" type="text" inputmode="numeric" placeholder="e.g., 25" />
+          <input id="shotStart" type="text" inputmode="numeric" placeholder="e.g., 40" />
           <div id="errShotStart" class="error-inline">Enter a whole number ≥ 1.</div>
         </div>
 
         <div class="field">
           <label for="shotSize">Shot size (buy-ins)</label>
-          <input id="shotSize" type="text" inputmode="numeric" placeholder="e.g., 5" />
+          <input id="shotSize" type="text" inputmode="numeric" placeholder="e.g., 10" />
           <div id="errShotSize" class="error-inline">Enter a whole number ≥ 1 and less than Shot start.</div>
         </div>
 
         <div class="field">
           <label for="moveDownDisplay">Move down (buy-ins)</label>
-          <input id="moveDownDisplay" type="number" value="20" readonly />
+          <input id="moveDownDisplay" type="number" value="30" readonly />
           <div class="muted">Derived: Shot start − Shot size.</div>
         </div>
       </div>
@@ -379,9 +377,9 @@
   <script>
     // PLO Profile presets - higher buy-in requirements due to variance
     const PROFILE_PRESETS = {
-      aggr: { shotStart: 20, shotSize: 3 },   // Aggressive: 20/3
-      bal: { shotStart: 25, shotSize: 5 },    // Balanced: 25/5
-      cons: { shotStart: 40, shotSize: 5 },   // Conservative: 40/5
+      aggr: { shotStart: 40, shotSize: 10 },   // Aggressive: 20/3
+      bal: { shotStart: 80, shotSize: 15 },    // Balanced: 25/5
+      cons: { shotStart: 150, shotSize: 25 },   // Conservative: 40/5
       custom: { shotStart: 0, shotSize: 0 }   // Custom: user enters their own
     };
 
