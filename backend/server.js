@@ -17,9 +17,7 @@ app.get('/api/health', (req, res) => {
 // Serve all static files from the repo root (parent of backend)
 app.use(express.static(path.join(__dirname, '..')));
 
-// Optional: explicit routes if you want direct guarantees
-// app.get('/', (req, res) => res.sendFile(path.join(__dirname, '..', 'index.html')));
-
+// No explicit app.get('/') needed; express.static serves index.html by default
 app.listen(PORT, '0.0.0.0', () => {
   console.log(`Server running on port ${PORT}`);
 });
