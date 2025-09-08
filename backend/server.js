@@ -9,7 +9,7 @@ const PORT = process.env.PORT || 3000;
 app.use(cors());
 app.use(express.json());
 
-// Serve static files from parent directory (where your HTML files are)
+// Serve static files from root directory (where all HTML files are)
 app.use(express.static(path.join(__dirname, '..')));
 
 // API routes
@@ -17,10 +17,8 @@ app.get('/api/health', (req, res) => {
   res.json({ message: 'Poker Bankroll API is running!' });
 });
 
-// Serve your main calculator at the root
-app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, '..', 'index.html'));
-});
+// Remove the explicit root route - let express.static handle it
+// The static middleware will automatically serve index.html at '/'
 
 app.listen(PORT, '0.0.0.0', () => {
   console.log(`Server running on port ${PORT}`);
