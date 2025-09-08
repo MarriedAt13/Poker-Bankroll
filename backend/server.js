@@ -1,27 +1,4 @@
-const express = require('express');
-const cors = require('cors');
-const path = require('path');
-require('dotenv').config();
-
-const app = express();
-const PORT = process.env.PORT || 3000;
-
-app.use(cors());
-app.use(express.json());
-
-// Serve static files from parent directory (where all your HTML files are)
-app.use(express.static(path.join(__dirname, '..')));
-
-// API routes
-app.get('/api/health', (req, res) => {
-  res.json({ message: 'Poker Bankroll API is running!' });
-});
-
-// Serve index.html at the root
+// Replace your root route with this simple test
 app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, '..', 'index.html'));
-});
-
-app.listen(PORT, '0.0.0.0', () => {
-  console.log(`Server running on port ${PORT}`);
+  res.send('<h1>Backend is working!</h1><p>File serving test in progress...</p>');
 });
