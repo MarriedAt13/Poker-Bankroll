@@ -182,6 +182,164 @@
   </style>
 </head>
 <body>
-  <!-- ...rest of your code here... -->
+  <header class="masthead">
+    <div class="container">
+      <h1>Poker Bankroll Calculator</h1>
+      <p class="lead">Professional bankroll management tools for No Limit Hold'em, PLO, and tournament play.</p>
+      <p class="muted">Choose your format below and calculate optimal shot-taking strategies for steady progression.</p>
+      <div class="mast-actions">
+        <a class="btn primary" href="#step1"><span aria-hidden="true">🎯</span>Get started</a>
+        <a class="btn ghost" href="#why">Learn more</a>
+      </div>
+    </div>
+  </header>
+  <main class="container">
+    <!-- Tab Navigation -->
+    <nav class="tab-nav" role="tablist">
+      <a href="index.html" class="tab-item active" role="tab" aria-selected="true">
+        <span class="tab-emoji" aria-hidden="true">♠️</span>
+        NLH Cash
+      </a>
+      <a href="plo.html" class="tab-item" role="tab" aria-selected="false">
+        <span class="tab-emoji" aria-hidden="true">♦️</span>
+        PLO Cash
+      </a>
+      <a href="tournament.html" class="tab-item" role="tab" aria-selected="false">
+        <span class="tab-emoji" aria-hidden="true">🏆</span>
+        Tournaments
+      </a>
+    </nav>
+    <!-- Intro -->
+    <section id="why" class="panel">
+      <div class="grid-2">
+        <div>
+          <h2>Why bankroll management?</h2>
+          <p class="lead">Variance creates downswings even for winning players; a dedicated bankroll and right‑sized stakes keep swings survivable and decisions consistent.</p>
+          <p class="muted">Separate funds, choose limits your bankroll can support, and adjust with discipline as results and risk tolerance evolve. This calculator focuses on No Limit Hold'em cash games.</p>
+        </div>
+        <div>
+          <h2>Strategies</h2>
+          <p class="muted">Prefer a detailed comparison of conservative vs aggressive plans? See recommended profiles.</p>
+          <a class="link-btn" href="strategies.html"><span aria-hidden="true">📚</span> View strategies</a>
+        </div>
+      </div>
+    </section>
+    <div class="space"></div>
+    <!-- Step 1: Settings -->
+    <section id="step1" class="panel">
+      <h2>
+        NLH Cash Game Calculator
+        <span class="title-info-btn" id="titleInfoBtn">?</span>
+        <!-- Hover-tooltip that explains each field -->
+        <div id="titleTooltip" class="title-tooltip">
+          <h3>Calculator Inputs</h3>
+          <div class="field-explanation">
+            <span class="field-name">Bankroll</span><br>
+            Total money strictly reserved for poker—not rent, bills or investments.
+          </div>
+          <div class="field-explanation">
+            <span class="field-name">Shot Start</span><br>
+            Buy-ins required in your roll before moving up a stake. Higher = safer.
+          </div>
+          <div class="field-explanation">
+            <span class="field-name">Shot Size</span><br>
+            Buy-ins you're willing to risk at the higher stake before dropping back.
+          </div>
+          <div class="field-explanation">
+            <span class="field-name">Move Down</span><br>
+            Auto-calculated (Shot Start – Shot Size). Hit this level → move down a stake.
+          </div>
+        </div>
+      </h2>
+      <div class="space"></div>
+      <!-- Top error box -->
+      <div id="errorBox" class="error-box" role="alert"></div>
+      <!-- Profile selector -->
+      <div class="field">
+        <label>Profile</label>
+        <div id="profiles" class="row">
+          <button type="button" data-prof="aggr" class="pill-btn">Aggressive</button>
+          <button type="button" data-prof="bal" class="pill-btn active">Balanced</button>
+          <button type="button" data-prof="cons" class="pill-btn">Conservative</button>
+          <button type="button" data-prof="custom" class="pill-btn">Custom</button>
+          <a class="muted" href="strategies.html" style="margin-left:.5rem">what's this?</a>
+        </div>
+      </div>
+      <div class="grid-2">
+        <div class="field">
+          <label for="currency">Currency</label>
+          <select id="currency" aria-label="Currency symbol">
+            <option value="$" selected>USD ($)</option>
+            <option value="C$">CAD (C$)</option>
+            <option value="£">GBP (£)</option>
+            <option value="A$">AUD (A$)</option>
+            <option value="NZ$">NZD (NZ$)</option>
+            <option value="€">EUR (€)</option>
+            <option value="¥">JPY (¥)</option>
+            <option value="CHF">CHF (CHF)</option>
+            <option value="kr">NOK (kr)</option>
+            <option value="kr">SEK (kr)</option>
+            <option value="kr">DKK (kr)</option>
+            <option value="R$">BRL (R$)</option>
+            <option value="₹">INR (₹)</option>
+            <option value="S$">SGD (S$)</option>
+            <option value="HK$">HKD (HK$)</option>
+            <option value="R">ZAR (R)</option>
+            <option value="zł">PLN (zł)</option>
+            <option value="Kč">CZK (Kč)</option>
+            <option value="₽">RUB (₽)</option>
+            <option value="₩">KRW (₩)</option>
+            <option value="¥">CNY (¥)</option>
+            <option value="฿">THB (฿)</option>
+            <option value="₪">ILS (₪)</option>
+            <option value="₺">TRY (₺)</option>
+            <option value="$">MXN ($)</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="bankroll" id="bankrollLabel">Bankroll ($)</label>
+          <input id="bankroll" type="text" inputmode="decimal" placeholder="e.g., 900" />
+          <div id="errBankroll" class="error-inline">Enter a valid number ≥ 0.</div>
+        </div>
+        <div class="field">
+          <label for="shotStart">Shot start (buy-ins)</label>
+          <input id="shotStart" type="text" inputmode="numeric" placeholder="e.g., 12" />
+          <div id="errShotStart" class="error-inline">Enter a whole number ≥ 1.</div>
+        </div>
+        <div class="field">
+          <label for="shotSize">Shot size (buy-ins)</label>
+          <input id="shotSize" type="text" inputmode="numeric" placeholder="e.g., 2" />
+          <div id="errShotSize" class="error-inline">Enter a whole number ≥ 1 and less than Shot start.</div>
+        </div>
+        <div class="field">
+          <label for="moveDownDisplay">Move down (buy-ins)</label>
+          <input id="moveDownDisplay" type="number" value="10" readonly />
+          <div class="muted">Derived: Shot start − Shot size.</div>
+        </div>
+      </div>
+      <div class="space"></div>
+      <div class="row">
+        <button id="continue" class="btn primary" type="button">
+          <span class="emoji" aria-hidden="true">➡️</span>Continue
+        </button>
+        <span class="muted">All fields must be valid numbers before continuing.</span>
+      </div>
+    </section>
+    <div class="space"></div>
+    <!-- Step 2: Results -->
+    <section id="step2" class="panel hidden">
+      <h2>Results</h2>
+      <div id="summary" class="muted"></div>
+      <div id="goal">
+        <span class="goal-emoji" aria-hidden="true">🎯</span>
+        <span class="goal-text" id="goalText"></span>
+      </div>
+      <table id="tbl" aria-describedby="tableHelp"></table>
+      <p id="tableHelp" class="muted">Status colors mark readiness per stake; the shortfall shows how much more is needed to reach the shot‑start bankroll.</p>
+    </section>
+  </main>
+  <script>
+    // ... your JavaScript remains unchanged ...
+  </script>
 </body>
 </html>
